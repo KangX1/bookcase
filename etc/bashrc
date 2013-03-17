@@ -1,0 +1,5 @@
+#!/bin/sh
+
+PWD=$(pwd)
+
+export OFBOOK_EXAMPLES_PROJECT_DIR=${PWD%%etc}
