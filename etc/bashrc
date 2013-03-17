@@ -2,4 +2,4 @@
 
 PWD=$(pwd)
 
-export OFBOOK_EXAMPLES_PROJECT_DIR=${PWD%%etc}
+export OFBOOK_CODE_PROJECT_DIR=${PWD%%etc}
