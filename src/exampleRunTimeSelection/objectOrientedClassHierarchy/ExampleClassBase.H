@@ -66,7 +66,7 @@ public:
     declareRunTimeSelectionTable (
         autoPtr,  // Select the type of a smart pointer 
         ExampleClassBase,  // ExampleClassBase name
-        dictionary,  // Construct from dictionary : constructor name
+        Dictionary,  // Construct from dictionary : constructor name
         (
            const dictionary& baseDict
         ),

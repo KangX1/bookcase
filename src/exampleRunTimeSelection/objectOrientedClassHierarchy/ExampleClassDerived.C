@@ -33,7 +33,7 @@ namespace BookExamples
 
     defineTypeNameAndDebug(ExampleClassDerived, 0); 
 
-    addToRunTimeSelectionTable(ExampleClassBase, ExampleClassDerived, dictionary);
+    addToRunTimeSelectionTable(ExampleClassBase, ExampleClassDerived, Dictionary);
 
     ExampleClassDerived::ExampleClassDerived(const dictionary& baseDict)
         :

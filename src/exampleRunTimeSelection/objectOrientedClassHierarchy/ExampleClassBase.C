@@ -30,7 +30,7 @@ namespace Foam
 namespace BookExamples
 {
     defineTypeNameAndDebug(ExampleClassBase, 0);
-    defineRunTimeSelectionTable (ExampleClassBase, dictionary);
+    defineRunTimeSelectionTable (ExampleClassBase, Dictionary);
 
     void ExampleClassBase::initData() 
     {
@@ -66,18 +66,18 @@ namespace BookExamples
         Info<< "Selecting validation model " << baseType << endl;
 
         // Find the constructor pointer for the model in the constructor table.
-        dictionaryConstructorTable::iterator cstrIter =
-            dictionaryConstructorTablePtr_->find(baseType);
+        DictionaryConstructorTable::iterator cstrIter =
+            DictionaryConstructorTablePtr_->find(baseType);
 
         // If the constructor pointer is not found in the table.
-        if (cstrIter == dictionaryConstructorTablePtr_->end())
+        if (cstrIter == DictionaryConstructorTablePtr_->end())
         {
             FatalErrorIn (
                 "ExampleClassBase::New(const dictionary&)"
             )   << "Unknown ExampleClassBase type "
                 << baseType << nl << nl
                 << "Valid ExampleClassBases are : " << endl
-                << dictionaryConstructorTablePtr_->sortedToc()
+                << DictionaryConstructorTablePtr_->sortedToc()
                 << exit(FatalError);
         }
 

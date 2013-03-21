@@ -21,3 +21,4 @@ linux*/
 *.zip
 *.tgz
 foamExpandedMacros
+doxygenDocumentation
