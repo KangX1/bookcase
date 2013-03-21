@@ -3,3 +3,5 @@
 PWD=$(pwd)
 
 export OFBOOK_CODE_PROJECT_DIR=${PWD%%etc}
+
+export PATH=$OFBOOK_CODE_PROJECT_DIR/src/scripts:$PATH

@@ -1,0 +1,78 @@
+#This program is free software: you can redistribute it and/or modify
+#it under the terms of the GNU General Public License as published by
+#the Free Software Foundation, either version 3 of the License, or
+#(at your option) any later version.
+
+#This program is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#GNU General Public License for more details.
+
+#You should have received a copy of the GNU General Public License
+#along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+#--- About ---
+#
+#The script expands macros defined in a .cpp or .C file and outputs the result
+#into a new file within a created foamExpandedMacros directory.
+#
+#To expand OpenFOAM macros, the script must be called from a directory
+#containing the Make directory, otherwise it cannot find the include
+#directories for macro definition.
+#
+#
+#The C++ styling program "astyle" is used to format the output code. The
+#generated code is ready for the compiler, but not for human eyes. Use search
+#facilities of your favourite (Vim :) editor to find the scope / expression you
+#are interested in.
+#
+#
+#Requirements: gcc, astyle
+
+#--- Authors --- 
+
+#Tomislav Maric
+#tomislav.maric@gmx.com
+
+#--------------
+
+#!/bin/bash
+
+# Get the target file name 
+FILE=${1##*/}
+
+echo $FILE
+
+# Get the additional include options from the Make/options file
+INCLUDE=$(cat Make/options | grep "\-I")
+
+# Remove backlashes
+INCLUDE=${INCLUDE//\\/}
+
+# Remove dollar signs
+INCLUDE=${INCLUDE//\$/}
+
+# Replace LIB_SRC
+INCLUDE=${INCLUDE//(LIB_SRC)/$FOAM_SRC}
+
+# Expand additional inclusion parameter
+ADDITIONAL=$(eval echo "\$$2")
+
+# Replace additional inclusion parameter
+INCLUDE=${INCLUDE//($2)/$ADDITIONAL}
+
+# Remove new line characters
+INCLUDE=$(echo $INCLUDE)
+
+if [ ! -d foamExpandedMacros ];
+then
+    mkdir foamExpandedMacros
+fi
+
+echo "g++ -E -I$WM_PROJECT_DIR/src/OSspecific/POSIX/lnInclude -I$WM_PROJECT_DIR/src/OpenFOAM/lnInclude $INCLUDE $1 2>&1 > foamExpandedMacros/$FILE-expanded"
+
+g++ -E -I$WM_PROJECT_DIR/src/OSspecific/POSIX/lnInclude -I$WM_PROJECT_DIR/src/OpenFOAM/lnInclude $INCLUDE $1 2>&1 > foamExpandedMacros/$FILE-expanded 
+
+astyle foamExpandedMacros/$FILE-expanded
+
+rm foamExpandedMacros/$FILE-expanded.*
