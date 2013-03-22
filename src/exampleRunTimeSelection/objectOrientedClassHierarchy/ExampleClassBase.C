@@ -24,6 +24,7 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "ExampleClassBase.H"
+#include "addToRunTimeSelectionTable.H"
 
 namespace Foam 
 {
@@ -33,6 +34,8 @@ namespace BookExamples
 
     defineRunTimeSelectionTable(ExampleClassBase, Dictionary);
     defineRunTimeSelectionTable(ExampleClassBase, Word);
+    
+    addToRunTimeSelectionTable(ExampleClassBase, ExampleClassBase, Dictionary);
 
     void ExampleClassBase::initData(const dictionary& baseDict) 
     {
@@ -100,7 +103,7 @@ namespace BookExamples
     {
         const word name = baseDict.lookupOrDefault<word> (
                 "className", 
-                "ExampleClassDerived"
+                "ExampleClassBase"
         ); 
 
         Info<< "Selecting validation model " << name << endl;
