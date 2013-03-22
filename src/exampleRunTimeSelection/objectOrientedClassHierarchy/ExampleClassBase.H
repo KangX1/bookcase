@@ -57,7 +57,9 @@ class ExampleClassBase
 
     dictionary baseDict_; 
 
-    void initData (); 
+    void initData(const dictionary& baseDict); 
+
+    string parameter_; 
 
 public:
 
@@ -97,6 +99,11 @@ public:
    {
        return baseDict_;
    }; 
+
+   string parameter() const
+   {
+       return parameter_;
+   }
 
    //- Destructor
    virtual ~ExampleClassBase();

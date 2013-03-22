@@ -46,24 +46,46 @@ using namespace BookExamples;
 
 int main(int argc, char *argv[])
 {
+    // Add the option to the argument list for the name of the class to be 
+    // selected using the RTS mechanism.
+    argList::addOption
+    (
+        "className",
+        "name of the run-time selected class"
+    );
+
     #include "setRootCase.H"
     #include "createTime.H"
 
+    autoPtr<ExampleClassBase> baseClassPtr; 
 
-    IOdictionary baseDict (
-        IOobject ( 
-            "runTimeSelectionExampleDict", 
-            "constant", 
-            runTime, 
-            IOobject::MUST_READ,
-            IOobject::AUTO_WRITE
-        )
-    ); 
+    // Global argument list object is named "args"
+    // If the option is found in the argument map. 
+    if (args.optionFound("className"))
+    {
+        // Get the className string. 
+        const word className = args.option("className");
+        // Define the pointer using the Word constructor.
+        baseClassPtr = ExampleClassBase::New(className);
+    }
+    else 
+    {
+        IOdictionary baseDict (
+            IOobject ( 
+                "runTimeSelectionExampleDict", 
+                "constant", 
+                runTime, 
+                IOobject::MUST_READ_IF_MODIFIED,
+                IOobject::AUTO_WRITE
+            )
+        ); 
 
-    autoPtr<ExampleClassBase> baseDictPtr = ExampleClassBase::New(baseDict);
+        // Define the pointer using the Dictionary constructor.
+        baseClassPtr = ExampleClassBase::New(baseDict);
+    }
 
-    word name (argv[1]);
-    autoPtr<ExampleClassBase> baseWordPtr = ExampleClassBase::New(name);
+    // Use the class pointer.
+    Info << "Class parameter: " << baseClassPtr->parameter() << endl;
 
     return 0;
 }

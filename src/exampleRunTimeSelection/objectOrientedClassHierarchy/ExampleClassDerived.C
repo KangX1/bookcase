@@ -40,12 +40,7 @@ namespace BookExamples
         :
             ExampleClassBase(baseDict)
     {
-        // Read the type of the validation model from the dictionary.
-        const word name(baseDict.lookup("baseModel"));
-
         Pout << "ExampleClassDerived(const dictionary&)" << endl;
-
-        cout << "Type: " << name<< endl;
     }
 
     ExampleClassDerived::ExampleClassDerived(const word& name)
