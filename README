@@ -13,4 +13,6 @@ the applications:
 
 To set the configuration variable every time a new tab/terminal is opened,
 source the "etc/bashrc" script of this project from within the "~/.bashrc"
-startup script.
+startup script:
+
+source /path/to/ofbook-code/etc/bashrc
