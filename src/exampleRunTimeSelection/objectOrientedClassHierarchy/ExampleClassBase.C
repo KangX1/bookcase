@@ -30,23 +30,23 @@ namespace Foam
 namespace BookExamples
 {
     defineTypeNameAndDebug(ExampleClassBase, 0);
+
     defineRunTimeSelectionTable (ExampleClassBase, Dictionary);
+    defineRunTimeSelectionTable (ExampleClassBase, Word);
 
     void ExampleClassBase::initData() 
     {
         Pout << "ExampleExampleClassBase::initData()" << endl;
     }
 
-    ExampleClassBase::ExampleClassBase(const dictionary& baseDict)
-        :
-            baseDict_(baseDict)
+    ExampleClassBase::ExampleClassBase(const word& name)
     {
         initData(); 
     }
 
-    ExampleClassBase::ExampleClassBase() 
-        : 
-            baseDict_("constant/baseDict") 
+    ExampleClassBase::ExampleClassBase(const dictionary& baseDict)
+        :
+            baseDict_(baseDict)
     {
         initData(); 
     }
@@ -57,34 +57,44 @@ namespace BookExamples
     }
 
     autoPtr<ExampleClassBase> ExampleClassBase::New (
-        const dictionary& baseDict
+        const word& name 
     )
     {
-        // Read the type of the validation model from the dictionary.
-        const word baseType(baseDict.lookup("baseModel"));
 
-        Info<< "Selecting validation model " << baseType << endl;
-
+        Info<< "Selecting validation model " << name << endl;
         // Find the constructor pointer for the model in the constructor table.
-        DictionaryConstructorTable::iterator cstrIter =
-            DictionaryConstructorTablePtr_->find(baseType);
+        WordConstructorTable::iterator cstrIter =
+            WordConstructorTablePtr_->find(name);
 
         // If the constructor pointer is not found in the table.
-        if (cstrIter == DictionaryConstructorTablePtr_->end())
+        if (cstrIter == WordConstructorTablePtr_->end())
         {
             FatalErrorIn (
                 "ExampleClassBase::New(const dictionary&)"
             )   << "Unknown ExampleClassBase type "
-                << baseType << nl << nl
+                << name << nl << nl
                 << "Valid ExampleClassBases are : " << endl
-                << DictionaryConstructorTablePtr_->sortedToc()
+                << WordConstructorTablePtr_->sortedToc()
                 << exit(FatalError);
         }
 
         // Construct the model and return the autoPtr to the object. 
         return autoPtr<ExampleClassBase>
-            (cstrIter()(baseDict));
+            (cstrIter()(name));
     }
+
+    autoPtr<ExampleClassBase> ExampleClassBase::New (
+        const dictionary& baseDict
+    )
+    {
+        // Read the type of the validation model from the dictionary.
+        word name (baseDict.lookup("baseModel"));
+
+
+        return New(name);
+    }
+
+
 
     autoPtr<ExampleClassBase> ExampleClassBase::New ()
     {

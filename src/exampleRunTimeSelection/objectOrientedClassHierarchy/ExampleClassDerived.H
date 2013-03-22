@@ -58,9 +58,8 @@ public:
 
     TypeName ("ExampleClassDerived");
 
+    ExampleClassDerived (const word& name); 
     ExampleClassDerived (const dictionary& baseDict); 
-
-    ExampleClassDerived(); 
 
     //- Destructor
     ~ExampleClassDerived();

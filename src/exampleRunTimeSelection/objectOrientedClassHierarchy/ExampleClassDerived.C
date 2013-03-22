@@ -33,6 +33,7 @@ namespace BookExamples
 
     defineTypeNameAndDebug(ExampleClassDerived, 0); 
 
+    addToRunTimeSelectionTable(ExampleClassBase, ExampleClassDerived, Word);
     addToRunTimeSelectionTable(ExampleClassBase, ExampleClassDerived, Dictionary);
 
     ExampleClassDerived::ExampleClassDerived(const dictionary& baseDict)
@@ -40,20 +41,18 @@ namespace BookExamples
             ExampleClassBase(baseDict)
     {
         // Read the type of the validation model from the dictionary.
-        const word baseType(baseDict.lookup("baseModel"));
+        const word name(baseDict.lookup("baseModel"));
 
-        Pout << "ExampleClassDerived(const dictionary& baseDict)" << endl;
+        Pout << "ExampleClassDerived(const dictionary&)" << endl;
 
-        cout << "Type: " << baseType << endl;
+        cout << "Type: " << name<< endl;
     }
 
-
-    ExampleClassDerived::ExampleClassDerived() 
+    ExampleClassDerived::ExampleClassDerived(const word& name)
+        :
+            ExampleClassBase(name)
     {
-        // Read the type of the validation model from the dictionary.
-        const word baseType(baseDict().lookup("baseModel"));
-        Pout << "ExampleClassDerived(const dictionary& baseDict)" << endl;
-        cout << "Type: " << baseType << endl;
+        Pout << "ExampleClassDerived(const word&)" << endl;
     }
 
     ExampleClassDerived::~ExampleClassDerived()

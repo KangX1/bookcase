@@ -65,22 +65,32 @@ public:
 
     declareRunTimeSelectionTable (
         autoPtr,  // Select the type of a smart pointer 
-        ExampleClassBase,  // ExampleClassBase name
-        Dictionary,  // Construct from dictionary : constructor name
+        ExampleClassBase,  // ExampleClassBase ame
+        Word,  // Construct from a Word : arbitrary name 
         (
-           const dictionary& baseDict
+           const word& name 
         ),
-        (baseDict) // Constructor argument list
+        (name) // Constructor argument name list
+    );
+
+    declareRunTimeSelectionTable (
+        autoPtr,  // Select the type of a smart pointer 
+        ExampleClassBase,  // ExampleClassBase name
+        Dictionary,  // Construct from dictionary : arbitrary name 
+        (
+           const dictionary& dictName 
+        ),
+        (dictName) // Constructor argument list
    );
 
-
+   ExampleClassBase (const word& name); 
    ExampleClassBase (const dictionary& baseDict); 
-   ExampleClassBase (); 
 
    //- Factory method for the label constructor. It doesn't select, 
    //  it produces a new object. 
    static autoPtr<ExampleClassBase> New(const dictionary& baseDict);
-
+   static autoPtr<ExampleClassBase> New(const word& name);
+   
    static autoPtr<ExampleClassBase> New(); 
 
    const dictionary& baseDict() const

@@ -49,6 +49,7 @@ int main(int argc, char *argv[])
     #include "setRootCase.H"
     #include "createTime.H"
 
+
     IOdictionary baseDict (
         IOobject ( 
             "runTimeSelectionExampleDict", 
@@ -59,7 +60,10 @@ int main(int argc, char *argv[])
         )
     ); 
 
-    autoPtr<ExampleClassBase> baseType = ExampleClassBase::New(baseDict);
+    autoPtr<ExampleClassBase> baseDictPtr = ExampleClassBase::New(baseDict);
+
+    word name (argv[1]);
+    autoPtr<ExampleClassBase> baseWordPtr = ExampleClassBase::New(name);
 
     return 0;
 }
