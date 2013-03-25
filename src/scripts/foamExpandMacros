@@ -64,6 +64,9 @@ INCLUDE=${INCLUDE//($2)/$ADDITIONAL}
 # Remove new line characters
 INCLUDE=$(echo $INCLUDE)
 
+FVM_INCLUDE=$FOAM_SRC/finiteVolume/lnInclude
+
+# Check and create the expanded files directory 
 if [ ! -d foamExpandedMacros ];
 then
     mkdir foamExpandedMacros
@@ -71,7 +74,7 @@ fi
 
 echo "g++ -E -I$WM_PROJECT_DIR/src/OSspecific/POSIX/lnInclude -I$WM_PROJECT_DIR/src/OpenFOAM/lnInclude $INCLUDE $1 2>&1 > foamExpandedMacros/$FILE-expanded"
 
-g++ -E -I$WM_PROJECT_DIR/src/OSspecific/POSIX/lnInclude -I$WM_PROJECT_DIR/src/OpenFOAM/lnInclude $INCLUDE $1 2>&1 > foamExpandedMacros/$FILE-expanded 
+g++ -E -I$WM_PROJECT_DIR/src/OSspecific/POSIX/lnInclude -I$WM_PROJECT_DIR/src/OpenFOAM/lnInclude -I$FVM_INCLUDE $INCLUDE $1 2>&1 > foamExpandedMacros/$FILE-expanded 
 
 astyle foamExpandedMacros/$FILE-expanded
 
