@@ -36,6 +36,7 @@ namespace BookExamples
     defineRunTimeSelectionTable(ExampleClassBase, Word);
     
     addToRunTimeSelectionTable(ExampleClassBase, ExampleClassBase, Dictionary);
+    addToRunTimeSelectionTable(ExampleClassBase, ExampleClassBase, Word);
 
     void ExampleClassBase::initData(const dictionary& baseDict) 
     {
