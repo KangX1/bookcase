@@ -36,6 +36,7 @@ SourceFiles
 #ifndef ExampleClassTemplateBase_H
 #define ExampleClassTemplateBase_H
 
+#include "dictionary.H"
 #include "typeInfo.H"
 #include "runTimeSelectionTables.H"
 #include "addToRunTimeSelectionTable.H"
@@ -70,15 +71,29 @@ public:
 		    (dict)	
 	) 		
 
+    //declareRunTimeSelectionTable ( 	  	
+            //autoPtr,
+			  //ExampleClassTemplateBase,
+			  //Word,
+			  //(
+                //const word& name 
+            //),
+			//(name)	
+	//) 		
+
     // Constructors
 
         //- Construct from components
         ExampleClassTemplateBase(const dictionary& dict);
+        //ExampleClassTemplateBase(const word& dict);
 
     // Selectors
         static autoPtr<ExampleClassTemplateBase<Parameter> > New(
             const dictionary& dict
         );
+        //static autoPtr<ExampleClassTemplateBase<Parameter> > New(
+            //const dictionary& dict
+        //);
 
     //- Destructor
     virtual ~ExampleClassTemplateBase();

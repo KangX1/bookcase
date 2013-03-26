@@ -44,13 +44,28 @@ template<class Parameter>
 autoPtr<ExampleClassTemplateBase<Parameter> >
 ExampleClassTemplateBase<Parameter>::New(const dictionary& dict)
 {
-    // TODO: make the selector use the factory methods from the RTS table to 
-    // generate the appropriate object based on the dictionary entry for the
-    // class name. 
-    return autoPtr<ExampleClassTemplateBase<Parameter> >
-    (
-        new ExampleClassTemplateBase<Parameter>(dict)
+    // Get the name from the dictionary.
+    const word name = dict.lookupOrDefault<word>(
+        "exampleClassTemplateBase", 
+        "exampleClassOneBase"
     );
+
+    // Get the RTS Table via the global object.  
+    typename DictionaryConstructorTable::iterator cstrIter =
+        DictionaryConstructorTablePtr_->find(name);
+    // If the constructor pointer is not found in the table.
+    if (cstrIter == DictionaryConstructorTablePtr_->end())
+    {
+        FatalErrorIn (
+            "ExampleClassTemplateBase::New(const dictionary&)"
+        )   << "Unknown ExampleClassTemplateBase type "
+            << name << nl << nl
+            << "Valid ExampleClassTemplateBases are : " << endl
+            << DictionaryConstructorTablePtr_->sortedToc()
+            << exit(FatalError);
+    }
+
+    return autoPtr< ExampleClassTemplateBase<Parameter> > (cstrIter()(dict));
 }
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
