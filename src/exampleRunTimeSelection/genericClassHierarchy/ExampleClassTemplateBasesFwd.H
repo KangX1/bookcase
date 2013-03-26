@@ -21,38 +21,40 @@ License
     You should have received a copy of the GNU General Public License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
-Application
-    myRunTimeSelectableClass
-
-Description
-    Run Time Selection (RTS) testing application for the example classes 
-    of the exampleRunTimeSelection library that show how RTS is enabled for 
-    an object oriented as well as generic class hierarchy. 
-
-Authors
-    Tomislav Maric 
-    tomislav.maric@gmx.com
-
 \*---------------------------------------------------------------------------*/
 
-#include "fvCFD.H"
-#include "ExampleClassTemplateBase.H"
+#ifndef ExampleClassTemplateBasesFwd_H
+#define ExampleClassTemplateBasesFwd_H
+
+#include "parameterTypes.H"
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+namespace Foam
+{
+
+namespace BookExamples
+{
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+template<class Type> class ExampleClassTemplateBase;
+
+typedef ExampleClassTemplateBase<One> exampleClassOneBase; 
+typedef ExampleClassTemplateBase<Two> exampleClassTwoBase;
+typedef ExampleClassTemplateBase<Three> exampleClassThreeBase;
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+} // End namespace BookExamples 
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-// Main program:
 
-using namespace BookExamples;
+} // End namespace Foam
 
-int main(int argc, char *argv[])
-{
-    #include "setRootCase.H"
-    #include "createTime.H"
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-    Info << ExampleClassTemplateBase<scalar>::typeName << endl;
-
-    return 0;
-}
-
+#endif
 
 // ************************************************************************* //

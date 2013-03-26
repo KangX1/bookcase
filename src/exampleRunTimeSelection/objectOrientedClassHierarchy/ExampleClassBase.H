@@ -39,6 +39,7 @@ SourceFiles
 #include "label.H"
 #include "dictionary.H"
 #include "runTimeSelectionTables.H"
+#include "addToRunTimeSelectionTable.H"
 #include "Pstream.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

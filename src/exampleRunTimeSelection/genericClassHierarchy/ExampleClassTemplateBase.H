@@ -37,13 +37,15 @@ SourceFiles
 #define ExampleClassTemplateBase_H
 
 #include "typeInfo.H"
+#include "runTimeSelectionTables.H"
+#include "addToRunTimeSelectionTable.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
 {
-    namespace BookExamples
-    {
+namespace BookExamples
+{
 
 /*---------------------------------------------------------------------------*\
                          Class ExampleClassTemplateBase Declaration
@@ -56,31 +58,53 @@ class ExampleClassTemplateBase
 public:
 
     // Static data members
-    TypeName ("ExampleClassTemplateBase");
+    TypeName("ExampleClassTemplateBase");
+
+    declareRunTimeSelectionTable ( 	  	
+            autoPtr,
+		  	ExampleClassTemplateBase,
+		  	Dictionary,
+		  	(
+                const dictionary& dict
+            ),
+		    (dict)	
+	) 		
 
     // Constructors
 
         //- Construct from components
-        //ExampleClassTemplateBase(const dataType& data);
+        ExampleClassTemplateBase(const dictionary& dict);
 
     // Selectors
-
-        // TODO: set up an RTS selector
-        //- Select null constructed
-        //static autoPtr<ExampleClassTemplateBase<Parameter> > New();
-
+        static autoPtr<ExampleClassTemplateBase<Parameter> > New(
+            const dictionary& dict
+        );
 
     //- Destructor
-    ~ExampleClassTemplateBase();
+    virtual ~ExampleClassTemplateBase();
 
-
-    // Member Functions
-   
+    // Member functions
 };
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-    } // End namespace BookExamples 
+// Macros for template instantiation: these classes get compiled to the library, 
+// and have RTS enabled.
+
+#define makeExampleClassTemplateBase(Parameter)                                 \
+                                                                                \
+defineNamedTemplateTypeNameAndDebug(exampleClass##Parameter##Base, 0);          \
+defineTemplateRunTimeSelectionTable(exampleClass##Parameter##Base, Dictionary); \
+addToRunTimeSelectionTable                                                      \
+(                                                                               \
+    exampleClass##Parameter##Base,                                              \
+    exampleClass##Parameter##Base,                                              \
+    Dictionary                                                                  \
+);
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+} // End namespace BookExamples 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

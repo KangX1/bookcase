@@ -23,33 +23,44 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-//#include "ExampleClassTemplateBase.H"
-
-// * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
-
+namespace Foam 
+{
+namespace BookExamples
+{
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-//template<class Parameter>
-//Foam::ExampleClassTemplateBase<Parameter>::ExampleClassTemplateBase(const dataType& data)
-//:
-    //baseClassName(),
-    //data_(data)
-//{}
+template<class Parameter>
+ExampleClassTemplateBase<Parameter>::ExampleClassTemplateBase(
+    const dictionary& dict)
+{
+    // The constructor sets the class attributes using dictionary entries.
+}
+
 
 // * * * * * * * * * * * * * * * * Selectors * * * * * * * * * * * * * * * * //
 
-//template<class Parameter>
-//Foam::autoPtr<Foam::ExampleClassTemplateBase<Parameter> >
-//Foam::ExampleClassTemplateBase<Parameter>::New()
-//{
-    //return autoPtr<ExampleClassTemplateBase<Parameter> >
-    //(
-        //new ExampleClassTemplateBase<Parameter>
-    //);
-//}
+template<class Parameter>
+autoPtr<ExampleClassTemplateBase<Parameter> >
+ExampleClassTemplateBase<Parameter>::New(const dictionary& dict)
+{
+    // TODO: make the selector use the factory methods from the RTS table to 
+    // generate the appropriate object based on the dictionary entry for the
+    // class name. 
+    return autoPtr<ExampleClassTemplateBase<Parameter> >
+    (
+        new ExampleClassTemplateBase<Parameter>(dict)
+    );
+}
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+} // End namespace BookExamples 
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+} // End namespace Foam
 
 // ************************************************************************* //

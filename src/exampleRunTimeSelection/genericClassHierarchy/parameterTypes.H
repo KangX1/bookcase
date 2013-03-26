@@ -21,38 +21,38 @@ License
     You should have received a copy of the GNU General Public License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
-Application
-    myRunTimeSelectableClass
-
-Description
-    Run Time Selection (RTS) testing application for the example classes 
-    of the exampleRunTimeSelection library that show how RTS is enabled for 
-    an object oriented as well as generic class hierarchy. 
-
-Authors
-    Tomislav Maric 
-    tomislav.maric@gmx.com
-
 \*---------------------------------------------------------------------------*/
 
-#include "fvCFD.H"
-#include "ExampleClassTemplateBase.H"
-
+#ifndef parameterTypes_H
+#define parameterTypes_H
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-// Main program:
 
-using namespace BookExamples;
-
-int main(int argc, char *argv[])
+namespace Foam
 {
-    #include "setRootCase.H"
-    #include "createTime.H"
+    namespace BookExamples
+    {
 
-    Info << ExampleClassTemplateBase<scalar>::typeName << endl;
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-    return 0;
-}
+        // Type definitions for the possible parameters for the 
+        // ExampleClassTemplateBase: built in types used here, but otherwise, 
+        // this header must include declarations of all possible template 
+        // arguments to be used together with the ExampleClassTemplateBase.
+        typedef int    One;  
+        typedef float  Two;
+        typedef double Three; 
+    
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+    } // End namespace BookExamples 
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+} // End namespace Foam
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#endif
 
 // ************************************************************************* //

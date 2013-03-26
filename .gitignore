@@ -20,5 +20,5 @@ linux*/
 *.rar
 *.zip
 *.tgz
-foamExpandedMacros
+ExpandedMacros
 doxygenDocumentation

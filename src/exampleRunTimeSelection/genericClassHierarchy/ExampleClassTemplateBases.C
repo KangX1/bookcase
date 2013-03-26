@@ -31,7 +31,7 @@ Description
 \*---------------------------------------------------------------------------*/
 
 #include "ExampleClassTemplateBase.H"
-#include "scalar.H"
+#include "ExampleClassTemplateBasesFwd.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -39,7 +39,9 @@ namespace Foam
 {
     namespace BookExamples 
     {
-        typedef ExampleClassTemplateBase<scalar> exampleClassTemplateBaseScalar;
+        makeExampleClassTemplateBase(One)                               
+        makeExampleClassTemplateBase(Two)                               
+        makeExampleClassTemplateBase(Three)                               
     }
 };
 
