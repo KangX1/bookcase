@@ -71,16 +71,6 @@ public:
 		    (dict)	
 	) 		
 
-    //declareRunTimeSelectionTable ( 	  	
-            //autoPtr,
-			  //ExampleClassTemplateBase,
-			  //Word,
-			  //(
-                //const word& name 
-            //),
-			//(name)	
-	//) 		
-
     // Constructors
 
         //- Construct from components
@@ -91,12 +81,9 @@ public:
         static autoPtr<ExampleClassTemplateBase<Parameter> > New(
             const dictionary& dict
         );
-        //static autoPtr<ExampleClassTemplateBase<Parameter> > New(
-            //const dictionary& dict
-        //);
 
     //- Destructor
-    virtual ~ExampleClassTemplateBase();
+    virtual ~ExampleClassTemplateBase() {};
 
     // Member functions
 };

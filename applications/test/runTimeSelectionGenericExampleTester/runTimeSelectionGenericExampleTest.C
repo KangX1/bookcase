@@ -37,6 +37,7 @@ Authors
 
 #include "fvCFD.H"
 #include "ExampleClassTemplateBase.H"
+#include "ExampleClassTemplateBasesFwd.H"
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -49,7 +50,6 @@ int main(int argc, char *argv[])
     #include "setRootCase.H"
     #include "createTime.H"
 
-    Info << ExampleClassTemplateBase<scalar>::typeName << endl;
 
     return 0;
 }
