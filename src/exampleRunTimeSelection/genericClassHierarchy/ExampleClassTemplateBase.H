@@ -108,6 +108,21 @@ addToRunTimeSelectionTable                                                      
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+// Macros for template instantiation of derived class templates : these classes
+// get compiled to the library, and have RTS enabled.
+
+#define makeExampleClassTemplateDerived(Suffix, Parameter)                      \
+                                                                                \
+defineNamedTemplateTypeNameAndDebug(exampleClass##Parameter##Suffix, 0);        \
+addToRunTimeSelectionTable                                                      \
+(                                                                               \
+    exampleClass##Parameter##Base,                                              \
+    exampleClass##Parameter##Suffix,                                            \
+    Dictionary                                                                  \
+);
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
 } // End namespace BookExamples 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

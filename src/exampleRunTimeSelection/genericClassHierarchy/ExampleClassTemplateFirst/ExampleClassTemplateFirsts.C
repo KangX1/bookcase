@@ -40,9 +40,9 @@ namespace Foam
 {
     namespace BookExamples 
     {
-        makeExampleClassTemplateFirst(One)                               
-        makeExampleClassTemplateFirst(Two)                               
-        makeExampleClassTemplateFirst(Three)                               
+        makeExampleClassTemplateDerived(First,One)                               
+        makeExampleClassTemplateDerived(First,Two)                               
+        makeExampleClassTemplateDerived(First,Three)                               
     }
 };
 

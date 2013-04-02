@@ -74,21 +74,6 @@ public:
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-// Macros for template instantiation: these classes get compiled to the library, 
-// and have RTS enabled.
-
-#define makeExampleClassTemplateFirst(Parameter)                                \
-                                                                                \
-defineNamedTemplateTypeNameAndDebug(exampleClass##Parameter##First, 0);         \
-addToRunTimeSelectionTable                                                      \
-(                                                                               \
-    exampleClass##Parameter##Base,                                              \
-    exampleClass##Parameter##First,                                             \
-    Dictionary                                                                  \
-);
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
 } // End namespace BookExamples 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
