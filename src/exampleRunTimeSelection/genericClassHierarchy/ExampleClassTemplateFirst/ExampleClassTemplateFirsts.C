@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2012 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -21,59 +21,31 @@ License
     You should have received a copy of the GNU General Public License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
-Application
-    myRunTimeSelectableClass
+Class
+    Foam::ExampleClassTemplateFirst
 
 Description
-    Run Time Selection (RTS) testing application for the example classes 
-    of the exampleRunTimeSelection library that show how RTS is enabled for 
-    an object oriented as well as generic class hierarchy. 
-
-Authors
-    Tomislav Maric 
-    tomislav.maric@gmx.com
+    Explicitly instantiate ExampleClassTemplateFirst for specific Parameters 
+    define their typeName and configure RTS. 
 
 \*---------------------------------------------------------------------------*/
 
-#include "fvCFD.H"
-#include "ExampleClassTemplateBase.H"
+#include "ExampleClassTemplateFirst.H"
 #include "ExampleClassTemplateBasesFwd.H"
-
+#include "ExampleClassTemplateFirstsFwd.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-// Main program:
 
-using namespace BookExamples;
-
-int main(int argc, char *argv[])
+namespace Foam
 {
-    #include "setRootCase.H"
-    #include "createTime.H"
+    namespace BookExamples 
+    {
+        makeExampleClassTemplateFirst(One)                               
+        makeExampleClassTemplateFirst(Two)                               
+        makeExampleClassTemplateFirst(Three)                               
+    }
+};
 
-    autoPtr<exampleClassOneBase> baseClassOnePtr; 
-
-    IOdictionary baseDict (
-        IOobject ( 
-            "runTimeSelectionExampleDict", 
-            "constant", 
-            runTime, 
-            IOobject::MUST_READ_IF_MODIFIED,
-            IOobject::AUTO_WRITE
-        )
-    ); 
-
-    // Define the pointer using the Dictionary constructor.
-    baseClassOnePtr = exampleClassOneBase::New(baseDict.subDict("genericOne"));
-
-    baseClassOnePtr->execute(); 
-
-    autoPtr<exampleClassTwoBase> baseClassTwoPtr;
-    baseClassTwoPtr = exampleClassTwoBase::New(baseDict.subDict("genericTwo"));
-
-    baseClassTwoPtr->execute();
-
-    return 0;
-}
-
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 // ************************************************************************* //

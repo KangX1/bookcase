@@ -21,59 +21,40 @@ License
     You should have received a copy of the GNU General Public License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
-Application
-    myRunTimeSelectableClass
-
-Description
-    Run Time Selection (RTS) testing application for the example classes 
-    of the exampleRunTimeSelection library that show how RTS is enabled for 
-    an object oriented as well as generic class hierarchy. 
-
-Authors
-    Tomislav Maric 
-    tomislav.maric@gmx.com
-
 \*---------------------------------------------------------------------------*/
 
-#include "fvCFD.H"
-#include "ExampleClassTemplateBase.H"
-#include "ExampleClassTemplateBasesFwd.H"
+#ifndef ExampleClassFirstBasesFwd_H
+#define ExampleClassFirstBasesFwd_H
+
+#include "parameterTypes.H"
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+namespace Foam
+{
+
+namespace BookExamples
+{
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+template<class Type> class ExampleClassTemplateFirst;
+
+typedef ExampleClassTemplateFirst<One> exampleClassOneFirst; 
+typedef ExampleClassTemplateFirst<Two> exampleClassTwoFirst;
+typedef ExampleClassTemplateFirst<Three> exampleClassThreeFirst;
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+} // End namespace BookExamples 
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-// Main program:
 
-using namespace BookExamples;
+} // End namespace Foam
 
-int main(int argc, char *argv[])
-{
-    #include "setRootCase.H"
-    #include "createTime.H"
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-    autoPtr<exampleClassOneBase> baseClassOnePtr; 
-
-    IOdictionary baseDict (
-        IOobject ( 
-            "runTimeSelectionExampleDict", 
-            "constant", 
-            runTime, 
-            IOobject::MUST_READ_IF_MODIFIED,
-            IOobject::AUTO_WRITE
-        )
-    ); 
-
-    // Define the pointer using the Dictionary constructor.
-    baseClassOnePtr = exampleClassOneBase::New(baseDict.subDict("genericOne"));
-
-    baseClassOnePtr->execute(); 
-
-    autoPtr<exampleClassTwoBase> baseClassTwoPtr;
-    baseClassTwoPtr = exampleClassTwoBase::New(baseDict.subDict("genericTwo"));
-
-    baseClassTwoPtr->execute();
-
-    return 0;
-}
-
+#endif
 
 // ************************************************************************* //

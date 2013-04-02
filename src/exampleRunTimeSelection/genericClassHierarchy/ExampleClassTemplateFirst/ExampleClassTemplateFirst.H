@@ -22,24 +22,21 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::ExampleClassTemplateBase
+    Foam::ExampleClassTemplateFirst
 
 Description
 
 SourceFiles
-    ExampleClassTemplateBaseI.H
-    ExampleClassTemplateBase.C
-    ExampleClassTemplateBaseIO.C
+    ExampleClassTemplateFirstI.H
+    ExampleClassTemplateFirst.C
+    ExampleClassTemplateFirstIO.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef ExampleClassTemplateBase_H
-#define ExampleClassTemplateBase_H
+#ifndef ExampleClassTemplateFirst_H
+#define ExampleClassTemplateFirst_H
 
-#include "dictionary.H"
-#include "typeInfo.H"
-#include "runTimeSelectionTables.H"
-#include "addToRunTimeSelectionTable.H"
+#include "ExampleClassTemplateBase.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -49,42 +46,27 @@ namespace BookExamples
 {
 
 /*---------------------------------------------------------------------------*\
-                         Class ExampleClassTemplateBase Declaration
+                         Class ExampleClassTemplateFirst Declaration
 \*---------------------------------------------------------------------------*/
 
 template<class Parameter>
-class ExampleClassTemplateBase
+class ExampleClassTemplateFirst
+:
+    public ExampleClassTemplateBase<Parameter>
 {
 
 public:
 
     // Static data members
-    TypeName("genericBase");
-
-    declareRunTimeSelectionTable ( 	  	
-            autoPtr,
-		  	ExampleClassTemplateBase,
-		  	Dictionary,
-		  	(
-                const dictionary& dict
-            ),
-		    (dict)	
-	) 		
+    TypeName("genericFirst");
 
     // Constructors
-        ExampleClassTemplateBase();
-        
-        //- Construct from components
-        ExampleClassTemplateBase(const dictionary& dict);
-        //ExampleClassTemplateBase(const word& dict);
 
-    // Selectors
-        static autoPtr<ExampleClassTemplateBase<Parameter> > New(
-            const dictionary& dict
-        );
+        //- Construct from components
+        ExampleClassTemplateFirst(const dictionary& dict);
 
     //- Destructor
-    virtual ~ExampleClassTemplateBase() {};
+    virtual ~ExampleClassTemplateFirst() {};
 
     // Member functions
         virtual void execute() const;
@@ -95,14 +77,13 @@ public:
 // Macros for template instantiation: these classes get compiled to the library, 
 // and have RTS enabled.
 
-#define makeExampleClassTemplateBase(Parameter)                                 \
+#define makeExampleClassTemplateFirst(Parameter)                                \
                                                                                 \
-defineNamedTemplateTypeNameAndDebug(exampleClass##Parameter##Base, 0);          \
-defineTemplateRunTimeSelectionTable(exampleClass##Parameter##Base, Dictionary); \
+defineNamedTemplateTypeNameAndDebug(exampleClass##Parameter##First, 0);         \
 addToRunTimeSelectionTable                                                      \
 (                                                                               \
     exampleClass##Parameter##Base,                                              \
-    exampleClass##Parameter##Base,                                              \
+    exampleClass##Parameter##First,                                             \
     Dictionary                                                                  \
 );
 
@@ -117,7 +98,7 @@ addToRunTimeSelectionTable                                                      
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 #ifdef NoRepository
-#   include "ExampleClassTemplateBase.C"
+#   include "ExampleClassTemplateFirst.C"
 #endif
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

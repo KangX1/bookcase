@@ -31,54 +31,20 @@ namespace BookExamples
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 template<class Parameter>
-ExampleClassTemplateBase<Parameter>::ExampleClassTemplateBase()
-{
-}
-
-template<class Parameter>
-ExampleClassTemplateBase<Parameter>::ExampleClassTemplateBase(
+ExampleClassTemplateFirst<Parameter>::ExampleClassTemplateFirst(
     const dictionary& dict)
+:
+    ExampleClassTemplateBase<Parameter>(dict) // c++0x allows an easier way 
 {
     // The constructor sets the class attributes using dictionary entries.
-}
-
-
-// * * * * * * * * * * * * * * * * Selectors * * * * * * * * * * * * * * * * //
-
-template<class Parameter>
-autoPtr<ExampleClassTemplateBase<Parameter> >
-ExampleClassTemplateBase<Parameter>::New(const dictionary& dict)
-{
-    // Get the name from the dictionary.
-    const word name = dict.lookupOrDefault<word>(
-        "genericClassName", 
-        "genericBase"
-    );
-
-    // Get the RTS Table via the global object.  
-    typename DictionaryConstructorTable::iterator cstrIter =
-        DictionaryConstructorTablePtr_->find(name);
-    // If the constructor pointer is not found in the table.
-    if (cstrIter == DictionaryConstructorTablePtr_->end())
-    {
-        FatalErrorIn (
-            "ExampleClassTemplateBase::New(const dictionary&)"
-        )   << "Unknown ExampleClassTemplateBase type "
-            << name << nl << nl
-            << "Valid ExampleClassTemplateBases are : " << endl
-            << DictionaryConstructorTablePtr_->sortedToc()
-            << exit(FatalError);
-    }
-
-    return autoPtr< ExampleClassTemplateBase<Parameter> > (cstrIter()(dict));
 }
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
 template<class Parameter>
-void ExampleClassTemplateBase<Parameter>::execute() const 
+void ExampleClassTemplateFirst<Parameter>::execute() const 
 {
-    Info << "ExampleClassTemplateBase::execute() " << endl;
+    Info << "ExampleClassTemplateFirst::execute() " << endl;
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
