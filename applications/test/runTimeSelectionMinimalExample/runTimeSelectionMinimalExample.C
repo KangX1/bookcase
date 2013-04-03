@@ -71,7 +71,7 @@ class AlgorithmBase
             (algorithmName)
         )
 
-        // Factory Method (selector)
+        // static Factory Method (selector)
         static autoPtr<AlgorithmBase> New (const word& algorithmName)
         {
 
