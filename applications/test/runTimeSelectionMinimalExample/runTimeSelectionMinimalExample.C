@@ -30,6 +30,8 @@ Description
     The RTS mechanism in this example doesn't use dictionary entries, it relies
     on user specified type names through the console I/O. 
 
+    Note: this tester app can be executed anywhere 
+
 Authors
     Tomislav Maric tomislav.maric@gmx.com
 
@@ -165,7 +167,6 @@ int main(int argc, char *argv[])
 {
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-    Foam::argList args(argc, argv);
 
     argList::addOption
     (
@@ -173,7 +174,9 @@ int main(int argc, char *argv[])
         "name of the run-time selected algorithm"
     );
 
-    if (args.optionFound("className"))
+    argList args(argc, argv);
+
+    if (args.optionFound("algorithmName"))
     {
         autoPtr<AlgorithmBase> algorithmPtr; 
 
@@ -194,7 +197,7 @@ int main(int argc, char *argv[])
         FatalErrorIn
         (
             "main()"
-        )   << "Please use with '-className' option." << endl
+        )   << "Please use with the 'algorithmName' option." << endl
             << exit(FatalError);
     }
 
