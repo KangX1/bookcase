@@ -36,6 +36,7 @@ Authors
 \*---------------------------------------------------------------------------*/
 
 #include "fvCFD.H"
+#include "addToRunTimeSelectionTable.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 // Main program:
@@ -44,8 +45,8 @@ class AlgorithmBase
 {
     public: 
 
-        // Declare the static variable typeName.
-        TypeName ("algorithmBase");
+        // Declare the static variable typeName of the class AlgorithmBase.
+        TypeName ("base");
 
         // Empty constructor. 
         AlgorithmBase () {};
@@ -53,34 +54,149 @@ class AlgorithmBase
         // Word constructor.
         AlgorithmBase (const word& algorithmName) {};
 
+        // Destructor: needs to be declared virtual since 
+        virtual ~AlgorithmBase() {};
+
+        // Macro for declaring stuff required for RTS 
         declareRunTimeSelectionTable
         (
-             
-        );
+            autoPtr, 
+            AlgorithmBase, 
+            Word, 
+            (
+                const word& algorithmName
+            ),
+            (algorithmName)
+        )
 
+        // Factory Method (selector)
+        static autoPtr<AlgorithmBase> New (const word& algorithmName)
+        {
+
+            // Find the Factory Method pointer in the RTS Table 
+            // (HashTable<word, autoPtr<AlgorithmBase>(*)(word))
+            WordConstructorTable::iterator cstrIter =
+                WordConstructorTablePtr_->find(algorithmName);
+
+            // If the Factory Method was not found. 
+            if (cstrIter == WordConstructorTablePtr_->end())
+            {
+                FatalErrorIn
+                (
+                    "AlgorithmBase::New(const word&)"
+                )   << "Unknown AlgorithmBase type "
+                    << algorithmName << nl << nl
+                    << "Valid AlgorithmBase types are :" << endl
+                    << WordConstructorTablePtr_->sortedToc()
+                    << exit(FatalError);
+            }
+
+            // Call the "constructor" and return the autoPtr<AlgorithmBase>
+            return cstrIter()(algorithmName);
+
+        }
+
+        // Make the class callable (function object) 
         virtual void operator()() 
         {
+            // Overridable default implementation
             Info << "AlgorithmBase::operator()()" << endl;
         }
 };
+
+defineTypeNameAndDebug(AlgorithmBase, 0);
+defineRunTimeSelectionTable(AlgorithmBase, Word);
+addToRunTimeSelectionTable(AlgorithmBase, AlgorithmBase, Word);
 
 class AlgorithmNew
 :
     public AlgorithmBase
 {
+    public: 
 
+        // Declare the static variable typeName of the class AlgorithmNew.
+        TypeName ("new");
+
+        // Empty constructor. 
+        AlgorithmNew () {};
+
+        // Word constructor.
+        AlgorithmNew (const word& algorithmName) {};
+
+        // Make the class callable (function object) 
+        virtual void operator()()
+        {
+            Info << "AlgorithmNew::operator()()" << endl;
+        }
 };
+
+defineTypeNameAndDebug(AlgorithmNew, 0);
+addToRunTimeSelectionTable(AlgorithmBase, AlgorithmNew , Word);
 
 class AlgorithmAdditional
 :
-    public AlgorithmNew
+    public AlgorithmNew 
 {
+    public: 
+
+        // Declare the static variable typeName of the class AlgorithmAdditional.
+        TypeName ("additional");
+
+        // Empty constructor. 
+        AlgorithmAdditional () {};
+
+        // Word constructor.
+        AlgorithmAdditional (const word& algorithmName) {};
+
+        // Make the class callable (function object) 
+        virtual void operator()()
+        {
+            // Call base operator explicitly.
+            AlgorithmNew::operator()();
+            // Perform additional operations.
+            Info << "AlgorithmAdditional::operator()()" << endl;
+        }
 };
+
+defineTypeNameAndDebug(AlgorithmAdditional, 0);
+addToRunTimeSelectionTable(AlgorithmBase, AlgorithmAdditional , Word);
 
 int main(int argc, char *argv[])
 {
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+    Foam::argList args(argc, argv);
+
+    argList::addOption
+    (
+        "algorithmName",
+        "name of the run-time selected algorithm"
+    );
+
+    if (args.optionFound("className"))
+    {
+        autoPtr<AlgorithmBase> algorithmPtr; 
+
+        // Get the className string. 
+        const word algorithmName = args.option("algorithmName");
+        // Define the pointer using the Word constructor.
+        algorithmPtr = AlgorithmBase::New(algorithmName);
+
+        // Get the reference to the algorithm.
+        AlgorithmBase& algorithm = algorithmPtr(); 
+
+        // Call the algorithm.
+        algorithm(); 
+
+    }
+    else
+    {
+        FatalErrorIn
+        (
+            "main()"
+        )   << "Please use with '-className' option." << endl
+            << exit(FatalError);
+    }
 
     Info<< "\nEnd\n" << endl;
     return 0;
