@@ -21,6 +21,12 @@ License
     You should have received a copy of the GNU General Public License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
+Description 
+    Define the template argument set for the class template that uses RTS.
+ 
+Authors
+    Tomislav Maric tomislav.maric@gmx.com
+
 \*---------------------------------------------------------------------------*/
 
 #ifndef parameterTypes_H

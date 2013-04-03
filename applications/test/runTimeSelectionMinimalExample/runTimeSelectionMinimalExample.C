@@ -25,6 +25,13 @@ Application
     runTimeSelectionMinimalExample
 
 Description
+    This is an test application with a minimal example of the Run Time Selection
+    (RTS) mechanism added into a object oriented class hierarchy. 
+    The RTS mechanism in this example doesn't use dictionary entries, it relies
+    on user specified type names through the console I/O. 
+
+Authors
+    Tomislav Maric tomislav.maric@gmx.com
 
 \*---------------------------------------------------------------------------*/
 
@@ -33,10 +40,45 @@ Description
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 // Main program:
 
+class AlgorithmBase
+{
+    public: 
+
+        // Declare the static variable typeName.
+        TypeName ("algorithmBase");
+
+        // Empty constructor. 
+        AlgorithmBase () {};
+
+        // Word constructor.
+        AlgorithmBase (const word& algorithmName) {};
+
+        declareRunTimeSelectionTable
+        (
+             
+        );
+
+        virtual void operator()() 
+        {
+            Info << "AlgorithmBase::operator()()" << endl;
+        }
+};
+
+class AlgorithmNew
+:
+    public AlgorithmBase
+{
+
+};
+
+class AlgorithmAdditional
+:
+    public AlgorithmNew
+{
+};
+
 int main(int argc, char *argv[])
 {
-    #include "setRootCase.H"
-    #include "createTime.H"
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

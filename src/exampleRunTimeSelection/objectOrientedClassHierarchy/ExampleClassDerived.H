@@ -25,11 +25,13 @@ Class
     Foam::ExampleClassDerived
 
 Description
+    Derived example class with RTS.
 
 SourceFiles
-    ExampleClassDerivedI.H
     ExampleClassDerived.C
-    ExampleClassDerivedIO.C
+
+Authors
+    Tomislav Maric tomislav.maric@gmx.com
 
 \*---------------------------------------------------------------------------*/
 

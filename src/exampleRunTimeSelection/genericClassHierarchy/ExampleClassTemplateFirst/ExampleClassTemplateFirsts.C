@@ -28,6 +28,9 @@ Description
     Explicitly instantiate ExampleClassTemplateFirst for specific Parameters 
     define their typeName and configure RTS. 
 
+Authors
+    Tomislav Maric tomislav.maric@gmx.com
+
 \*---------------------------------------------------------------------------*/
 
 #include "ExampleClassTemplateFirst.H"

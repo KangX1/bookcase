@@ -26,7 +26,11 @@ Class
 
 Description
     Explicitly instantiate ExampleClassTemplateBase for specific Parameters 
-    define their typeName and configure RTS. 
+    define their typeName and configure RTS. This file gets compiled into the
+    library to enable RTS for instantiated templates.  
+ 
+Authors
+    Tomislav Maric tomislav.maric@gmx.com
 
 \*---------------------------------------------------------------------------*/
 

@@ -25,12 +25,13 @@ Class
     Foam::ExampleClassTemplateBase
 
 Description
+    Generic Base Class with RTS.      
 
 SourceFiles
-    ExampleClassTemplateBaseI.H
     ExampleClassTemplateBase.C
-    ExampleClassTemplateBaseIO.C
 
+Authors
+    Tomislav Maric tomislav.maric@gmx.com
 \*---------------------------------------------------------------------------*/
 
 #ifndef ExampleClassTemplateBase_H

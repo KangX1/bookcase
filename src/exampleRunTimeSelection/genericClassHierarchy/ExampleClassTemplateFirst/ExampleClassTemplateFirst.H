@@ -25,11 +25,13 @@ Class
     Foam::ExampleClassTemplateFirst
 
 Description
+    Derived class template with RTS
 
 SourceFiles
-    ExampleClassTemplateFirstI.H
     ExampleClassTemplateFirst.C
-    ExampleClassTemplateFirstIO.C
+
+Authors
+    Tomislav Maric tomislav.maric@gmx.com
 
 \*---------------------------------------------------------------------------*/
 

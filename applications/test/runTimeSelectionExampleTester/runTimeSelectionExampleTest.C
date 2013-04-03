@@ -30,8 +30,7 @@ Description
     an object oriented as well as generic class hierarchy. 
 
 Authors
-    Tomislav Maric 
-    tomislav.maric@gmx.com
+    Tomislav Maric tomislav.maric@gmx.com
 
 \*---------------------------------------------------------------------------*/
 

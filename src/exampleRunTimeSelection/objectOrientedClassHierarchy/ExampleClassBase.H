@@ -25,11 +25,13 @@ Class
     Foam::ExampleClassBase
 
 Description
+    Base class which has RTS selectivity enabled as well. 
 
 SourceFiles
-    ExampleClassBaseI.H
     ExampleClassBase.C
-    ExampleClassBaseIO.C
+
+Authors
+    Tomislav Maric tomislav.maric@gmx.com
 
 \*---------------------------------------------------------------------------*/
 

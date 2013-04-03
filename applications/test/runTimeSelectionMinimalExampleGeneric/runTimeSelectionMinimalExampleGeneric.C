@@ -25,6 +25,13 @@ Application
     runTimeSelectionMinimalExampleGeneric
 
 Description
+    This is an test application with a minimal example of the Run Time Selection
+    (RTS) mechanism added into a generic and object oriented class hierarchy. 
+    The RTS mechanism in this example doesn't use dictionary entries, it relies
+    on user specified type names through the console I/O. 
+
+Authors
+    Tomislav Maric tomislav.maric@gmx.com
 
 \*---------------------------------------------------------------------------*/
 
