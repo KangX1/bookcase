@@ -4,4 +4,3 @@ cd ${0%/*} || exit 1    # run from this directory
 
 wmakeLnInclude -f .
 
-wmake libso exampleRunTimeSelection
