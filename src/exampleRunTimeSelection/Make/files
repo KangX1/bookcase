@@ -1,6 +1,0 @@
-./objectOrientedClassHierarchy/ExampleClassBase.C
-./objectOrientedClassHierarchy/ExampleClassDerived.C
-./genericClassHierarchy/ExampleClassTemplateBases.C
-./genericClassHierarchy/ExampleClassTemplateFirst/ExampleClassTemplateFirsts.C
-
-LIB = $(FOAM_USER_LIBBIN)/libexampleRunTimeSelection
