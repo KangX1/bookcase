@@ -29,7 +29,18 @@ Description
 
 \*---------------------------------------------------------------------------*/
 
-#include "fvCFD.H"
+#include "argList.H"
+#include "Time.H"
+#include "IOmanip.H"
+#include "clockTime.H"
+#include "DynamicField.H"
+#include "vector.H"
+
+#include <vector>
+
+typedef Foam::DynamicField<Foam::vector> dynamicVectorField;
+
+using namespace Foam;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 // Main program:
@@ -38,8 +49,56 @@ int main(int argc, char *argv[])
 {
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+    
+    argList::addOption
+    (
+        "containerSize",
+        "testing size of the container"
+    );
 
-    Info<< "\nEnd\n" << endl;
+    argList args(argc, argv);
+
+    if (args.optionFound("containerSize"))
+    {
+        const label SIZE = args.optionRead<label>("containerSize");
+
+        Info << SIZE << " ";
+
+        clockTime c; 
+        double timeDynamicListNoInit = 0;
+        c.timeIncrement();
+
+        DynamicList<vector> d1; 
+        for (label I = 0; I < SIZE ; ++I)
+        {
+            d1.append(vector(I,I,I));
+        }
+
+        timeDynamicListNoInit = c.timeIncrement();  
+        Info << Foam::setprecision(12) << timeDynamicListNoInit 
+            << " ";
+
+        double timeDynamicListInit  = 0;  
+        c.timeIncrement(); 
+        DynamicList<label> d2(SIZE); 
+        for (label I = 0; I < SIZE; ++I)
+        {
+            d2.append(I);
+        }
+        timeDynamicListInit = c.timeIncrement(); 
+        Info << Foam::setprecision(12) << timeDynamicListInit  << endl;
+    }
+    else
+    {
+        FatalErrorIn
+        (
+            "main()"
+        )   << "Please provide an integer value for the 'containerSize' option." << endl
+            << exit(FatalError);
+    }
+
+
+    Info<< "\nEND\n" << endl;
     return 0;
 }
 
