@@ -45,7 +45,7 @@ namespace Foam
     {
         template<typename Type>
         tmp<GeometricField<Type, fvPatchField, volMesh> > 
-        harmonicAverage 
+        harmonicMean 
         (
             const GeometricField<Type, fvPatchField, volMesh>& inputField 
         )
@@ -62,7 +62,7 @@ namespace Foam
                 (
                     IOobject
                     (
-                        "harmonicAverage", 
+                        "fvc::harmonicMean(" + inputField.name() + ")", 
                         mesh.time().timeName(), 
                         mesh, 
                         IOobject::NO_READ, 
@@ -214,7 +214,7 @@ int main(int argc, char *argv[])
             mesh
         );
 
-        fvc::harmonicAverage(inputField)->write();
+        fvc::harmonicMean(inputField)->write();
 
         Info << "------------------------------------" << endl;
 

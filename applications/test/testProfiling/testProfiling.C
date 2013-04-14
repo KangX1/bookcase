@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
     {
         const label SIZE = args.optionRead<label>("containerSize");
 
-        Info << SIZE << " ";
+        Info << "Size = " << " " << SIZE << "; ";
 
         clockTime c; 
         double timeDynamicListNoInit = 0;
@@ -75,8 +75,8 @@ int main(int argc, char *argv[])
         }
 
         timeDynamicListNoInit = c.timeIncrement();  
-        Info << Foam::setprecision(12) << timeDynamicListNoInit 
-            << " ";
+        Info << "Initialized time = " << Foam::setprecision(12) 
+            << timeDynamicListNoInit << "; ";
 
         double timeDynamicListInit  = 0;  
         c.timeIncrement(); 
@@ -86,7 +86,8 @@ int main(int argc, char *argv[])
             d2.append(I);
         }
         timeDynamicListInit = c.timeIncrement(); 
-        Info << Foam::setprecision(12) << timeDynamicListInit  << endl;
+        Info << "Uninitialized time = " << Foam::setprecision(12) 
+            << timeDynamicListInit  << ";" << endl;
     }
     else
     {
