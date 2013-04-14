@@ -76,9 +76,10 @@ namespace Foam
 
             forAll (resultField, I)
             {
+                // SIGFPE.
                 resultField[I] = (1. / resultField[I]);
 
-                // Uncomment to solve SIGFPE bug.
+                // No SIGFPE.
                 //resultField[I] = (1. / (resultField[I] + SMALL));
             }
 
@@ -97,10 +98,11 @@ namespace Foam
                 ++total[P];
                 ++total[N];
 
+                // SIGFPE
                 resultField[P] += (1. / inputField[N]);
                 resultField[N] += (1. / inputField[P]);
 
-                // Uncomment to solve SIGFPE bug.
+                // No SIGFPE.
                 //resultField[P] += (1. / (inputField[N] + SMALL));
                 //resultField[N] += (1. / (inputField[P] + SMALL));
 
@@ -121,12 +123,13 @@ namespace Foam
                         label faceLabel = patchFaceI + 
                             inputFieldBoundary[patchI].patch().start(); 
 
+                            // SIGFPE.
                             resultField[own[faceLabel]] += 
                                 (1. / inputFieldNeighbour[patchFaceI]);
 
-                            // Uncomment to solve the SIGFPE bugg.
-                            // resultField[own[faceLabel]] += 
-                            //    (1. / (inputFieldNeighbour[patchFaceI] + SMALL));
+                            // No SIGFPE. 
+                            //resultField[own[faceLabel]] += 
+                                //(1. / (inputFieldNeighbour[patchFaceI] + SMALL));
 
                             ++total[own[faceLabel]];
                     }
