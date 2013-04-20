@@ -174,7 +174,7 @@ int main(int argc, char *argv[])
         FatalErrorIn
         (
             "main()"
-        )   << "Please provide a name of the field: the 'field' option.." << endl
+        )   << "Please provide a name of the field: use the 'field' option.." << endl
             << exit(FatalError);
     }
 
