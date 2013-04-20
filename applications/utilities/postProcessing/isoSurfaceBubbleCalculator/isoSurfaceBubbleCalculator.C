@@ -38,6 +38,8 @@ Authors
 #include "timeSelector.H"
 #include "isoBubble.H"
 
+using namespace bookExamples;
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 // Main program:
 
