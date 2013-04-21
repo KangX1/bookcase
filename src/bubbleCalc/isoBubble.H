@@ -38,6 +38,9 @@ Authors
 #ifndef isoBubble_H
 #define isoBubble_H
 
+#include "regIOobject.H"
+#include "volFieldsFwd.H"
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
@@ -50,26 +53,42 @@ namespace bookExamples
 \*---------------------------------------------------------------------------*/
 
 class isoBubble
+    :
+        public regIOobject
 {
-    // Private data
-
-    // Private Member Functions
+    volScalarField const * bubbleFieldPtr_;  
 
 public:
 
     // Constructors
 
-        //- Construct null
-        isoBubble();
-
         //- Construct from components
-        //isoBubble(const dataType& data);
-
-        //- Construct from Istream
-        //isoBubble(Istream&);
+        isoBubble 
+        (
+            const IOobject& io, 
+            const volScalarField& bubbleField, 
+            bool isTime = false
+        );
 
         //- Construct as copy
-        //isoBubble(const isoBubble&);
+        isoBubble(const isoBubble&);
+
+    // Destructor
+    
+        virtual ~isoBubble(); 
+
+    // Member Functions
+    
+        // Edit
+        
+        void setBubbleField(const volScalarField& bubbleField); 
+
+        void reconstruct(); 
+
+        // Write
+        bool write() const;
+        
+        bool writeData(Ostream& os) const; 
 
 
     // Member Operators

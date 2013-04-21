@@ -73,7 +73,18 @@ int main(int argc, char *argv[])
         mesh
     );
 
-    isoBubble bubble(inputField); 
+    isoBubble bubble 
+    (
+        IOobject
+        (
+            "bubble", 
+            "bubble", 
+            runTime, 
+            IOobject::NO_READ, 
+            IOobject::AUTO_WRITE
+        ), 
+        inputField
+    ); 
 
     Foam::instantList timeDirs = Foam::timeSelector::select0(runTime, args);
 
@@ -102,11 +113,12 @@ int main(int argc, char *argv[])
 
         bubble.reconstruct(); 
 
-        Info << "Bubble area = " << bubble.area() << endl;
-        Info << "Bubble velocity = " << bubble.velocity() << endl;
+        //Info << "Bubble area = " << bubble.area() << endl;
+        //Info << "Bubble velocity = " << bubble.velocity() << endl;
 
         Info << "------------------------------------" << endl;
 
+        bubble.write(); 
     }
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

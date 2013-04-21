@@ -44,11 +44,60 @@ namespace bookExamples {
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-isoBubble::isoBubble()
+isoBubble::isoBubble
+(
+    const IOobject& io, 
+    const volScalarField& bubbleField, 
+    bool isTime 
+)
+    : 
+        regIOobject(io, isTime), 
+        bubbleFieldPtr_(&bubbleField)
 {}
+
+isoBubble::isoBubble(const isoBubble& copy)
+    :
+        regIOobject(copy), 
+        bubbleFieldPtr_(copy.bubbleFieldPtr_)
+{}
+
+// * * * * * * * * * * * * * * * * Destructor * * * * * * * * * * * * * * * * //
+
+isoBubble::~isoBubble()
+{
+    bubbleFieldPtr_ = 0; 
+}
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
+void isoBubble::setBubbleField(const volScalarField& bubbleField)
+{
+    bubbleFieldPtr_ = &bubbleField; 
+}
+
+void isoBubble::reconstruct()
+{
+    // Generate the point field from the tracked volume field. 
+    
+    // Reconstruct the bubble using both fields.
+    
+}
+
+bool isoBubble::write() const
+{
+    Info << "isoBubble::write" << endl;
+
+    return true;
+}
+
+bool isoBubble::writeData(Ostream& os) const
+{
+    os << "Write bubble in the .vtk format" << endl;
+
+    Info << "isoBubble::writeData" << endl;
+
+    return true;
+}
 
 // * * * * * * * * * * * * * * Member Operators  * * * * * * * * * * * * * * //
 
@@ -61,6 +110,8 @@ void isoBubble::operator=(const isoBubble& rhs)
             << "Attempted assignment to self"
             << abort(FatalError);
     }
+
+    bubbleFieldPtr_ = rhs.bubbleFieldPtr_; 
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
