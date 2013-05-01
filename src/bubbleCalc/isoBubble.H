@@ -43,7 +43,6 @@ Authors
 #include "scalarField.H"
 #include "pointFields.H"
 #include "isoSurface.H"
-#include "vtkSurfaceWriter.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

@@ -139,14 +139,12 @@ bool isoBubble::write() const
 
     // Get const references to the bubble mesh data.  
     const pointField& bubblePoints = bubblePtr_->points(); 
-    const List<labelledTri> &  bubbleFaces = bubblePtr_->localFaces(); 
-
-    // Open file stream for writing for
-    OFstream os(outFileName); 
+    const List<labelledTri>&  bubbleFaces = bubblePtr_->localFaces(); 
 
     // Write the isoSurface using a MeshedSurfaceProxy class. 
     MeshedSurfaceProxy<labelledTri> surfaceWriter (bubblePoints, bubbleFaces);
 
+    surfaceWriter.write(path() + outFileName);
     return true;
 }
 
