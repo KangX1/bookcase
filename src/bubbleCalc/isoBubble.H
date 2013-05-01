@@ -25,7 +25,7 @@ Class
     Foam::isoBubble
 
 Description
-    Bubble described by an iso-surface mesh. 
+    Bubble described using an iso-surface mesh. 
 
 SourceFiles
     isoBubble.C
@@ -40,6 +40,10 @@ Authors
 
 #include "regIOobject.H"
 #include "volFieldsFwd.H"
+#include "scalarField.H"
+#include "pointFields.H"
+#include "isoSurface.H"
+#include "vtkSurfaceWriter.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -56,7 +60,25 @@ class isoBubble
     :
         public regIOobject
 {
-    volScalarField const * bubbleFieldPtr_;  
+
+    // Tracked iso-field.
+    volScalarField const * isoFieldPtr_;  
+    
+    // Computed point iso-field.
+    scalarField isoPointField_; 
+
+    // Bubble geometry described with an iso-surface mesh.
+    isoSurface* bubblePtr_; 
+
+    // Number of zeros that are prepended to the timeIndex() for output .vtk files. 
+    label timeIndexPad_; 
+
+    void clearPtrData()
+    {
+        isoFieldPtr_ = 0; 
+        delete bubblePtr_; 
+        bubblePtr_ = 0;
+    }
 
 public:
 
@@ -67,7 +89,8 @@ public:
         (
             const IOobject& io, 
             const volScalarField& bubbleField, 
-            bool isTime = false
+            bool isTime = false,
+            label timeIndexPad = 10
         );
 
         //- Construct as copy
@@ -89,6 +112,12 @@ public:
         bool write() const;
         
         bool writeData(Ostream& os) const; 
+
+        // Access
+        const volScalarField& isoField() const 
+        {
+            return *isoFieldPtr_;
+        }
 
 
     // Member Operators

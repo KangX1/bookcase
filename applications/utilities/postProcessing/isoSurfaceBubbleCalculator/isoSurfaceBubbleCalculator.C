@@ -92,8 +92,6 @@ int main(int argc, char *argv[])
     {
         runTime.setTime(timeDirs[timeI], timeI);
 
-        Info << "------------------------------------" << endl;
-
         Info<< "Time = " << runTime.timeName() << endl;
 
         mesh.readUpdate();
@@ -115,8 +113,6 @@ int main(int argc, char *argv[])
 
         //Info << "Bubble area = " << bubble.area() << endl;
         //Info << "Bubble velocity = " << bubble.velocity() << endl;
-
-        Info << "------------------------------------" << endl;
 
         bubble.write(); 
     }

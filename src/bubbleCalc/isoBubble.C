@@ -25,10 +25,19 @@ License
 
 #include "isoBubble.H"
 #include "error.H"
+#include "volPointInterpolation.H"
+#include <iomanip>
+#include <sstream>
+//#include "vtkSurfaceWriter.H"
+#include "MeshedSurfaceProxyCore.C"
 
 namespace Foam {
 
+    // Specialize the MeshedSurfaceProxy template with labelledTri for a face.
+    makeSurface(MeshedSurfaceProxy, labelledTri)
+
 namespace bookExamples {
+
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
@@ -48,53 +57,101 @@ isoBubble::isoBubble
 (
     const IOobject& io, 
     const volScalarField& bubbleField, 
-    bool isTime 
+    bool isTime , 
+    label timeIndexPad
 )
     : 
         regIOobject(io, isTime), 
-        bubbleFieldPtr_(&bubbleField)
+        isoFieldPtr_(&bubbleField),
+        isoPointField_(bubbleField.mesh().nPoints(),0), 
+        bubblePtr_(0),
+        timeIndexPad_(timeIndexPad)
 {}
 
 isoBubble::isoBubble(const isoBubble& copy)
     :
         regIOobject(copy), 
-        bubbleFieldPtr_(copy.bubbleFieldPtr_)
+        isoFieldPtr_(copy.isoFieldPtr_),
+        isoPointField_(copy.isoPointField_),
+        bubblePtr_(0),
+        timeIndexPad_(copy.timeIndexPad_)
 {}
 
 // * * * * * * * * * * * * * * * * Destructor * * * * * * * * * * * * * * * * //
 
 isoBubble::~isoBubble()
 {
-    bubbleFieldPtr_ = 0; 
+    clearPtrData(); 
 }
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
 void isoBubble::setBubbleField(const volScalarField& bubbleField)
 {
-    bubbleFieldPtr_ = &bubbleField; 
+    isoFieldPtr_ = &bubbleField; 
+    isoPointField_.resize(bubbleField.mesh().nPoints()); 
 }
 
 void isoBubble::reconstruct()
 {
-    // Generate the point field from the tracked volume field. 
+    // TODO: make the volPoint interpolation static for the class: assuming execution
+    // on the same mesh. 
+    // Interpolate the track field to the points using volPointInterpolation. 
+    volPointInterpolation pointInterpolation (isoFieldPtr_->mesh());
     
     // Reconstruct the bubble using both fields.
-    
+    isoPointField_ = static_cast<scalarField &> 
+        (
+            pointInterpolation.interpolate(*isoFieldPtr_)()
+        );
+
+    // Create the new isoSurface.
+    bubblePtr_ = new isoSurface (*isoFieldPtr_, isoPointField_, 0, true); 
 }
 
 bool isoBubble::write() const
 {
-    Info << "isoBubble::write" << endl;
+    // Create the path to the instance directory.
+    mkDir(path());
+
+    // Get the fileName as the std::string
+    std::string outFileName = static_cast<const std::string&> (objectPath()); 
+    // We need a string stream and the std:: manipulators since setfill is missing in
+    // OpenFOAM 
+    std::stringstream ss; 
+
+    // Get the reference to the time from the tracked field.
+    const Time& runTime = isoFieldPtr_->time(); 
+    // Get the time index. 
+    label timeIndex = runTime.timeIndex(); 
+    // Padd the time index with zeros. 
+    ss << outFileName << "-" << std::setw(timeIndexPad_) << std::setfill('0') 
+        << timeIndex << ".vtk";
+
+    // Update the file name from the stuff in stringstream. 
+    outFileName = ss.str();  
+
+    if (OFstream::debug)
+    {
+        Info<< "regIOobject::write() : "
+            << "writing file " << outFileName << endl; 
+    }
+
+    // Get const references to the bubble mesh data.  
+    const pointField& bubblePoints = bubblePtr_->points(); 
+    const List<labelledTri> &  bubbleFaces = bubblePtr_->localFaces(); 
+
+    // Open file stream for writing for
+    OFstream os(outFileName); 
+
+    // Write the isoSurface using a MeshedSurfaceProxy class. 
+    MeshedSurfaceProxy<labelledTri> surfaceWriter (bubblePoints, bubbleFaces);
 
     return true;
 }
 
 bool isoBubble::writeData(Ostream& os) const
 {
-    os << "Write bubble in the .vtk format" << endl;
-
-    Info << "isoBubble::writeData" << endl;
 
     return true;
 }
@@ -111,7 +168,15 @@ void isoBubble::operator=(const isoBubble& rhs)
             << abort(FatalError);
     }
 
-    bubbleFieldPtr_ = rhs.bubbleFieldPtr_; 
+    // Track the field that the other bubble is tracking.
+    isoFieldPtr_ = rhs.isoFieldPtr_; 
+
+    // Make a deep copy of the point scalar field field. 
+    isoPointField_ = rhs.isoPointField_; 
+    // Make a deep copy of the bubble iso-surface.
+    bubblePtr_ = new isoSurface(*rhs.bubblePtr_);
+    // Make a deep copy of the timeIndex pad.
+    timeIndexPad_ = rhs.timeIndexPad_;
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
