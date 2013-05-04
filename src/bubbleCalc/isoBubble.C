@@ -40,6 +40,7 @@ isoBubble::isoBubble
     const IOobject& io, 
     const volScalarField& bubbleField, 
     bool isTime , 
+    scalar isoValue,
     label timeIndexPad
 )
     : 
@@ -47,6 +48,7 @@ isoBubble::isoBubble
         isoFieldPtr_(&bubbleField),
         isoPointField_(bubbleField.mesh().nPoints(),0), 
         bubblePtr_(0),
+        isoValue_(isoValue),
         timeIndexPad_(timeIndexPad)
 {}
 
@@ -56,6 +58,7 @@ isoBubble::isoBubble(const isoBubble& copy)
         isoFieldPtr_(copy.isoFieldPtr_),
         isoPointField_(copy.isoPointField_),
         bubblePtr_(0),
+        isoValue_(copy.isoValue_),
         timeIndexPad_(copy.timeIndexPad_)
 {}
 
@@ -82,15 +85,12 @@ void isoBubble::reconstruct()
     volPointInterpolation pointInterpolation (isoFieldPtr_->mesh());
     
     // Reconstruct the bubble using both fields.
-    isoPointField_ = static_cast<scalarField &> 
-    (
-        pointInterpolation.interpolate(*isoFieldPtr_)()
-    );
+    isoPointField_ = pointInterpolation.interpolate(*isoFieldPtr_)();
 
     // Release the current isoSurface.
     delete bubblePtr_; 
     // Create the new isoSurface.
-    bubblePtr_ = new isoSurface (*isoFieldPtr_, isoPointField_, 0, false); 
+    bubblePtr_ = new isoSurface (*isoFieldPtr_, isoPointField_, 0.5, false); 
 }
 
 bool isoBubble::write() const
@@ -130,7 +130,7 @@ bool isoBubble::write() const
 
 bool isoBubble::writeData(Ostream& os) const
 {
-
+    os << *bubblePtr_; 
     return true;
 }
 
@@ -154,7 +154,7 @@ void isoBubble::operator=(const isoBubble& rhs)
     // Make a deep copy of the bubble iso-surface.
     delete bubblePtr_;
     bubblePtr_ = new isoSurface(*rhs.bubblePtr_);
-    // Make a deep copy of the timeIndex pad.
+    isoValue_ = rhs.isoValue_;
     timeIndexPad_ = rhs.timeIndexPad_;
 }
 

@@ -69,6 +69,9 @@ class isoBubble
     // Bubble geometry described with an iso-surface mesh.
     isoSurface* bubblePtr_; 
 
+    // iso value
+    scalar isoValue_; 
+
     // Number of zeros that are prepended to the timeIndex() for output .vtk files. 
     label timeIndexPad_; 
 
@@ -89,6 +92,7 @@ public:
             const IOobject& io, 
             const volScalarField& bubbleField, 
             bool isTime = false,
+            scalar isoValue = 0.5,
             label timeIndexPad = 10
         );
 
