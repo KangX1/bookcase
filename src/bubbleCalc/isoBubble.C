@@ -28,28 +28,10 @@ License
 #include "volPointInterpolation.H"
 #include <iomanip>
 #include <sstream>
-//#include "vtkSurfaceWriter.H"
-#include "MeshedSurfaceProxyCore.C"
 
 namespace Foam {
 
-    // Specialize the MeshedSurfaceProxy template with labelledTri for a face.
-    makeSurface(MeshedSurfaceProxy, labelledTri)
-
 namespace bookExamples {
-
-
-// * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
-
-
-// * * * * * * * * * * * * * Static Member Functions * * * * * * * * * * * * //
-
-
-// * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
-
-
-// * * * * * * * * * * * * Protected Member Functions  * * * * * * * * * * * //
-
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
@@ -101,12 +83,14 @@ void isoBubble::reconstruct()
     
     // Reconstruct the bubble using both fields.
     isoPointField_ = static_cast<scalarField &> 
-        (
-            pointInterpolation.interpolate(*isoFieldPtr_)()
-        );
+    (
+        pointInterpolation.interpolate(*isoFieldPtr_)()
+    );
 
+    // Release the current isoSurface.
+    delete bubblePtr_; 
     // Create the new isoSurface.
-    bubblePtr_ = new isoSurface (*isoFieldPtr_, isoPointField_, 0, true); 
+    bubblePtr_ = new isoSurface (*isoFieldPtr_, isoPointField_, 0, false); 
 }
 
 bool isoBubble::write() const
@@ -131,20 +115,16 @@ bool isoBubble::write() const
     // Update the file name from the stuff in stringstream. 
     outFileName = ss.str();  
 
+    Info << "Writing bubble to file: " << outFileName << endl;
+
     if (OFstream::debug)
     {
         Info<< "regIOobject::write() : "
             << "writing file " << outFileName << endl; 
     }
 
-    // Get const references to the bubble mesh data.  
-    const pointField& bubblePoints = bubblePtr_->points(); 
-    const List<labelledTri>&  bubbleFaces = bubblePtr_->localFaces(); 
+    bubblePtr_->write(outFileName);
 
-    // Write the isoSurface using a MeshedSurfaceProxy class. 
-    MeshedSurfaceProxy<labelledTri> surfaceWriter (bubblePoints, bubbleFaces);
-
-    surfaceWriter.write(path() + outFileName);
     return true;
 }
 
@@ -172,6 +152,7 @@ void isoBubble::operator=(const isoBubble& rhs)
     // Make a deep copy of the point scalar field field. 
     isoPointField_ = rhs.isoPointField_; 
     // Make a deep copy of the bubble iso-surface.
+    delete bubblePtr_;
     bubblePtr_ = new isoSurface(*rhs.bubblePtr_);
     // Make a deep copy of the timeIndex pad.
     timeIndexPad_ = rhs.timeIndexPad_;
