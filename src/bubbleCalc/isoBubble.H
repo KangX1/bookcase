@@ -43,6 +43,7 @@ Authors
 #include "scalarField.H"
 #include "pointFields.H"
 #include "isoSurface.H"
+#include "fileName.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -75,12 +76,17 @@ class isoBubble
     // Number of zeros that are prepended to the timeIndex() for output .vtk files. 
     label timeIndexPad_; 
 
+    // Output format.
+    word outputFormat_; 
+
     void clearPtrData()
     {
         isoFieldPtr_ = 0; 
         delete bubblePtr_; 
         bubblePtr_ = 0;
     }
+
+    fileName paddWithZeros(const fileName& input) const;
 
 public:
 
@@ -93,7 +99,8 @@ public:
             const volScalarField& bubbleField, 
             bool isTime = false,
             scalar isoValue = 0.5,
-            label timeIndexPad = 10
+            label timeIndexPad = 10, 
+            word outputFormat = "vtk"
         );
 
         //- Construct as copy
@@ -112,16 +119,22 @@ public:
         void reconstruct(); 
 
         // Write
+        bool write (fileName file) const;
+
         bool write() const;
         
         bool writeData(Ostream& os) const; 
 
         // Access
+        
         const volScalarField& isoField() const 
         {
             return *isoFieldPtr_;
         }
 
+        scalar area() const;
+
+        vector centre() const;
 
     // Member Operators
 

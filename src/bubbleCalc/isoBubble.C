@@ -33,6 +33,34 @@ namespace Foam {
 
 namespace bookExamples {
 
+// * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
+    
+fileName isoBubble::paddWithZeros(const fileName& input) const
+{
+    word extension = input.ext(); 
+
+    if (extension.empty())
+    {
+        extension = outputFormat_; 
+    }
+
+    // Get the time index. 
+    const Time& runTime = isoFieldPtr_->time(); 
+    // Get the time index. 
+    label timeIndex = runTime.timeIndex(); 
+
+    // Remove extension.
+    fileName output = input.lessExt();  
+
+    // Padd the string using stringstream and iomanip.
+    std::stringstream ss;
+    ss << output << "-" << std::setw(timeIndexPad_) << std::setfill('0') 
+        << timeIndex << "." << extension;
+
+    return ss.str(); 
+}
+
+
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 isoBubble::isoBubble
@@ -41,7 +69,8 @@ isoBubble::isoBubble
     const volScalarField& bubbleField, 
     bool isTime , 
     scalar isoValue,
-    label timeIndexPad
+    label timeIndexPad,
+    word outputFormat
 )
     : 
         regIOobject(io, isTime), 
@@ -49,18 +78,24 @@ isoBubble::isoBubble
         isoPointField_(bubbleField.mesh().nPoints(),0), 
         bubblePtr_(0),
         isoValue_(isoValue),
-        timeIndexPad_(timeIndexPad)
-{}
+        timeIndexPad_(timeIndexPad), 
+        outputFormat_(outputFormat)
+{
+    // Reconstruct immediately using the tracked field.
+    reconstruct();
+}
 
 isoBubble::isoBubble(const isoBubble& copy)
     :
         regIOobject(copy), 
         isoFieldPtr_(copy.isoFieldPtr_),
         isoPointField_(copy.isoPointField_),
-        bubblePtr_(0),
+        bubblePtr_(new isoSurface(*copy.bubblePtr_)),
         isoValue_(copy.isoValue_),
-        timeIndexPad_(copy.timeIndexPad_)
-{}
+        timeIndexPad_(copy.timeIndexPad_), 
+        outputFormat_(copy.outputFormat_)
+{
+}
 
 // * * * * * * * * * * * * * * * * Destructor * * * * * * * * * * * * * * * * //
 
@@ -79,8 +114,6 @@ void isoBubble::setBubbleField(const volScalarField& bubbleField)
 
 void isoBubble::reconstruct()
 {
-    // TODO: make the volPoint interpolation static for the class: assuming execution
-    // on the same mesh. 
     // Interpolate the track field to the points using volPointInterpolation. 
     volPointInterpolation pointInterpolation (isoFieldPtr_->mesh());
     
@@ -90,7 +123,25 @@ void isoBubble::reconstruct()
     // Release the current isoSurface.
     delete bubblePtr_; 
     // Create the new isoSurface.
-    bubblePtr_ = new isoSurface (*isoFieldPtr_, isoPointField_, 0.5, false); 
+    bubblePtr_ = new isoSurface 
+        (
+            *isoFieldPtr_, 
+            isoPointField_, 
+            isoValue_, 
+            false
+        ); 
+}
+
+bool isoBubble::write(fileName file) const
+{
+    fileName fullPath = file.lessExt(); 
+    mkDir(fullPath); 
+
+    fullPath = fullPath + "/" + paddWithZeros(file); 
+
+    bubblePtr_->write(fullPath); 
+
+    return true;
 }
 
 bool isoBubble::write() const
@@ -98,24 +149,7 @@ bool isoBubble::write() const
     // Create the path to the instance directory.
     mkDir(path());
 
-    // Get the fileName as the std::string
-    std::string outFileName = static_cast<const std::string&> (objectPath()); 
-    // We need a string stream and the std:: manipulators since setfill is missing in
-    // OpenFOAM 
-    std::stringstream ss; 
-
-    // Get the reference to the time from the tracked field.
-    const Time& runTime = isoFieldPtr_->time(); 
-    // Get the time index. 
-    label timeIndex = runTime.timeIndex(); 
-    // Padd the time index with zeros. 
-    ss << outFileName << "-" << std::setw(timeIndexPad_) << std::setfill('0') 
-        << timeIndex << ".vtk";
-
-    // Update the file name from the stuff in stringstream. 
-    outFileName = ss.str();  
-
-    Info << "Writing bubble to file: " << outFileName << endl;
+    fileName outFileName = paddWithZeros(objectPath());
 
     if (OFstream::debug)
     {
@@ -134,6 +168,35 @@ bool isoBubble::writeData(Ostream& os) const
     return true;
 }
 
+scalar isoBubble::area() const
+{
+    scalar area = 0;
+
+    const pointField& points = bubblePtr_->points(); 
+    const List<labelledTri>& faces = bubblePtr_->localFaces(); 
+
+    forAll (faces, I)
+    {
+        area += mag(faces[I].normal(points));
+    }
+
+    return area;
+}
+
+vector isoBubble::centre() const
+{
+    const pointField& points = bubblePtr_->points(); 
+
+    vector bubbleCentre (0,0,0);
+
+    forAll(points, I)
+    {
+        bubbleCentre += points[I];
+    }
+
+    return bubbleCentre / bubblePtr_->nPoints();
+}
+
 // * * * * * * * * * * * * * * Member Operators  * * * * * * * * * * * * * * //
 
 void isoBubble::operator=(const isoBubble& rhs)
@@ -146,16 +209,15 @@ void isoBubble::operator=(const isoBubble& rhs)
             << abort(FatalError);
     }
 
-    // Track the field that the other bubble is tracking.
-    isoFieldPtr_ = rhs.isoFieldPtr_; 
+    // Deallocate the memory used for the isoSurface.
+    clearPtrData();
 
-    // Make a deep copy of the point scalar field field. 
+    isoFieldPtr_ = rhs.isoFieldPtr_; 
     isoPointField_ = rhs.isoPointField_; 
-    // Make a deep copy of the bubble iso-surface.
-    delete bubblePtr_;
     bubblePtr_ = new isoSurface(*rhs.bubblePtr_);
     isoValue_ = rhs.isoValue_;
     timeIndexPad_ = rhs.timeIndexPad_;
+    outputFormat_ = rhs.outputFormat_;
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

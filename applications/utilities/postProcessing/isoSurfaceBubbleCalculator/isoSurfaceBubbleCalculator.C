@@ -111,8 +111,8 @@ int main(int argc, char *argv[])
 
         bubble.reconstruct(); 
 
-        //Info << "Bubble area = " << bubble.area() << endl;
-        //Info << "Bubble velocity = " << bubble.velocity() << endl;
+        Info << "Bubble area = " << bubble.area() << endl;
+        Info << "Bubble centre = " << bubble.centre() << endl;
 
         bubble.write(); 
     }
