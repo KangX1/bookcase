@@ -39,6 +39,7 @@ Authors
 #define isoBubble_H
 
 #include "regIOobject.H"
+#include "autoPtr.H"
 #include "volFieldsFwd.H"
 #include "scalarField.H"
 #include "pointFields.H"
@@ -68,7 +69,7 @@ class isoBubble
     scalarField isoPointField_; 
 
     // Bubble geometry described with an iso-surface mesh.
-    isoSurface* bubblePtr_; 
+    autoPtr<isoSurface> bubblePtr_; 
 
     // iso value
     scalar isoValue_; 
@@ -79,14 +80,17 @@ class isoBubble
     // Output format.
     word outputFormat_; 
 
-    void clearPtrData()
-    {
-        isoFieldPtr_ = 0; 
-        delete bubblePtr_; 
-        bubblePtr_ = 0;
-    }
+    // Turn on regularization of the isoSurface.
+    bool regularize_;  
+
+    virtual void computeIsoPointField(); 
 
     fileName paddWithZeros(const fileName& input) const;
+
+    void resetPtrData()
+    {
+        isoFieldPtr_ = 0; 
+    }
 
 public:
 
@@ -100,7 +104,8 @@ public:
             bool isTime = false,
             scalar isoValue = 0.5,
             label timeIndexPad = 10, 
-            word outputFormat = "vtk"
+            word outputFormat = "vtk", 
+            bool regularize = true
         );
 
         //- Construct as copy

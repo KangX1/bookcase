@@ -60,6 +60,14 @@ fileName isoBubble::paddWithZeros(const fileName& input) const
     return ss.str(); 
 }
 
+void isoBubble::computeIsoPointField()
+{
+    // Interpolate the track field to the points using volPointInterpolation. 
+    volPointInterpolation pointInterpolation (isoFieldPtr_->mesh());
+    
+    // Reconstruct the bubble using both fields.
+    isoPointField_ = pointInterpolation.interpolate(*isoFieldPtr_)();
+}
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
@@ -70,16 +78,18 @@ isoBubble::isoBubble
     bool isTime , 
     scalar isoValue,
     label timeIndexPad,
-    word outputFormat
+    word outputFormat, 
+    bool regularize
 )
     : 
         regIOobject(io, isTime), 
         isoFieldPtr_(&bubbleField),
         isoPointField_(bubbleField.mesh().nPoints(),0), 
-        bubblePtr_(0),
+        bubblePtr_(),
         isoValue_(isoValue),
         timeIndexPad_(timeIndexPad), 
-        outputFormat_(outputFormat)
+        outputFormat_(outputFormat), 
+        regularize_(regularize)
 {
     // Reconstruct immediately using the tracked field.
     reconstruct();
@@ -90,18 +100,21 @@ isoBubble::isoBubble(const isoBubble& copy)
         regIOobject(copy), 
         isoFieldPtr_(copy.isoFieldPtr_),
         isoPointField_(copy.isoPointField_),
-        bubblePtr_(new isoSurface(*copy.bubblePtr_)),
+        bubblePtr_(),
         isoValue_(copy.isoValue_),
         timeIndexPad_(copy.timeIndexPad_), 
-        outputFormat_(copy.outputFormat_)
+        outputFormat_(copy.outputFormat_), 
+        regularize_(copy.regularize_)
 {
+    // Make a deep copy: avoid ownership transfer.  
+    bubblePtr_ = autoPtr<isoSurface>(new isoSurface (copy.bubblePtr_()));
 }
 
 // * * * * * * * * * * * * * * * * Destructor * * * * * * * * * * * * * * * * //
 
 isoBubble::~isoBubble()
 {
-    clearPtrData(); 
+    resetPtrData(); 
 }
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
@@ -114,22 +127,19 @@ void isoBubble::setBubbleField(const volScalarField& bubbleField)
 
 void isoBubble::reconstruct()
 {
-    // Interpolate the track field to the points using volPointInterpolation. 
-    volPointInterpolation pointInterpolation (isoFieldPtr_->mesh());
+    computeIsoPointField(); 
     
-    // Reconstruct the bubble using both fields.
-    isoPointField_ = pointInterpolation.interpolate(*isoFieldPtr_)();
-
-    // Release the current isoSurface.
-    delete bubblePtr_; 
-    // Create the new isoSurface.
-    bubblePtr_ = new isoSurface 
+    // Create the isoSurface geometry 
+    bubblePtr_ = autoPtr<isoSurface>
+    (
+        new isoSurface 
         (
             *isoFieldPtr_, 
             isoPointField_, 
             isoValue_, 
-            false
-        ); 
+            regularize_ 
+        )
+    );
 }
 
 bool isoBubble::write(fileName file) const
@@ -164,7 +174,7 @@ bool isoBubble::write() const
 
 bool isoBubble::writeData(Ostream& os) const
 {
-    os << *bubblePtr_; 
+    os << bubblePtr_(); 
     return true;
 }
 
@@ -210,14 +220,15 @@ void isoBubble::operator=(const isoBubble& rhs)
     }
 
     // Deallocate the memory used for the isoSurface.
-    clearPtrData();
+    resetPtrData();
 
     isoFieldPtr_ = rhs.isoFieldPtr_; 
     isoPointField_ = rhs.isoPointField_; 
-    bubblePtr_ = new isoSurface(*rhs.bubblePtr_);
+    bubblePtr_ = autoPtr<isoSurface>(new isoSurface(rhs.bubblePtr_()));
     isoValue_ = rhs.isoValue_;
     timeIndexPad_ = rhs.timeIndexPad_;
     outputFormat_ = rhs.outputFormat_;
+    regularize_ = rhs.regularize_;
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
