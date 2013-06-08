@@ -38,56 +38,24 @@
     const dimensionedScalar& rho1 = twoPhaseProperties.rho1();
     const dimensionedScalar& rho2 = twoPhaseProperties.rho2();
 
-    dimensionedScalar k1
-    (
-        "k",
-        dimensionSet(1, 1, -3, -1, 0),
-        twoPhaseProperties.subDict
-        (
-            twoPhaseProperties.phase1Name()
-        ).lookup("k")
-    );
+    const dictionary& phase1dict = twoPhaseProperties.subDict ("phase1");
+    const dictionary& phase2dict = twoPhaseProperties.subDict ("phase2");
 
-    dimensionedScalar k2
-    (
-        "k",
-        dimensionSet(1, 1, -3, -1, 0),
-        twoPhaseProperties.subDict
-        (
-            twoPhaseProperties.phase2Name()
-        ).lookup("k")
-    );
+    dimensionedScalar k1 (phase1dict.lookup("k")); 
+    dimensionedScalar Cv1 (phase1dict.lookup("Cv"));
 
-
-    dimensionedScalar Cv1
-    (
-        "Cv",
-        dimensionSet(0, 2, -2, -1, 0),
-        twoPhaseProperties.subDict
-        (
-            twoPhaseProperties.phase1Name()
-        ).lookup("Cv")
-    );
-
-    dimensionedScalar Cv2
-    (
-        "Cv",
-        dimensionSet(0, 2, -2, -1, 0),
-        twoPhaseProperties.subDict
-        (
-            twoPhaseProperties.phase2Name()
-        ).lookup("Cv")
-    );
+    dimensionedScalar k2 (phase2dict.lookup("k"));
+    dimensionedScalar Cv2 (phase2dict.lookup("Cv"));
 
     volScalarField T
     (
         IOobject
         (
-        "T",
-        runTime.timeName(),
-        mesh,
-        IOobject::MUST_READ,
-        IOobject::AUTO_WRITE
+            "T",
+            runTime.timeName(),
+            mesh,
+            IOobject::MUST_READ,
+            IOobject::AUTO_WRITE
         ),
         mesh
     );
@@ -125,10 +93,8 @@
         rho1*phi
     );
 
-
     // Construct interface from alpha1 distribution
     interfaceProperties interface(alpha1, U, twoPhaseProperties);
-
 
     // Construct incompressible turbulence model
     autoPtr<incompressible::turbulenceModel> turbulence
@@ -138,15 +104,15 @@
 
     #include "readGravitationalAcceleration.H"
 
-    /*
-    dimensionedVector g0(g);
+    //[>
+    //dimensionedVector g0(g);
 
-    // Read the data file and initialise the interpolation table
-    interpolationTable<vector> timeSeriesAcceleration
-    (
-        runTime.path()/runTime.caseConstant()/"acceleration.dat"
-    );
-    */
+    //// Read the data file and initialise the interpolation table
+    //interpolationTable<vector> timeSeriesAcceleration
+    //(
+        //runTime.path()/runTime.caseConstant()/"acceleration.dat"
+    //);
+    //*/
 
     Info<< "Calculating field g.h\n" << endl;
     volScalarField gh("gh", g & mesh.C());
