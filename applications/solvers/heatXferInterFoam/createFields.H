@@ -38,7 +38,7 @@
     const dimensionedScalar& rho1 = twoPhaseProperties.rho1();
     const dimensionedScalar& rho2 = twoPhaseProperties.rho2();
 
- dimensionedScalar k1
+    dimensionedScalar k1
     (
         "k",
         dimensionSet(1, 1, -3, -1, 0),
@@ -59,7 +59,7 @@
     );
 
 
-  dimensionedScalar Cv1
+    dimensionedScalar Cv1
     (
         "Cv",
         dimensionSet(0, 2, -2, -1, 0),
@@ -79,18 +79,18 @@
         ).lookup("Cv")
     );
 
-volScalarField T
-(
-IOobject
-(
-"T",
-runTime.timeName(),
-mesh,
-IOobject::MUST_READ,
-IOobject::AUTO_WRITE
-),
-mesh
-);
+    volScalarField T
+    (
+        IOobject
+        (
+        "T",
+        runTime.timeName(),
+        mesh,
+        IOobject::MUST_READ,
+        IOobject::AUTO_WRITE
+        ),
+        mesh
+    );
 
 
     // Need to store rho for ddt(rho, U)
