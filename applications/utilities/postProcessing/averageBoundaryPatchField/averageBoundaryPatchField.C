@@ -34,7 +34,12 @@ Description
 
 
 template<typename VolumetricField>
-void averageBoundaryField (const word& patchName, const IOobject& fieldHeader, const fvMesh& mesh)
+void averageBoundaryField 
+(
+    const word& patchName, 
+    const IOobject& fieldHeader, 
+    const fvMesh& mesh
+)
 {
     if (fieldHeader.headerClassName() == VolumetricField::typeName)
     {
