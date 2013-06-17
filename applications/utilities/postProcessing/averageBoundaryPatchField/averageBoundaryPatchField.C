@@ -41,6 +41,7 @@ void averageBoundaryField
     const fvMesh& mesh
 )
 {
+    Info << fieldHeader.headerClassName() << endl;
     if (fieldHeader.headerClassName() == VolumetricField::typeName)
     {
         typedef typename VolumetricField::value_type Type; 
