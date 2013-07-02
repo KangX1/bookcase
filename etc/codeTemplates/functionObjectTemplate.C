@@ -65,7 +65,7 @@ TYPENAME::TYPENAME
     const bool
 )
 :
-    name_(name),
+    functionObject(name),
     obr_(obr)
 {
     read(dict);
@@ -80,9 +80,11 @@ TYPENAME::~TYPENAME()
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-void TYPENAME::read(const dictionary& dict)
+bool TYPENAME::read(const dictionary& dict)
 {
     Info << typeName << "::read" << endl;
+
+    return true;
 }
 
 
@@ -92,15 +94,19 @@ void TYPENAME::execute()
 }
 
 
-void TYPENAME::end()
+bool TYPENAME::end()
 {
     Info << typeName << "::end" << endl;
+
+    return true;
 }
 
 
-void TYPENAME::timeSet()
+bool TYPENAME::timeSet()
 {
     Info << typeName << "::timeSet" << endl;
+
+    return true;
 }
 
 

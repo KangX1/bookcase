@@ -35,6 +35,7 @@ SourceFiles
 
 #include "stringList.H"
 #include "pointField.H"
+#include "functionObject.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -53,12 +54,11 @@ class fvMesh;
 \*---------------------------------------------------------------------------*/
 
 class TYPENAME
+    :
+        public functionObject
 {
     // Private data
-
-        //- Name of this set of system calls
-        word name_;
-
+    
         //- Registry
         const objectRegistry& obr_;
 
@@ -67,13 +67,6 @@ class TYPENAME
         const objectRegistry& obr() const;
 
         const fvMesh& mesh() const;
-
-        //- Disallow default bitwise copy construct
-        TYPENAME(const TYPENAME&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const TYPENAME&);
-
 
 public:
 
@@ -99,26 +92,20 @@ public:
 
     // Member Functions
 
-        //- Return name of the system call set
-        virtual const word& name() const
-        {
-            return name_;
-        }
-
         //- Read the system calls
-        virtual void read(const dictionary&);
+        virtual bool read(const dictionary&);
 
         //- Execute the "executeCalls" at each time-step
         virtual void execute();
 
         //- Execute the "endCalls" at the final time-loop
-        virtual void end();
+        virtual bool end();
 
         //- Write, execute the "writeCalls"
         virtual void write();
 
         //- Called when time was set at the end of the Time::operator++
-        virtual void timeSet();
+        virtual bool timeSet();
 
         //- Update for changes of mesh
         virtual void updateMesh(const mapPolyMesh&)
