@@ -33,6 +33,21 @@
 Script=${0##*/}
 Template="$OFBOOK_CODE_PROJECT_DIR/src/codeTemplates/functionObjectTemplate"
 
+# TODO: modify the script so that it takes into account sub-directories
+
+if [ ! -d Make ]
+then
+    mkdir Make 
+    echo "$Script: Creating Make/options"
+    $WM_DIR/scripts/makeOptions
+
+    PWD=$(pwd)
+
+    LIB=${PWD##*/}
+
+    echo "LIB = \$(FOAM_USER_LIBBIN)/$LIB" > Make/files
+fi
+
 usage() {
     while [ "$#" -ge 1 ]; do echo "$1"; shift; done
     cat << USAGE
@@ -73,28 +88,15 @@ case "$1" in
         fi
 
         # Process the template file.  
-
         sed "s/typeName/$typeName/g" $Template$ext > $fileName
 
     done
-
-    # Instantiate the OutputFilter template
-
-    # If Make files/options don't exist, create Make file/options with the 
-    # library name same as the name of the function object.
-
-    # Else prepend files to Make/files
-
-        #if [ "$subType" = App -a ! -d Make ]
-        #then
-            #wmakeFilesAndOptions
-        #fi
+       
+    echo "$Script: addign files to Make/files"
+    echo $typeName$functionObject.C
+    sed -i "1i $typeName$functionObject.C" Make/files
 
     ;;
 esac
-
-[ "$#" -eq 2 ] "wrong number of arguments"
-shift 2
-
 
 #------------------------------------------------------------------------------
