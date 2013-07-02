@@ -31,7 +31,7 @@
 #
 #------------------------------------------------------------------------------
 Script=${0##*/}
-Template="$OFBOOK_CODE_PROJECT_DIR/src/codeTemplates/functionObjectTemplate"
+Template="$OFBOOK_CODE_PROJECT_DIR/etc/codeTemplates/functionObjectTemplate"
 
 # TODO: modify the script so that it takes into account sub-directories
 
@@ -62,7 +62,7 @@ USAGE
     exit 1
 }
 
-typeName="$1"
+TYPENAME="$1"
 
 case "$1" in
 (-h | -help)
@@ -72,12 +72,12 @@ case "$1" in
 
     # Create the function object files. 
     
-    echo $typeName
+    echo $TYPENAME
     functionObject=FunctionObject
 
     for ext in .H .C; do 
 
-        fileName=$typeName$functionObject$ext
+        fileName=$TYPENAME$functionObject$ext
 
         echo "$Script: Creating new file $fileName"
 
@@ -88,13 +88,12 @@ case "$1" in
         fi
 
         # Process the template file.  
-        sed "s/typeName/$typeName/g" $Template$ext > $fileName
+        sed "s/TYPENAME/$TYPENAME/g" $Template$ext > $TYPENAME$ext
 
     done
        
     echo "$Script: addign files to Make/files"
-    echo $typeName$functionObject.C
-    sed -i "1i $typeName$functionObject.C" Make/files
+    sed -i "1i $TYPENAME.C" Make/files
 
     ;;
 esac

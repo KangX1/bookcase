@@ -30,8 +30,8 @@ SourceFiles
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef typeNameFunctionObject_H
-#define typeNameFunctionObject_H
+#ifndef TYPENAME_H
+#define TYPENAME_H
 
 #include "stringList.H"
 #include "pointField.H"
@@ -52,7 +52,7 @@ class fvMesh;
                          A templated functionObject
 \*---------------------------------------------------------------------------*/
 
-class typeNameFunctionObject
+class TYPENAME
 {
     // Private data
 
@@ -69,22 +69,22 @@ class typeNameFunctionObject
         const fvMesh& mesh() const;
 
         //- Disallow default bitwise copy construct
-        typeNameFunctionObject(const typeNameFunctionObject&);
+        TYPENAME(const TYPENAME&);
 
         //- Disallow default bitwise assignment
-        void operator=(const typeNameFunctionObject&);
+        void operator=(const TYPENAME&);
 
 
 public:
 
     //- Runtime type information
-    TypeName("typeName");
+    TypeName("TYPENAME");
 
     // Constructors
 
         //- Construct for given objectRegistry and dictionary.
         //  Allow the possibility to load fields from files
-        typeNameFunctionObject
+        TYPENAME
         (
             const word& name,
             const objectRegistry& unused,
@@ -94,7 +94,7 @@ public:
 
 
     //- Destructor
-    virtual ~typeNameFunctionObject();
+    virtual ~TYPENAME();
 
 
     // Member Functions

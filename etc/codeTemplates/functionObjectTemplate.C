@@ -23,7 +23,7 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "typeNameFunctionObject.H"
+#include "TYPENAME.H"
 #include "Time.H"
 #include "fvCFD.H"
 #include "unitConversion.H"
@@ -35,7 +35,7 @@ namespace Foam
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
-defineTypeNameAndDebug(typeNameFunctionObject, 0);
+defineTypeNameAndDebug(TYPENAME, 0);
 
 
 // * * * * * * * * * * * * * * * Local Functions * * * * * * * * * * * * * * //
@@ -43,21 +43,21 @@ defineTypeNameAndDebug(typeNameFunctionObject, 0);
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
-const objectRegistry& typeNameFunctionObject::obr() const
+const objectRegistry& TYPENAME::obr() const
 {
     return obr_;
 }
 
 
-const fvMesh& typeNameFunctionObject::mesh() const
+const fvMesh& TYPENAME::mesh() const
 {
-    return refCast<const fvMesh &>(obr_);
+    return static_cast<fvMesh const &>(obr_);
 }
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-typeNameFunctionObject::typeNameFunctionObject
+TYPENAME::TYPENAME
 (
     const word& name,
     const objectRegistry& obr,
@@ -74,34 +74,39 @@ typeNameFunctionObject::typeNameFunctionObject
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
 
-typeNameFunctionObject::~typeNameFunctionObject()
+TYPENAME::~TYPENAME()
 {}
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-void typeNameFunctionObject::read(const dictionary& dict)
+void TYPENAME::read(const dictionary& dict)
 {
+    Info << typeName << "::read" << endl;
 }
 
 
-void typeNameFunctionObject::execute()
+void TYPENAME::execute()
 {
+    Info << typeName << "::execute" << endl;
 }
 
 
-void typeNameFunctionObject::end()
+void TYPENAME::end()
 {
+    Info << typeName << "::end" << endl;
 }
 
 
-void typeNameFunctionObject::timeSet()
+void TYPENAME::timeSet()
 {
+    Info << typeName << "::timeSet" << endl;
 }
 
 
-void typeNameFunctionObject::write()
+void TYPENAME::write()
 {
+    Info << typeName << "::write" << endl;
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
