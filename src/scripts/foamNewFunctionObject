@@ -18,7 +18,6 @@
 #     ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 #     FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 #     for more details.
-#
 #     You should have received a copy of the GNU General Public License
 #     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 #
@@ -30,6 +29,7 @@
 #     function object.
 #
 #------------------------------------------------------------------------------
+
 SCRIPT=${0##*/}
 TEMPLATE="$OFBOOK_CODE_PROJECT_DIR/etc/codeTemplates/functionObjectTemplate"
 
@@ -93,7 +93,7 @@ FUNCTIONOBJECT=FunctionObject
 
 for EXT in .H .C; do 
 
-    FILENAME=$SUBDIR$TYPENAME$FUNCTIONOBJECT
+    FILENAME=$SUBDIR$TYPENAME
 
     echo "$SCRIPT: Creating new file $SUBDIR$FILENAME"
 
@@ -112,8 +112,6 @@ echo "$SCRIPT: addign files to Make/files"
 sed -i "1i $SUBDIR$TYPENAME.C" Make/files
 
 # Create the OutputFilter function object files.  
-
-
 
 # Add the files to Make/options
 
