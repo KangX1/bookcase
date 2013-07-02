@@ -22,7 +22,7 @@
 #     You should have received a copy of the GNU General Public License
 #     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 #
-# Script
+# SCRIPT
 #     foamNewFunctionObject
 #
 # Description
@@ -30,15 +30,14 @@
 #     function object.
 #
 #------------------------------------------------------------------------------
-Script=${0##*/}
-Template="$OFBOOK_CODE_PROJECT_DIR/etc/codeTemplates/functionObjectTemplate"
+SCRIPT=${0##*/}
+TEMPLATE="$OFBOOK_CODE_PROJECT_DIR/etc/codeTemplates/functionObjectTemplate"
 
-# TODO: modify the script so that it takes into account sub-directories
-
+# NOTE : The script is expected to be run in the library directory.  
 if [ ! -d Make ]
 then
     mkdir Make 
-    echo "$Script: Creating Make/options"
+    echo "$SCRIPT: Creating Make/options"
     $WM_DIR/scripts/makeOptions
 
     PWD=$(pwd)
@@ -51,9 +50,10 @@ fi
 usage() {
     while [ "$#" -ge 1 ]; do echo "$1"; shift; done
     cat << USAGE
-Usage: $Script [OPTION] <functionObjectType>
+Usage: $SCRIPT [OPTION] <functionObjectType>
 options:
   -help             print the usage
+  -d                create the sub-directory to store the function object code
 
 * create new standard OpenFOAM source file structure for a function object 
   functionObjectType
@@ -63,39 +63,56 @@ USAGE
 }
 
 TYPENAME="$1"
+SUBDIR=""
 
 case "$1" in
 (-h | -help)
     usage
     ;;
+(-d | -dir)
+
+    SUBDIR=$2/
+
+    if [ -e "$SUBDIR" ]
+    then
+        echo "   Error: sub-directory exists"
+        exit 1
+    else
+        mkdir $SUBDIR
+    fi
+
+    TYPENAME=$3
+
+    ;; 
 (*)
-
-    # Create the function object files. 
-    
-    echo $TYPENAME
-    functionObject=FunctionObject
-
-    for ext in .H .C; do 
-
-        fileName=$TYPENAME$functionObject$ext
-
-        echo "$Script: Creating new file $fileName"
-
-        if [ -e "$fileName" ]
-        then
-            echo "   Error: file exists"
-            exit 1
-        fi
-
-        # Process the template file.  
-        sed "s/TYPENAME/$TYPENAME/g" $Template$ext > $TYPENAME$ext
-
-    done
-       
-    echo "$Script: addign files to Make/files"
-    sed -i "1i $TYPENAME.C" Make/files
-
     ;;
 esac
+
+# Create the function object files. 
+FUNCTIONOBJECT=FunctionObject
+
+for EXT in .H .C; do 
+
+    FILENAME=$SUBDIR$TYPENAME$FUNCTIONOBJECT
+
+    echo "$SCRIPT: Creating new file $SUBDIR$FILENAME"
+
+    if [ -e "$SUBDIR$FILENAME" ]
+    then
+        echo "   Error: file exists"
+        exit 1
+    fi
+
+    # Process the template file.  
+    sed "s/TYPENAME/$TYPENAME/g" $TEMPLATE$EXT > $SUBDIR$TYPENAME$EXT
+
+done
+   
+echo "$SCRIPT: addign files to Make/files"
+sed -i "1i $SUBDIR$TYPENAME.C" Make/files
+
+# Create the OutputFilter function object files.  
+
+# Add the files to Make/options
 
 #------------------------------------------------------------------------------
