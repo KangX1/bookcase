@@ -31,7 +31,7 @@
 #
 #------------------------------------------------------------------------------
 Script=${0##*/}
-Template="$WM_PROJECT_DIR/etc/codeTemplates/dynamicCode/functionObjectTemplate"
+Template="$OFBOOK_CODE_PROJECT_DIR/src/codeTemplates/functionObjectTemplate"
 
 usage() {
     while [ "$#" -ge 1 ]; do echo "$1"; shift; done
@@ -47,7 +47,7 @@ USAGE
     exit 1
 }
 
-className="$1"
+typeName="$1"
 
 case "$1" in
 (-h | -help)
@@ -57,13 +57,12 @@ case "$1" in
 
     # Create the function object files. 
     
-    echo $className
-
+    echo $typeName
     functionObject=FunctionObject
 
     for ext in .H .C; do 
 
-        fileName=$className$functionObject$ext
+        fileName=$typeName$functionObject$ext
 
         echo "$Script: Creating new file $fileName"
 
@@ -75,11 +74,7 @@ case "$1" in
 
         # Process the template file.  
 
-        sed '/\${*[cC]ode/d' $Template$ext | \
-        sed '/\/\/{/d' | \
-        sed '/\/\/}/d' | \
-        sed "s/\${typeName}/$className/g" | \
-        sed "s/functionObjectTemplate/$className$functionObject/g" > $fileName
+        sed "s/typeName/$typeName/g" $Template$ext > $fileName
 
     done
 
@@ -101,27 +96,5 @@ esac
 [ "$#" -eq 2 ] "wrong number of arguments"
 shift 2
 
-#if [ "${printOpt:-false}" = true ]
-#then
-    #cat $Template$subType$Type
-#else
-
-    #fileName="$className$Type"
-
-    #echo "$Script: Creating new interface file $fileName"
-    #if [ -e "$fileName" ]
-    #then
-        #echo "   Error: file exists"
-        #exit 1
-    #fi
-
-    ## process class name
-    #sed "s/CLASSNAME/$className/g" $Template$subType$Type > $fileName
-
-    #if [ "$subType" = App -a ! -d Make ]
-    #then
-        #wmakeFilesAndOptions
-    #fi
-#fi
 
 #------------------------------------------------------------------------------
