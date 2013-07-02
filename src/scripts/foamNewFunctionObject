@@ -56,18 +56,14 @@ case "$1" in
 (*)
 
     # Create the function object files. 
+    
+    echo $className
 
     functionObject=FunctionObject
 
-    echo className = $className
+    for ext in .H .C; do 
 
-    name="$className$functionObject"
-
-    for ext in .C .H; do 
-
-        fileName=$name$ext
-
-        echo name = $name$ext
+        fileName=$className$functionObject$ext
 
         echo "$Script: Creating new file $fileName"
 
@@ -77,10 +73,13 @@ case "$1" in
             exit 1
         fi
 
-        echo $Template$ext
+        # Process the template file.  
 
-        # process class name
-        sed "s/CLASSNAME/$className/g" $Template$ext > $fileName
+        sed '/\${*[cC]ode/d' $Template$ext | \
+        sed '/\/\/{/d' | \
+        sed '/\/\/}/d' | \
+        sed "s/\${typeName}/$className/g" | \
+        sed "s/functionObjectTemplate/$className$functionObject/g" > $fileName
 
     done
 
