@@ -31,85 +31,98 @@
 #
 #------------------------------------------------------------------------------
 Script=${0##*/}
-Template="$WM_PROJECT_DIR/etc/codeTemplates/dynamicCode/_Template"
-
-echo $2
+Template="$WM_PROJECT_DIR/etc/codeTemplates/dynamicCode/functionObjectTemplate"
 
 usage() {
     while [ "$#" -ge 1 ]; do echo "$1"; shift; done
-    cat<<USAGE
-Usage: $Script [OPTION] <type> <ClassName>
+    cat << USAGE
+Usage: $Script [OPTION] <functionObjectType>
 options:
   -help             print the usage
 
-* create new standard OpenFOAM source file structure for a custom 
-  function object
-
-A ClassName starting with '-' will simply display the template
+* create new standard OpenFOAM source file structure for a function object 
+  functionObjectType
 
 USAGE
     exit 1
 }
 
 className="$1"
-unset subType Type printOpt
-
-# for a className starting with '-' simply display the code
-if [ "${2#-}" != "${2}" ]
-then
-    printOpt=true
-fi
-
-# this implicitly covers a lone -help
-[ "$#" -gt 1 ] || usage
 
 case "$1" in
 (-h | -help)
     usage
     ;;
-(C|H)
-    Type=".$1"
-    ;;
-(I)
-    Type="$1.H"
-    ;;
-(IO)
-    Type="$1.C"
-    ;;
-(app|App)
-    subType=App
-    Type=".C"
-    ;;
 (*)
-    usage "unknown type '$1'"
+
+    # Create the function object files. 
+
+    functionObject=FunctionObject
+
+    echo className = $className
+
+    name="$className$functionObject"
+
+    for ext in .C .H; do 
+
+        fileName=$name$ext
+
+        echo name = $name$ext
+
+        echo "$Script: Creating new file $fileName"
+
+        if [ -e "$fileName" ]
+        then
+            echo "   Error: file exists"
+            exit 1
+        fi
+
+        echo $Template$ext
+
+        # process class name
+        sed "s/CLASSNAME/$className/g" $Template$ext > $fileName
+
+    done
+
+    # Instantiate the OutputFilter template
+
+    # If Make files/options don't exist, create Make file/options with the 
+    # library name same as the name of the function object.
+
+    # Else prepend files to Make/files
+
+        #if [ "$subType" = App -a ! -d Make ]
+        #then
+            #wmakeFilesAndOptions
+        #fi
+
     ;;
 esac
 
-[ "$#" -eq 2 ] || usage "wrong number of arguments"
+[ "$#" -eq 2 ] "wrong number of arguments"
 shift 2
 
+#if [ "${printOpt:-false}" = true ]
+#then
+    #cat $Template$subType$Type
+#else
 
-if [ "${printOpt:-false}" = true ]
-then
-    cat $Template$subType$Type
-else
+    #fileName="$className$Type"
 
-    fileName="$className$Type"
+    #echo "$Script: Creating new interface file $fileName"
+    #if [ -e "$fileName" ]
+    #then
+        #echo "   Error: file exists"
+        #exit 1
+    #fi
 
-    echo "$Script: Creating new interface file $fileName"
-    if [ -e "$fileName" ]
-    then
-        echo "   Error: file exists"
-        exit 1
-    fi
+    ## process class name
+    #sed "s/CLASSNAME/$className/g" $Template$subType$Type > $fileName
 
-    # process class name
-    sed "s/CLASSNAME/$className/g" $Template$subType$Type > $fileName
-
-    if [ "$subType" = App -a ! -d Make ]
-    then
-        wmakeFilesAndOptions
-    fi
-fi
+    #if [ "$subType" = App -a ! -d Make ]
+    #then
+        #wmakeFilesAndOptions
+    #fi
+#fi
 
 #------------------------------------------------------------------------------
