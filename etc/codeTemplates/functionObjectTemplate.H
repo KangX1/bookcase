@@ -87,33 +87,34 @@ public:
 
 
     //- Destructor
-    virtual ~TYPENAME();
+     ~TYPENAME();
 
 
     // Member Functions
 
         //- Read the system calls
-        virtual bool read(const dictionary&);
+         bool read(const dictionary&);
 
         //- Execute the "executeCalls" at each time-step
-        virtual void execute();
+         bool execute(const bool forceWrite=false);
+
+        //- Called at the start of the time-loop
+         bool start();
 
         //- Execute the "endCalls" at the final time-loop
-        virtual bool end();
+         bool end();
 
         //- Write, execute the "writeCalls"
-        virtual void write();
+         void write();
 
         //- Called when time was set at the end of the Time::operator++
-        virtual bool timeSet();
+         bool timeSet();
 
         //- Update for changes of mesh
-        virtual void updateMesh(const mapPolyMesh&)
-        {}
+         void updateMesh(const mapPolyMesh&);
 
         //- Update for changes of mesh
-        virtual void movePoints(const polyMesh&)
-        {}
+         void movePoints(const polyMesh&);
 };
 
 

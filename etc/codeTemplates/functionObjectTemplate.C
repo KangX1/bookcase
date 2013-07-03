@@ -88,9 +88,17 @@ bool TYPENAME::read(const dictionary& dict)
 }
 
 
-void TYPENAME::execute()
+bool TYPENAME::execute(const bool forceWrite)
 {
     Info << typeName << "::execute" << endl;
+    return true;
+}
+
+bool TYPENAME::start()
+{
+    Info << typeName << "::start" << endl;
+
+    return true;
 }
 
 
@@ -113,6 +121,16 @@ bool TYPENAME::timeSet()
 void TYPENAME::write()
 {
     Info << typeName << "::write" << endl;
+}
+
+void TYPENAME::updateMesh(const mapPolyMesh& map)
+{
+    Info << typeName << "::updateMesh" << endl;
+}
+
+void TYPENAME::movePoints(const polyMesh& mesh)
+{
+    Info << typeName << "::movePoints" << endl;
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
