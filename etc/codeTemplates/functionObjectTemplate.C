@@ -27,6 +27,7 @@ License
 #include "Time.H"
 #include "fvCFD.H"
 #include "unitConversion.H"
+#include "addToRunTimeSelectionTable.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -36,6 +37,7 @@ namespace Foam
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
 defineTypeNameAndDebug(TYPENAME, 0);
+addToRunTimeSelectionTable(functionObject, TYPENAME, dictionary); 
 
 
 // * * * * * * * * * * * * * * * Local Functions * * * * * * * * * * * * * * //
