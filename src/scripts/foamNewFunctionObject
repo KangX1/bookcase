@@ -44,7 +44,7 @@ then
 
     LIB=${PWD##*/}
 
-    echo "LIB = \$(FOAM_USER_LIBBIN)/$LIB" > Make/files
+    echo "LIB = \$(FOAM_USER_LIBBIN)/lib$LIB" > Make/files
 fi
 
 usage() {
