@@ -159,16 +159,14 @@ Foam::recirculationControlFvPatchField<Type>::recirculationControlFvPatchField
 template<class Type>
 void Foam::recirculationControlFvPatchField<Type>::updateCoeffs()
 {
-    baseTypeTmp_->updateCoeffs(); 
-
     typedef GeometricField<Type, fvPatchField, volMesh>  VolumetricField; 
 
     // Get the flux field
     const Field<scalar>& phip =
-        this->patch().template lookupPatchField<surfaceScalarField, scalar>
-        (
-            fvPatchField<Type>::fluxFieldName_
-        );
+    this->patch().template lookupPatchField<surfaceScalarField, scalar>
+    (
+        fluxFieldName_
+    );
 
     // Compute the total and the negative volumetric flux.
     scalar totalFlux = 0; 
@@ -191,7 +189,9 @@ void Foam::recirculationControlFvPatchField<Type>::updateCoeffs()
         return;
     }
 
-    // Else : scale the controlled patch to reduce recirculation.
+    // If there is a recirculation  
+    
+    // Override the default BC: scale the controlled patch values to reduce recirculation.
 
     // Compute the percentage of the inflow volumetric flux (recirculation rate).   
     recirculationRate_ = min(1, negativeFlux / totalFlux); 
@@ -235,6 +235,9 @@ void Foam::recirculationControlFvPatchField<Type>::updateCoeffs()
             bf[patchI] == Field<Type>(bf[patchI]) * 1.01; 
         }
     }
+
+    // Mark the BC updated. 
+    fvPatchField<Type>::updateCoeffs(); 
 }
 
 
