@@ -66,7 +66,7 @@ Foam::recirculationControlInletOutletFvPatchField<Type>::recirculationControlInl
 :
     inletOutletFvPatchField<Type>(p, iF, dict), 
     recirculationRate_(), 
-    controlledField_(dict.lookupOrDefault<word>("controlledField", "inlet"))
+    controlledField_(dict.lookupOrDefault<word>("controlled", "inlet"))
 {
    
 }
