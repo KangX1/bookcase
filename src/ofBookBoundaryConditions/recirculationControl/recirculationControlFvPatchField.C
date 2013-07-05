@@ -52,6 +52,7 @@ Authors:
 \*---------------------------------------------------------------------------*/
 
 #include "recirculationControlFvPatchField.H"
+#include "fvPatchField.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
@@ -63,7 +64,7 @@ Foam::recirculationControlFvPatchField<Type>::recirculationControlFvPatchField
 )
 :
     fvPatchField<Type>(p, iF), 
-    baseTypePtr_(0), 
+    baseTypeTmp_(), 
     baseTypeName_(), 
     fluxFieldName_(), 
     controlledPatchName_(), 
@@ -81,13 +82,20 @@ Foam::recirculationControlFvPatchField<Type>::recirculationControlFvPatchField
 )
 :
     fvPatchField<Type>(ptf, p, iF, mapper), 
-    baseTypePtr_(0), 
+    baseTypeTmp_(), 
     baseTypeName_(ptf.baseTypeName_), 
     fluxFieldName_(ptf.fluxFieldName_), 
     controlledPatchName_(ptf.controlledPatchName_), 
     recirculationRate_(ptf.recirculationRate_)
 {
-    // TODO: instantiate the baseType based on the dictionary entries. 
+    // Instantiate the baseType based on the dictionary entries. 
+    baseTypeTmp_ = fvPatchField<Type>::New
+    (
+        ptf.baseTypeTmp_, 
+        p, 
+        iF, 
+        mapper
+    ); 
 }
 
 
@@ -100,13 +108,19 @@ Foam::recirculationControlFvPatchField<Type>::recirculationControlFvPatchField
 )
 :
     fvPatchField<Type>(p, iF, dict), 
-    baseTypePtr_(0), 
+    baseTypeTmp_(), 
     baseTypeName_(dict.lookupOrDefault<word>("baseType", "zeroGradient")),
     fluxFieldName_(dict.lookupOrDefault<word>("fluxFieldName", "phi")),
     controlledPatchName_(dict.lookupOrDefault<word>("controlledPatchName", "phi")),
     recirculationRate_(1)
 {
-    // TODO: instantiate the baseType based on the dictionary entries. 
+    // Instantiate the baseType based on the dictionary entries. 
+    baseTypeTmp_ = fvPatchField<Type>::New
+    (
+        baseTypeName_, 
+        p, 
+        iF
+    ); 
 }
 
 
@@ -117,14 +131,12 @@ Foam::recirculationControlFvPatchField<Type>::recirculationControlFvPatchField
 )
 :
     fvPatchField<Type>(ptf),
-    baseTypePtr_(0),  
+    baseTypeTmp_(ptf.baseTypeTmp_),  
     baseTypeName_(ptf.baseTypeName_),  
     fluxFieldName_(ptf.fluxFieldName_), 
     controlledPatchName_(ptf.controlledPatchName_), 
     recirculationRate_(1)
-{
-    // TODO: instantiate the baseType based on the dictionary entries. 
-}
+{}
 
 
 template<class Type>
@@ -135,25 +147,22 @@ Foam::recirculationControlFvPatchField<Type>::recirculationControlFvPatchField
 )
 :
     fvPatchField<Type>(ptf, iF),
-    baseTypePtr_(0),
+    baseTypeTmp_(ptf.baseTypeTmp_),
     baseTypeName_(ptf.baseTypeName_),
     fluxFieldName_(ptf.fluxFieldName_), 
     controlledPatchName_(ptf.controlledPatchName_), 
     recirculationRate_(1)
 {}
 
-template<class Type>
-Foam::recirculationControlFvPatchField<Type>::~recirculationControlFvPatchField()
-{
-    delete baseTypePtr_; 
-    baseTypePtr_ = 0;
-}
-
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
 template<class Type>
 void Foam::recirculationControlFvPatchField<Type>::updateCoeffs()
 {
+    //Info << "Updating base BC " << baseTypeTmp_().name() << endl;
+
+    baseTypeTmp_->updateCoeffs(); 
+
     //typedef GeometricField<Type, fvPatchField, volMesh>  VolumetricField; 
 
     //const Field<scalar>& phip =

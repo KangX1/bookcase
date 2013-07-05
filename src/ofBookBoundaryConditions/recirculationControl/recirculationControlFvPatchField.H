@@ -54,7 +54,6 @@ Authors:
 #ifndef recirculationControlFvPatchField_H
 #define recirculationControlFvPatchField_H
 
-#include "fvPatchField.H"
 #include "autoPtr.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -71,10 +70,11 @@ class recirculationControlFvPatchField
 :
     public fvPatchField<Type>
 {
-    // Base boundary condition. 
-    fvPatchField<Type>* baseTypePtr_; 
 
 protected:
+
+    // Base boundary condition. 
+    tmp<fvPatchField<Type> > baseTypeTmp_; 
 
     const word baseTypeName_; 
     const word fluxFieldName_; 
@@ -135,8 +135,6 @@ public:
             const DimensionedField<Type, volMesh>&
         );
 
-        ~recirculationControlFvPatchField(); 
-
         //- Construct and return a clone setting internal field reference
         virtual tmp<fvPatchField<Type> > clone
         (
@@ -149,14 +147,18 @@ public:
             );
         }
 
-    // Member functions
+        virtual tmp<Field<Type > > gradientInternalCoeffs () const
+        {
+            return baseTypeTmp_->gradientInternalCoeffs(); 
+        }
 
+    // Member functions
+    
         //- Update the coefficients associated with the patch field
         virtual void updateCoeffs();
 
         //- Write
         virtual void write(Ostream&) const;
-
 
     // Member operators
 
