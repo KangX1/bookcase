@@ -66,8 +66,9 @@ Foam::recirculationControlInletOutletFvPatchField<Type>::recirculationControlInl
 :
     inletOutletFvPatchField<Type>(p, iF, dict), 
     recirculationRate_(), 
-    controlledField_()
+    controlledField_(dict.lookupOrDefault<word>("controlledField", "inlet"))
 {
+   
 }
 
 
@@ -101,25 +102,65 @@ Foam::recirculationControlInletOutletFvPatchField<Type>::recirculationControlInl
 template<class Type>
 void Foam::recirculationControlInletOutletFvPatchField<Type>::updateCoeffs()
 {
-    // Adjust the values before doing the control operation. 
-    inletOutletFvPatchField<Type>::updateCoeffs();
+    if (this->updated())
+    {
+        return;
+    }
 
-    //if (this->updated())
-    //{
-        //return;
-    //}
+    typedef GeometricField<Type, fvPatchField, volMesh>  VolumetricField; 
 
-    //const Field<scalar>& phip =
-        //this->patch().template lookupPatchField<surfaceScalarField, scalar>
-        //(
-            //phiName_
-        //);
+    const Field<scalar>& phip =
+        this->patch().template lookupPatchField<surfaceScalarField, scalar>
+        (
+            inletOutletFvPatchField<Type>::phiName_
+        );
+
+    // Compute the total and the negative volumetric flux.
+    scalar totalFlux = 0; 
+    scalar negativeFlux = 0; 
+
+    forAll (phip, I)
+    {
+        totalFlux += mag(phip[I]); 
+        negativeFlux -= min(0, phip[I]); 
+    }
+    negativeFlux *= -1; 
 
     // Compute the percentage of the inflow volumetric flux (recirculation rate).   
+    recirculationRate_ = min(1, negativeFlux / totalFlux); 
 
-    // If defined, access the inlet boundary, and reduce the velocity by the
-    // recirculation rate.  
+    // Finding the controlled inlet patch and controling its field values. 
+    
+     //- Get the name of the internal field.
+    const word volFieldName = this->dimensionedInternalField().name(); 
 
+     //- Get access to the regitstry.
+    const objectRegistry& db = this->db(); 
+
+     //- Find the GeometricField in the registry using the internal field name.
+    const VolumetricField& vfConst = db.lookupObject<VolumetricField>(volFieldName);
+
+     // Cast away constness to be able to control other boundary patch fields. 
+    VolumetricField& vf = const_cast<VolumetricField&>(vfConst); 
+
+     //- Get the non-const reference to the boundary field of the GeometricField.
+    typename VolumetricField::GeometricBoundaryField& bf = vf.boundaryField();
+
+     //- Find the controlled boundary patch field using the name defined by the user.
+    forAll (bf, patchI)
+    {
+        // Control the boundary patch field using the recirculation rate.  
+        const fvPatch& p = bf[patchI].patch();
+
+        if (p.name() == controlledField_)
+        {
+            // Impose control on the controlled inlet patch field.  
+            bf[patchI] *= recirculationRate_; 
+        }
+    }
+
+    // Update parent class. 
+    inletOutletFvPatchField<Type>::updateCoeffs();
 }
 
 

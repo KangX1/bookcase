@@ -59,6 +59,8 @@ class recirculationControlInletOutletFvPatchField
     public inletOutletFvPatchField<Type>
 {
 
+protected:
+
     scalar recirculationRate_; 
     word   controlledField_;
 
