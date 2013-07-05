@@ -34,7 +34,9 @@ Foam::recirculationControlInletOutletFvPatchField<Type>::recirculationControlInl
     const DimensionedField<Type, volMesh>& iF
 )
 :
-    inletOutletFvPatchField<Type>(p, iF)
+    inletOutletFvPatchField<Type>(p, iF), 
+    recirculationRate_(0),
+    controlledField_()
 {
 }
 
@@ -48,7 +50,9 @@ Foam::recirculationControlInletOutletFvPatchField<Type>::recirculationControlInl
     const fvPatchFieldMapper& mapper
 )
 :
-    inletOutletFvPatchField<Type>(ptf, p, iF, mapper)
+    inletOutletFvPatchField<Type>(ptf, p, iF, mapper), 
+    recirculationRate_(0),
+    controlledField_()
 {}
 
 
@@ -60,7 +64,9 @@ Foam::recirculationControlInletOutletFvPatchField<Type>::recirculationControlInl
     const dictionary& dict
 )
 :
-    inletOutletFvPatchField<Type>(p, iF, dict)
+    inletOutletFvPatchField<Type>(p, iF, dict), 
+    recirculationRate_(), 
+    controlledField_()
 {
 }
 
@@ -71,7 +77,9 @@ Foam::recirculationControlInletOutletFvPatchField<Type>::recirculationControlInl
     const recirculationControlInletOutletFvPatchField<Type>& ptf
 )
 :
-    inletOutletFvPatchField<Type>(ptf)
+    inletOutletFvPatchField<Type>(ptf),
+    recirculationRate_(ptf.recirculationRate_),
+    controlledField_(ptf.controlledField_)
 {}
 
 
@@ -82,7 +90,9 @@ Foam::recirculationControlInletOutletFvPatchField<Type>::recirculationControlInl
     const DimensionedField<Type, volMesh>& iF
 )
 :
-    inletOutletFvPatchField<Type>(ptf, iF)
+    inletOutletFvPatchField<Type>(ptf, iF),
+    recirculationRate_(ptf.recirculationRate_),
+    controlledField_(ptf.controlledField_)
 {}
 
 
@@ -91,7 +101,25 @@ Foam::recirculationControlInletOutletFvPatchField<Type>::recirculationControlInl
 template<class Type>
 void Foam::recirculationControlInletOutletFvPatchField<Type>::updateCoeffs()
 {
+    // Adjust the values before doing the control operation. 
     inletOutletFvPatchField<Type>::updateCoeffs();
+
+    //if (this->updated())
+    //{
+        //return;
+    //}
+
+    //const Field<scalar>& phip =
+        //this->patch().template lookupPatchField<surfaceScalarField, scalar>
+        //(
+            //phiName_
+        //);
+
+    // Compute the percentage of the inflow volumetric flux (recirculation rate).   
+
+    // If defined, access the inlet boundary, and reduce the velocity by the
+    // recirculation rate.  
+
 }
 
 

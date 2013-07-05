@@ -59,13 +59,8 @@ class recirculationControlInletOutletFvPatchField
     public inletOutletFvPatchField<Type>
 {
 
-protected:
-
-    // Protected data
-
-        //- Name of flux field
-        word phiName_;
-
+    scalar recirculationRate_; 
+    word   controlledField_;
 
 public:
 
