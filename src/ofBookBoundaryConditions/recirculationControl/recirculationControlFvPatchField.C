@@ -35,10 +35,12 @@ Foam::recirculationControlFvPatchField<Type>::recirculationControlFvPatchField
 )
 :
     fvPatchField<Type>(p, iF), 
-    recirculationRate_(1),
-    controlledField_()
-{
-}
+    baseTypePtr_(0), 
+    baseTypeName_(), 
+    fluxFieldName_(), 
+    controlledPatchName_(), 
+    recirculationRate_(1)
+{}
 
 
 template<class Type>
@@ -51,8 +53,11 @@ Foam::recirculationControlFvPatchField<Type>::recirculationControlFvPatchField
 )
 :
     fvPatchField<Type>(ptf, p, iF, mapper), 
-    recirculationRate_(1),
-    controlledField_()
+    baseTypePtr_(ptf.baseType()), // Deep copy, prevent ownership transmission. 
+    baseTypeName_(ptf.baseTypeName_), 
+    fluxFieldName_(ptf.fluxFieldName_), 
+    controlledPatchName_(ptf.controlledPatchName_), 
+    recirculationRate_(ptf.recirculationRate_)
 {}
 
 
@@ -65,10 +70,13 @@ Foam::recirculationControlFvPatchField<Type>::recirculationControlFvPatchField
 )
 :
     fvPatchField<Type>(p, iF, dict), 
-    recirculationRate_(), 
-    controlledField_(dict.lookupOrDefault<word>("controlled", "inlet"))
+    baseTypePtr_(), 
+    baseTypeName_(dict.lookupOrDefault<word>("baseType", "zeroGradient")),
+    fluxFieldName_(dict.lookupOrDefault<word>("fluxFieldName", "phi")),
+    controlledPatchName_(dict.lookupOrDefault<word>("controlledPatchName", "phi")),
+    recirculationRate_(1)
 {
-   
+    // TODO: instantiate the baseType based on the dictionary entries. 
 }
 
 
@@ -79,8 +87,11 @@ Foam::recirculationControlFvPatchField<Type>::recirculationControlFvPatchField
 )
 :
     fvPatchField<Type>(ptf),
-    recirculationRate_(ptf.recirculationRate_),
-    controlledField_(ptf.controlledField_)
+    baseTypePtr_(ptf.baseType()),  // Deep copy, prevent ownership transmission. 
+    baseTypeName_(ptf.baseTypeName_),  // Deep copy, prevent ownership transmission. 
+    fluxFieldName_(ptf.fluxFieldName_), 
+    controlledPatchName_(ptf.controlledPatchName_), 
+    recirculationRate_(1)
 {}
 
 
@@ -92,8 +103,11 @@ Foam::recirculationControlFvPatchField<Type>::recirculationControlFvPatchField
 )
 :
     fvPatchField<Type>(ptf, iF),
-    recirculationRate_(ptf.recirculationRate_),
-    controlledField_(ptf.controlledField_)
+    baseTypePtr_(ptf.baseType()),  // Deep copy, prevent ownership transmission. 
+    baseTypeName_(ptf.baseTypeName_),
+    fluxFieldName_(ptf.fluxFieldName_), 
+    controlledPatchName_(ptf.controlledPatchName_), 
+    recirculationRate_(1)
 {}
 
 
@@ -158,7 +172,7 @@ void Foam::recirculationControlFvPatchField<Type>::updateCoeffs()
         //// Control the boundary patch field using the recirculation rate.  
         //const fvPatch& p = bf[patchI].patch();
 
-        //if (p.name() == controlledField_)
+        //if (p.name() == controlledPatchName_)
         //{
             //if (! bf[patchI].updated())
             //{

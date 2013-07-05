@@ -25,15 +25,29 @@ Class
     Foam::recirculationControlFvPatchField
 
 Description
-    This boundary condition checks for recirculation at the specified outflow
-    patch and decreses the velocity at the specified inlet patch until the
-    recirculation is no longer present.
+
+    Decorator for the fvPatchField.
+
+    This boundary condition checks for recirculation using the specified flux
+    field and controls the specified controlled patch in order to reduce the 
+    recirculation.
+
+    Usage
+
+        type             controlledRecirculation;
+        baseType         zeroGradient;
+        fluxField        phi; 
+        controlledPatch  inlet;  
 
 SeeAlso
     Foam::fvPatchField
 
 SourceFiles
     recirculationControlFvPatchField.C
+    recirculationControlFvPatchFields.C
+
+Authors:
+    Tomislav Maric tomislav.maric@gmx.com
 
 \*---------------------------------------------------------------------------*/
 
@@ -41,6 +55,7 @@ SourceFiles
 #define recirculationControlFvPatchField_H
 
 #include "fvPatchField.H"
+#include "autoPtr.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -56,17 +71,21 @@ class recirculationControlFvPatchField
 :
     public fvPatchField<Type>
 {
+    // Decorated boundary condition. 
+    autoPtr<fvPatchField<Type> > baseTypePtr_; 
 
 protected:
 
+    const word baseTypeName_; 
+    const word fluxFieldName_; 
+    const word controlledPatchName_;
+
     scalar recirculationRate_; 
-    word   controlledField_;
 
 public:
 
     //- Runtime type information
     TypeName("recirculationControl");
-
 
     // Constructors
 
@@ -128,6 +147,10 @@ public:
             );
         }
 
+        autoPtr<fvPatchField<Type> > baseType() const
+        {
+            return autoPtr<fvPatchField<Type> > (baseTypePtr_->clone()());  
+        }
 
     // Member functions
 
