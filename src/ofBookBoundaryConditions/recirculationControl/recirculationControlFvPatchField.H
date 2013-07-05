@@ -71,8 +71,8 @@ class recirculationControlFvPatchField
 :
     public fvPatchField<Type>
 {
-    // Decorated boundary condition. 
-    autoPtr<fvPatchField<Type> > baseTypePtr_; 
+    // Base boundary condition. 
+    fvPatchField<Type>* baseTypePtr_; 
 
 protected:
 
@@ -135,6 +135,8 @@ public:
             const DimensionedField<Type, volMesh>&
         );
 
+        ~recirculationControlFvPatchField(); 
+
         //- Construct and return a clone setting internal field reference
         virtual tmp<fvPatchField<Type> > clone
         (
@@ -145,11 +147,6 @@ public:
             (
                 new recirculationControlFvPatchField<Type>(*this, iF)
             );
-        }
-
-        autoPtr<fvPatchField<Type> > baseType() const
-        {
-            return autoPtr<fvPatchField<Type> > (baseTypePtr_->clone()());  
         }
 
     // Member functions

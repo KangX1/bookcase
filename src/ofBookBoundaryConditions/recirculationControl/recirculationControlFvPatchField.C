@@ -21,6 +21,34 @@ License
     You should have received a copy of the GNU General Public License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
+Class
+    Foam::recirculationControlFvPatchField
+
+Description
+
+    Decorator for the fvPatchField.
+
+    This boundary condition checks for recirculation using the specified flux
+    field and controls the specified controlled patch in order to reduce the 
+    recirculation.
+
+    Usage
+
+        type             controlledRecirculation;
+        baseType         zeroGradient;
+        fluxField        phi; 
+        controlledPatch  inlet;  
+
+SeeAlso
+    Foam::fvPatchField
+
+SourceFiles
+    recirculationControlFvPatchField.C
+    recirculationControlFvPatchFields.C
+
+Authors:
+    Tomislav Maric tomislav.maric@gmx.com
+
 \*---------------------------------------------------------------------------*/
 
 #include "recirculationControlFvPatchField.H"
@@ -53,12 +81,14 @@ Foam::recirculationControlFvPatchField<Type>::recirculationControlFvPatchField
 )
 :
     fvPatchField<Type>(ptf, p, iF, mapper), 
-    baseTypePtr_(ptf.baseType()), // Deep copy, prevent ownership transmission. 
+    baseTypePtr_(0), 
     baseTypeName_(ptf.baseTypeName_), 
     fluxFieldName_(ptf.fluxFieldName_), 
     controlledPatchName_(ptf.controlledPatchName_), 
     recirculationRate_(ptf.recirculationRate_)
-{}
+{
+    // TODO: instantiate the baseType based on the dictionary entries. 
+}
 
 
 template<class Type>
@@ -70,7 +100,7 @@ Foam::recirculationControlFvPatchField<Type>::recirculationControlFvPatchField
 )
 :
     fvPatchField<Type>(p, iF, dict), 
-    baseTypePtr_(), 
+    baseTypePtr_(0), 
     baseTypeName_(dict.lookupOrDefault<word>("baseType", "zeroGradient")),
     fluxFieldName_(dict.lookupOrDefault<word>("fluxFieldName", "phi")),
     controlledPatchName_(dict.lookupOrDefault<word>("controlledPatchName", "phi")),
@@ -87,12 +117,14 @@ Foam::recirculationControlFvPatchField<Type>::recirculationControlFvPatchField
 )
 :
     fvPatchField<Type>(ptf),
-    baseTypePtr_(ptf.baseType()),  // Deep copy, prevent ownership transmission. 
-    baseTypeName_(ptf.baseTypeName_),  // Deep copy, prevent ownership transmission. 
+    baseTypePtr_(0),  
+    baseTypeName_(ptf.baseTypeName_),  
     fluxFieldName_(ptf.fluxFieldName_), 
     controlledPatchName_(ptf.controlledPatchName_), 
     recirculationRate_(1)
-{}
+{
+    // TODO: instantiate the baseType based on the dictionary entries. 
+}
 
 
 template<class Type>
@@ -103,13 +135,19 @@ Foam::recirculationControlFvPatchField<Type>::recirculationControlFvPatchField
 )
 :
     fvPatchField<Type>(ptf, iF),
-    baseTypePtr_(ptf.baseType()),  // Deep copy, prevent ownership transmission. 
+    baseTypePtr_(0),
     baseTypeName_(ptf.baseTypeName_),
     fluxFieldName_(ptf.fluxFieldName_), 
     controlledPatchName_(ptf.controlledPatchName_), 
     recirculationRate_(1)
 {}
 
+template<class Type>
+Foam::recirculationControlFvPatchField<Type>::~recirculationControlFvPatchField()
+{
+    delete baseTypePtr_; 
+    baseTypePtr_ = 0;
+}
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
