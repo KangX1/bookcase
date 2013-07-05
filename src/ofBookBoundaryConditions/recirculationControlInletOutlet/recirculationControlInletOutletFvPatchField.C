@@ -35,7 +35,7 @@ Foam::recirculationControlInletOutletFvPatchField<Type>::recirculationControlInl
 )
 :
     inletOutletFvPatchField<Type>(p, iF), 
-    recirculationRate_(0),
+    recirculationRate_(1),
     controlledField_()
 {
 }
@@ -51,7 +51,7 @@ Foam::recirculationControlInletOutletFvPatchField<Type>::recirculationControlInl
 )
 :
     inletOutletFvPatchField<Type>(ptf, p, iF, mapper), 
-    recirculationRate_(0),
+    recirculationRate_(1),
     controlledField_()
 {}
 
@@ -102,11 +102,6 @@ Foam::recirculationControlInletOutletFvPatchField<Type>::recirculationControlInl
 template<class Type>
 void Foam::recirculationControlInletOutletFvPatchField<Type>::updateCoeffs()
 {
-    if (this->updated())
-    {
-        return;
-    }
-
     typedef GeometricField<Type, fvPatchField, volMesh>  VolumetricField; 
 
     const Field<scalar>& phip =
@@ -118,16 +113,27 @@ void Foam::recirculationControlInletOutletFvPatchField<Type>::updateCoeffs()
     // Compute the total and the negative volumetric flux.
     scalar totalFlux = 0; 
     scalar negativeFlux = 0; 
-
     forAll (phip, I)
     {
         totalFlux += mag(phip[I]); 
-        negativeFlux -= min(0, phip[I]); 
+
+        if (phip[I] < 0)
+        {
+            negativeFlux += mag(phip[I]);
+        }
     }
-    negativeFlux *= -1; 
+
+    if (totalFlux < SMALL || negativeFlux < SMALL)
+    {
+        return;
+    }
 
     // Compute the percentage of the inflow volumetric flux (recirculation rate).   
     recirculationRate_ = min(1, negativeFlux / totalFlux); 
+
+    Info << "Total flux " <<  totalFlux << endl;
+    Info << "Recirculation flux " << negativeFlux << endl;
+    Info << "Recirculation ratio " << recirculationRate_ << endl;
 
     // Finding the controlled inlet patch and controling its field values. 
     
@@ -154,13 +160,16 @@ void Foam::recirculationControlInletOutletFvPatchField<Type>::updateCoeffs()
 
         if (p.name() == controlledField_)
         {
+            if (! bf[patchI].updated())
+            {
+                // Envoke a standard update first to avoid the field being later 
+                // overwritten.
+                bf[patchI].updateCoeffs(); 
+            }
             // Impose control on the controlled inlet patch field.  
-            bf[patchI] *= recirculationRate_; 
+            bf[patchI] == Field<Type>(bf[patchI]) * 1.01; 
         }
     }
-
-    // Update parent class. 
-    inletOutletFvPatchField<Type>::updateCoeffs();
 }
 
 
