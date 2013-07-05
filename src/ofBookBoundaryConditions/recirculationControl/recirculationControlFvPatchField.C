@@ -159,78 +159,82 @@ Foam::recirculationControlFvPatchField<Type>::recirculationControlFvPatchField
 template<class Type>
 void Foam::recirculationControlFvPatchField<Type>::updateCoeffs()
 {
-    //Info << "Updating base BC " << baseTypeTmp_().name() << endl;
-
     baseTypeTmp_->updateCoeffs(); 
 
-    //typedef GeometricField<Type, fvPatchField, volMesh>  VolumetricField; 
+    typedef GeometricField<Type, fvPatchField, volMesh>  VolumetricField; 
 
-    //const Field<scalar>& phip =
-        //this->patch().template lookupPatchField<surfaceScalarField, scalar>
-        //(
-            //fvPatchField<Type>::phiName_
-        //);
+    // Get the flux field
+    const Field<scalar>& phip =
+        this->patch().template lookupPatchField<surfaceScalarField, scalar>
+        (
+            fvPatchField<Type>::fluxFieldName_
+        );
 
-    //// Compute the total and the negative volumetric flux.
-    //scalar totalFlux = 0; 
-    //scalar negativeFlux = 0; 
-    //forAll (phip, I)
-    //{
-        //totalFlux += mag(phip[I]); 
+    // Compute the total and the negative volumetric flux.
+    scalar totalFlux = 0; 
+    scalar negativeFlux = 0; 
+    forAll (phip, I)
+    {
+        totalFlux += mag(phip[I]); 
 
-        //if (phip[I] < 0)
-        //{
-            //negativeFlux += mag(phip[I]);
-        //}
-    //}
+        if (phip[I] < 0)
+        {
+            negativeFlux += mag(phip[I]);
+        }
+    }
 
-    //if (totalFlux < SMALL || negativeFlux < SMALL)
-    //{
-        //return;
-    //}
+    // If there is no recirculation.
+    if (negativeFlux < SMALL)
+    {
+        // Update the decorated boundary condition. 
+        baseTypeTmp_->updateCoeffs(); 
+        return;
+    }
 
-    //// Compute the percentage of the inflow volumetric flux (recirculation rate).   
-    //recirculationRate_ = min(1, negativeFlux / totalFlux); 
+    // Else : scale the controlled patch to reduce recirculation.
 
-    //Info << "Total flux " <<  totalFlux << endl;
-    //Info << "Recirculation flux " << negativeFlux << endl;
-    //Info << "Recirculation ratio " << recirculationRate_ << endl;
+    // Compute the percentage of the inflow volumetric flux (recirculation rate).   
+    recirculationRate_ = min(1, negativeFlux / totalFlux); 
 
-    //// Finding the controlled inlet patch and controling its field values. 
+    Info << "Total flux " <<  totalFlux << endl;
+    Info << "Recirculation flux " << negativeFlux << endl;
+    Info << "Recirculation ratio " << recirculationRate_ << endl;
+
+    // Finding the controlled inlet patch and controling its field values. 
     
-     ////- Get the name of the internal field.
-    //const word volFieldName = this->dimensionedInternalField().name(); 
+     //- Get the name of the internal field.
+    const word volFieldName = this->dimensionedInternalField().name(); 
 
-     ////- Get access to the regitstry.
-    //const objectRegistry& db = this->db(); 
+     //- Get access to the regitstry.
+    const objectRegistry& db = this->db(); 
 
-     ////- Find the GeometricField in the registry using the internal field name.
-    //const VolumetricField& vfConst = db.lookupObject<VolumetricField>(volFieldName);
+     //- Find the GeometricField in the registry using the internal field name.
+    const VolumetricField& vfConst = db.lookupObject<VolumetricField>(volFieldName);
 
-     //// Cast away constness to be able to control other boundary patch fields. 
-    //VolumetricField& vf = const_cast<VolumetricField&>(vfConst); 
+     // Cast away constness to be able to control other boundary patch fields. 
+    VolumetricField& vf = const_cast<VolumetricField&>(vfConst); 
 
-     ////- Get the non-const reference to the boundary field of the GeometricField.
-    //typename VolumetricField::GeometricBoundaryField& bf = vf.boundaryField();
+     //- Get the non-const reference to the boundary field of the GeometricField.
+    typename VolumetricField::GeometricBoundaryField& bf = vf.boundaryField();
 
-     ////- Find the controlled boundary patch field using the name defined by the user.
-    //forAll (bf, patchI)
-    //{
-        //// Control the boundary patch field using the recirculation rate.  
-        //const fvPatch& p = bf[patchI].patch();
+     //- Find the controlled boundary patch field using the name defined by the user.
+    forAll (bf, patchI)
+    {
+        // Control the boundary patch field using the recirculation rate.  
+        const fvPatch& p = bf[patchI].patch();
 
-        //if (p.name() == controlledPatchName_)
-        //{
-            //if (! bf[patchI].updated())
-            //{
-                //// Envoke a standard update first to avoid the field being later 
-                //// overwritten.
-                //bf[patchI].updateCoeffs(); 
-            //}
-            //// Impose control on the controlled inlet patch field.  
-            //bf[patchI] == Field<Type>(bf[patchI]) * 1.01; 
-        //}
-    //}
+        if (p.name() == controlledPatchName_)
+        {
+            if (! bf[patchI].updated())
+            {
+                // Envoke a standard update first to avoid the field being later 
+                // overwritten.
+                bf[patchI].updateCoeffs(); 
+            }
+            // Impose control on the controlled inlet patch field.  
+            bf[patchI] == Field<Type>(bf[patchI]) * 1.01; 
+        }
+    }
 }
 
 
@@ -238,6 +242,40 @@ template<class Type>
 void Foam::recirculationControlFvPatchField<Type>::write(Ostream& os) const
 {
     fvPatchField<Type>::write(os); 
+}
+
+template<class Type>
+Foam::tmp<Foam::Field<Type > > 
+Foam::recirculationControlFvPatchField<Type>::valueInternalCoeffs 
+(
+    const Foam::tmp<Foam::Field<scalar > > & f
+) const
+{
+    return baseTypeTmp_->valueInternalCoeffs(f); 
+}
+
+template<class Type>
+Foam::tmp<Foam::Field<Type > >
+Foam::recirculationControlFvPatchField<Type>::valueBoundaryCoeffs 
+(
+    const Foam::tmp<Foam::Field<scalar > > & f
+) const
+{
+    return baseTypeTmp_->valueBoundaryCoeffs(f); 
+}
+
+template<class Type>
+Foam::tmp<Foam::Field<Type > > 
+Foam::recirculationControlFvPatchField<Type>::gradientInternalCoeffs () const
+{
+    return baseTypeTmp_->gradientInternalCoeffs(); 
+}
+
+template<class Type>
+Foam::tmp<Foam::Field<Type > >
+Foam::recirculationControlFvPatchField<Type>::gradientBoundaryCoeffs () const
+{
+    return baseTypeTmp_->gradientBoundaryCoeffs(); 
 }
 
 

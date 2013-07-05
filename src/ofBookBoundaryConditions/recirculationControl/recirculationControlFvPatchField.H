@@ -147,10 +147,7 @@ public:
             );
         }
 
-        virtual tmp<Field<Type > > gradientInternalCoeffs () const
-        {
-            return baseTypeTmp_->gradientInternalCoeffs(); 
-        }
+
 
     // Member functions
     
@@ -159,6 +156,14 @@ public:
 
         //- Write
         virtual void write(Ostream&) const;
+        
+        //- Access
+
+        tmp<Field<Type > > valueInternalCoeffs(const tmp< Field< scalar > > & f) const;
+        tmp<Field<Type > > valueBoundaryCoeffs(const tmp< Field< scalar > > & f) const;
+
+        tmp<Field<Type > > gradientInternalCoeffs() const;
+        tmp<Field<Type > > gradientBoundaryCoeffs() const;
 
     // Member operators
 
