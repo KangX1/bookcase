@@ -1,4 +1,4 @@
 tabulatedRigidBodyDisplacement/tabulatedRigidBodyDisplacementPointPatchVectorField.C
-recirculationControlInletOutlet/recirculationControlInletOutletFvPatchFields.C 
+recirculationControl/recirculationControlFvPatchFields.C 
 
 LIB = $(FOAM_USER_LIBBIN)/libofBookBoundaryConditions

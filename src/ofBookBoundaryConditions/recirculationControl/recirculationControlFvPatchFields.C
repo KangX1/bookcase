@@ -25,7 +25,7 @@ License
 
 #include "volFields.H"
 #include "surfaceFields.H"
-#include "recirculationControlInletOutletFvPatchFields.H"
+#include "recirculationControlFvPatchFields.H"
 #include "addToRunTimeSelectionTable.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -35,7 +35,7 @@ namespace Foam
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
-makePatchFields(recirculationControlInletOutlet);
+makePatchFields(recirculationControl);
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

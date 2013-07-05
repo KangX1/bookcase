@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::recirculationControlInletOutletFvPatchField
+    Foam::recirculationControlFvPatchField
 
 Description
     This boundary condition checks for recirculation at the specified outflow
@@ -30,19 +30,17 @@ Description
     recirculation is no longer present.
 
 SeeAlso
-    Foam::inletOutletFvPatchField
-    Foam::zeroGradientFvPatchField
-    Foam::inletOutletFvPatchField
+    Foam::fvPatchField
 
 SourceFiles
-    recirculationControlInletOutletFvPatchField.C
+    recirculationControlFvPatchField.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef recirculationControlInletOutletFvPatchField_H
-#define recirculationControlInletOutletFvPatchField_H
+#ifndef recirculationControlFvPatchField_H
+#define recirculationControlFvPatchField_H
 
-#include "inletOutletFvPatchField.H"
+#include "fvPatchField.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -50,13 +48,13 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                   Class recirculationControlInletOutletFvPatchField Declaration
+                   Class recirculationControlFvPatchField Declaration
 \*---------------------------------------------------------------------------*/
 
 template<class Type>
-class recirculationControlInletOutletFvPatchField
+class recirculationControlFvPatchField
 :
-    public inletOutletFvPatchField<Type>
+    public fvPatchField<Type>
 {
 
 protected:
@@ -67,39 +65,39 @@ protected:
 public:
 
     //- Runtime type information
-    TypeName("recirculationControlInletOutlet");
+    TypeName("recirculationControl");
 
 
     // Constructors
 
         //- Construct from patch and internal field
-        recirculationControlInletOutletFvPatchField
+        recirculationControlFvPatchField
         (
             const fvPatch&,
             const DimensionedField<Type, volMesh>&
         );
 
         //- Construct from patch, internal field and dictionary
-        recirculationControlInletOutletFvPatchField
+        recirculationControlFvPatchField
         (
             const fvPatch&,
             const DimensionedField<Type, volMesh>&,
             const dictionary&
         );
 
-        //- Construct by mapping given recirculationControlInletOutletFvPatchField onto a new patch
-        recirculationControlInletOutletFvPatchField
+        //- Construct by mapping given recirculationControlFvPatchField onto a new patch
+        recirculationControlFvPatchField
         (
-            const recirculationControlInletOutletFvPatchField<Type>&,
+            const recirculationControlFvPatchField<Type>&,
             const fvPatch&,
             const DimensionedField<Type, volMesh>&,
             const fvPatchFieldMapper&
         );
 
         //- Construct as copy
-        recirculationControlInletOutletFvPatchField
+        recirculationControlFvPatchField
         (
-            const recirculationControlInletOutletFvPatchField<Type>&
+            const recirculationControlFvPatchField<Type>&
         );
 
         //- Construct and return a clone
@@ -107,14 +105,14 @@ public:
         {
             return tmp<fvPatchField<Type> >
             (
-                new recirculationControlInletOutletFvPatchField<Type>(*this)
+                new recirculationControlFvPatchField<Type>(*this)
             );
         }
 
         //- Construct as copy setting internal field reference
-        recirculationControlInletOutletFvPatchField
+        recirculationControlFvPatchField
         (
-            const recirculationControlInletOutletFvPatchField<Type>&,
+            const recirculationControlFvPatchField<Type>&,
             const DimensionedField<Type, volMesh>&
         );
 
@@ -126,7 +124,7 @@ public:
         {
             return tmp<fvPatchField<Type> >
             (
-                new recirculationControlInletOutletFvPatchField<Type>(*this, iF)
+                new recirculationControlFvPatchField<Type>(*this, iF)
             );
         }
 
@@ -153,7 +151,7 @@ public:
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 #ifdef NoRepository
-#   include "recirculationControlInletOutletFvPatchField.C"
+#   include "recirculationControlFvPatchField.C"
 #endif
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

@@ -23,8 +23,8 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef recirculationControlInletOutletFvPatchFieldsFwd_H
-#define recirculationControlInletOutletFvPatchFieldsFwd_H
+#ifndef recirculationControlFvPatchFieldsFwd_H
+#define recirculationControlFvPatchFieldsFwd_H
 
 #include "fieldTypes.H"
 
@@ -35,9 +35,9 @@ namespace Foam
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-template<class Type> class recirculationControlInletOutletFvPatchField;
+template<class Type> class recirculationControlFvPatchField;
 
-makePatchTypeFieldTypedefs(recirculationControlInletOutlet);
+makePatchTypeFieldTypedefs(recirculationControl);
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
