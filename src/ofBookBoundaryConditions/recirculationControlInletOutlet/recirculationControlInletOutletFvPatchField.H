@@ -24,43 +24,15 @@ License
 Class
     Foam::recirculationControlInletOutletFvPatchField
 
-Group
-    grpOutletBoundaryConditions
-
 Description
-    This boundary condition provides a generic outflow condition, with
-    specified inflow for the case of return flow.
-
-    \heading Patch usage
-
-    \table
-        Property     | Description             | Required    | Default value
-        phi          | flux field name         | no          | phi
-        inletValue   | inlet value for reverse flow | yes    |
-    \endtable
-
-    Example of the boundary condition specification:
-    \verbatim
-    myPatch
-    {
-        type            recirculationControlInletOutlet;
-        phi             phi;
-        inletValue      uniform 0;
-        value           uniform 0;
-    }
-    \endverbatim
-
-    The mode of operation is determined by the sign of the flux across the
-    patch faces.
-
-Note
-    Sign conventions:
-    - positive flux (out of domain): apply zero-gradient condition
-    - negative flux (into of domain): apply the user-specified fixed value
+    This boundary condition checks for recirculation at the specified outflow
+    patch and decreses the velocity at the specified inlet patch until the
+    recirculation is no longer present.
 
 SeeAlso
     Foam::mixedFvPatchField
     Foam::zeroGradientFvPatchField
+    Foam::inletOutletFvPatchField
 
 SourceFiles
     recirculationControlInletOutletFvPatchField.C
