@@ -30,7 +30,7 @@ Description
     recirculation is no longer present.
 
 SeeAlso
-    Foam::mixedFvPatchField
+    Foam::inletOutletFvPatchField
     Foam::zeroGradientFvPatchField
     Foam::inletOutletFvPatchField
 
@@ -42,7 +42,7 @@ SourceFiles
 #ifndef recirculationControlInletOutletFvPatchField_H
 #define recirculationControlInletOutletFvPatchField_H
 
-#include "mixedFvPatchField.H"
+#include "inletOutletFvPatchField.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -56,7 +56,7 @@ namespace Foam
 template<class Type>
 class recirculationControlInletOutletFvPatchField
 :
-    public mixedFvPatchField<Type>
+    public inletOutletFvPatchField<Type>
 {
 
 protected:

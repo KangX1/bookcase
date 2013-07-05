@@ -34,12 +34,8 @@ Foam::recirculationControlInletOutletFvPatchField<Type>::recirculationControlInl
     const DimensionedField<Type, volMesh>& iF
 )
 :
-    mixedFvPatchField<Type>(p, iF),
-    phiName_("phi")
+    inletOutletFvPatchField<Type>(p, iF)
 {
-    this->refValue() = pTraits<Type>::zero;
-    this->refGrad() = pTraits<Type>::zero;
-    this->valueFraction() = 0.0;
 }
 
 
@@ -52,8 +48,7 @@ Foam::recirculationControlInletOutletFvPatchField<Type>::recirculationControlInl
     const fvPatchFieldMapper& mapper
 )
 :
-    mixedFvPatchField<Type>(ptf, p, iF, mapper),
-    phiName_(ptf.phiName_)
+    inletOutletFvPatchField<Type>(ptf, p, iF, mapper)
 {}
 
 
@@ -65,25 +60,8 @@ Foam::recirculationControlInletOutletFvPatchField<Type>::recirculationControlInl
     const dictionary& dict
 )
 :
-    mixedFvPatchField<Type>(p, iF),
-    phiName_(dict.lookupOrDefault<word>("phi", "phi"))
+    inletOutletFvPatchField<Type>(p, iF, dict)
 {
-    this->refValue() = Field<Type>("inletValue", dict, p.size());
-
-    if (dict.found("value"))
-    {
-        fvPatchField<Type>::operator=
-        (
-            Field<Type>("value", dict, p.size())
-        );
-    }
-    else
-    {
-        fvPatchField<Type>::operator=(this->refValue());
-    }
-
-    this->refGrad() = pTraits<Type>::zero;
-    this->valueFraction() = 0.0;
 }
 
 
@@ -93,8 +71,7 @@ Foam::recirculationControlInletOutletFvPatchField<Type>::recirculationControlInl
     const recirculationControlInletOutletFvPatchField<Type>& ptf
 )
 :
-    mixedFvPatchField<Type>(ptf),
-    phiName_(ptf.phiName_)
+    inletOutletFvPatchField<Type>(ptf)
 {}
 
 
@@ -105,8 +82,7 @@ Foam::recirculationControlInletOutletFvPatchField<Type>::recirculationControlInl
     const DimensionedField<Type, volMesh>& iF
 )
 :
-    mixedFvPatchField<Type>(ptf, iF),
-    phiName_(ptf.phiName_)
+    inletOutletFvPatchField<Type>(ptf, iF)
 {}
 
 
@@ -115,33 +91,14 @@ Foam::recirculationControlInletOutletFvPatchField<Type>::recirculationControlInl
 template<class Type>
 void Foam::recirculationControlInletOutletFvPatchField<Type>::updateCoeffs()
 {
-    if (this->updated())
-    {
-        return;
-    }
-
-    const Field<scalar>& phip =
-        this->patch().template lookupPatchField<surfaceScalarField, scalar>
-        (
-            phiName_
-        );
-
-    this->valueFraction() = 1.0 - pos(phip);
-
-    mixedFvPatchField<Type>::updateCoeffs();
+    inletOutletFvPatchField<Type>::updateCoeffs();
 }
 
 
 template<class Type>
 void Foam::recirculationControlInletOutletFvPatchField<Type>::write(Ostream& os) const
 {
-    fvPatchField<Type>::write(os);
-    if (phiName_ != "phi")
-    {
-        os.writeKeyword("phi") << phiName_ << token::END_STATEMENT << nl;
-    }
-    this->refValue().writeEntry("inletValue", os);
-    this->writeEntry("value", os);
+    inletOutletFvPatchField<Type>::write(os); 
 }
 
 
@@ -153,11 +110,7 @@ void Foam::recirculationControlInletOutletFvPatchField<Type>::operator=
     const fvPatchField<Type>& ptf
 )
 {
-    fvPatchField<Type>::operator=
-    (
-        this->valueFraction()*this->refValue()
-        + (1 - this->valueFraction())*ptf
-    );
+    inletOutletFvPatchField<Type>::operator=(ptf); 
 }
 
 
