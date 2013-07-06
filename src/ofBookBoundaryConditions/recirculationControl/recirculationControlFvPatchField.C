@@ -65,9 +65,11 @@ Foam::recirculationControlFvPatchField<Type>::recirculationControlFvPatchField
 :
     fvPatchField<Type>(p, iF), 
     baseTypeTmp_(), 
+    applyControl_(), 
     baseTypeName_(), 
     fluxFieldName_(), 
     controlledPatchName_(), 
+    maxValue_(), 
     recirculationRate_(1)
 {}
 
@@ -83,9 +85,11 @@ Foam::recirculationControlFvPatchField<Type>::recirculationControlFvPatchField
 :
     fvPatchField<Type>(ptf, p, iF, mapper), 
     baseTypeTmp_(), 
+    applyControl_(ptf.applyControl_), 
     baseTypeName_(ptf.baseTypeName_), 
     fluxFieldName_(ptf.fluxFieldName_), 
     controlledPatchName_(ptf.controlledPatchName_), 
+    maxValue_(ptf.maxValue_), 
     recirculationRate_(ptf.recirculationRate_)
 {
     // Instantiate the baseType based on the dictionary entries. 
@@ -109,9 +113,11 @@ Foam::recirculationControlFvPatchField<Type>::recirculationControlFvPatchField
 :
     fvPatchField<Type>(p, iF, dict), 
     baseTypeTmp_(), 
+    applyControl_(dict.lookupOrDefault<word>("applyControl", "no")),
     baseTypeName_(dict.lookupOrDefault<word>("baseType", "zeroGradient")),
     fluxFieldName_(dict.lookupOrDefault<word>("fluxFieldName", "phi")),
     controlledPatchName_(dict.lookupOrDefault<word>("controlledPatchName", "phi")),
+    maxValue_(dict.lookupOrDefault<Type>("maxValue", Type())),
     recirculationRate_(1)
 {
     // Instantiate the baseType based on the dictionary entries. 
@@ -132,9 +138,11 @@ Foam::recirculationControlFvPatchField<Type>::recirculationControlFvPatchField
 :
     fvPatchField<Type>(ptf),
     baseTypeTmp_(ptf.baseTypeTmp_),  
+    applyControl_(ptf.applyControl_),  
     baseTypeName_(ptf.baseTypeName_),  
     fluxFieldName_(ptf.fluxFieldName_), 
     controlledPatchName_(ptf.controlledPatchName_), 
+    maxValue_(ptf.maxValue_),
     recirculationRate_(1)
 {}
 
@@ -148,9 +156,11 @@ Foam::recirculationControlFvPatchField<Type>::recirculationControlFvPatchField
 :
     fvPatchField<Type>(ptf, iF),
     baseTypeTmp_(ptf.baseTypeTmp_),
+    applyControl_(ptf.applyControl_),  
     baseTypeName_(ptf.baseTypeName_),
     fluxFieldName_(ptf.fluxFieldName_), 
     controlledPatchName_(ptf.controlledPatchName_), 
+    maxValue_(ptf.maxValue_), 
     recirculationRate_(1)
 {}
 
@@ -159,6 +169,11 @@ Foam::recirculationControlFvPatchField<Type>::recirculationControlFvPatchField
 template<class Type>
 void Foam::recirculationControlFvPatchField<Type>::updateCoeffs()
 {
+    if (this->updated())
+    {
+        return;
+    }
+
     typedef GeometricField<Type, fvPatchField, volMesh>  VolumetricField; 
 
     // Get the flux field
@@ -171,6 +186,7 @@ void Foam::recirculationControlFvPatchField<Type>::updateCoeffs()
     // Compute the total and the negative volumetric flux.
     scalar totalFlux = 0; 
     scalar negativeFlux = 0; 
+
     forAll (phip, I)
     {
         totalFlux += mag(phip[I]); 
@@ -181,60 +197,68 @@ void Foam::recirculationControlFvPatchField<Type>::updateCoeffs()
         }
     }
 
+    // Compute the percentage of the inflow volumetric flux (recirculation rate).   
+    scalar newRecirculationRate = min(1, negativeFlux / (totalFlux + SMALL));  
+
+    Info << "Total flux " <<  totalFlux << endl;
+    Info << "Recirculation flux " << negativeFlux << endl;
+    Info << "Recirculation ratio " << newRecirculationRate << endl;
+
     // If there is no recirculation.
-    if (negativeFlux < SMALL)
+    if (negativeFlux < SMALL) 
     {
         // Update the decorated boundary condition. 
         baseTypeTmp_->updateCoeffs(); 
         return;
     }
 
-    // If there is a recirculation  
-    
-    // Override the default BC: scale the controlled patch values to reduce recirculation.
-
-    // Compute the percentage of the inflow volumetric flux (recirculation rate).   
-    recirculationRate_ = min(1, negativeFlux / totalFlux); 
-
-    Info << "Total flux " <<  totalFlux << endl;
-    Info << "Recirculation flux " << negativeFlux << endl;
-    Info << "Recirculation ratio " << recirculationRate_ << endl;
-
-    // Finding the controlled inlet patch and controling its field values. 
-    
-     //- Get the name of the internal field.
-    const word volFieldName = this->dimensionedInternalField().name(); 
-
-     //- Get access to the regitstry.
-    const objectRegistry& db = this->db(); 
-
-     //- Find the GeometricField in the registry using the internal field name.
-    const VolumetricField& vfConst = db.lookupObject<VolumetricField>(volFieldName);
-
-     // Cast away constness to be able to control other boundary patch fields. 
-    VolumetricField& vf = const_cast<VolumetricField&>(vfConst); 
-
-     //- Get the non-const reference to the boundary field of the GeometricField.
-    typename VolumetricField::GeometricBoundaryField& bf = vf.boundaryField();
-
-     //- Find the controlled boundary patch field using the name defined by the user.
-    forAll (bf, patchI)
+    if ((applyControl_ == "yes") && (newRecirculationRate > recirculationRate_))
     {
-        // Control the boundary patch field using the recirculation rate.  
-        const fvPatch& p = bf[patchI].patch();
+        Info << "Executing control..." << endl;
 
-        if (p.name() == controlledPatchName_)
+        // Get the name of the internal field.
+        const word volFieldName = this->dimensionedInternalField().name(); 
+
+        // Get access to the regitstry.
+        const objectRegistry& db = this->db(); 
+
+        // Find the GeometricField in the registry using the internal field name.
+        const VolumetricField& vfConst = db.lookupObject<VolumetricField>(volFieldName);
+
+        // Cast away constness to be able to control other boundary patch fields. 
+        VolumetricField& vf = const_cast<VolumetricField&>(vfConst); 
+
+        // Get the non-const reference to the boundary field of the GeometricField.
+        typename VolumetricField::GeometricBoundaryField& bf = vf.boundaryField();
+
+        // Find the controlled boundary patch field using the name defined by the user.
+        forAll (bf, patchI)
         {
-            if (! bf[patchI].updated())
+            // Control the boundary patch field using the recirculation rate.  
+            const fvPatch& p = bf[patchI].patch();
+
+            if (p.name() == controlledPatchName_)
             {
-                // Envoke a standard update first to avoid the field being later 
-                // overwritten.
-                bf[patchI].updateCoeffs(); 
+                if (! bf[patchI].updated())
+                {
+                    // Envoke a standard update first to avoid the field being later 
+                    // overwritten.
+                    bf[patchI].updateCoeffs(); 
+                }
+                // Compute new boundary field values.
+                Field<Type> newValues (bf[patchI] * 1.01); 
+
+                if (mag(max(newValues)) < mag(maxValue_))
+                {
+                    // Impose control on the controlled inlet patch field.  
+                    bf[patchI] == newValues; 
+                }
             }
-            // Impose control on the controlled inlet patch field.  
-            bf[patchI] == Field<Type>(bf[patchI]) * 1.01; 
         }
     }
+
+    // Update the recirculation rate. 
+    recirculationRate_ = newRecirculationRate; 
 
     // Mark the BC updated. 
     fvPatchField<Type>::updateCoeffs(); 

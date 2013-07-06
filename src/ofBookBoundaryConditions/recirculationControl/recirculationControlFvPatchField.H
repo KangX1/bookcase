@@ -76,9 +76,11 @@ protected:
     // Base boundary condition. 
     tmp<fvPatchField<Type> > baseTypeTmp_; 
 
+    const word applyControl_; 
     const word baseTypeName_; 
     const word fluxFieldName_; 
     const word controlledPatchName_;
+    const Type maxValue_;
 
     scalar recirculationRate_; 
 
