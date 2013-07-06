@@ -209,6 +209,8 @@ void Foam::recirculationControlFvPatchField<Type>::updateCoeffs()
     {
         // Update the decorated boundary condition. 
         baseTypeTmp_->updateCoeffs(); 
+        // Mark the BC updated. 
+        fvPatchField<Type>::updateCoeffs(); 
         return;
     }
 
@@ -246,12 +248,17 @@ void Foam::recirculationControlFvPatchField<Type>::updateCoeffs()
                     bf[patchI].updateCoeffs(); 
                 }
                 // Compute new boundary field values.
-                Field<Type> newValues (bf[patchI] * 1.01); 
+                Field<Type> newValues (bf[patchI]); 
 
-                if (mag(max(newValues)) < mag(maxValue_))
+                scalar maxNewValue = mag(max(newValues)); 
+
+                if (maxNewValue < SMALL)
+                {
+                    bf[patchI] == 0.1 * maxValue_; 
+                } else if (maxNewValue < mag(maxValue_))
                 {
                     // Impose control on the controlled inlet patch field.  
-                    bf[patchI] == newValues; 
+                    bf[patchI] == newValues * 1.01; 
                 }
             }
         }
