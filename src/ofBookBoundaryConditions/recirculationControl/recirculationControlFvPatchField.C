@@ -197,7 +197,7 @@ void Foam::recirculationControlFvPatchField<Type>::updateCoeffs()
         }
     }
 
-    // Compute the percentage of the inflow volumetric flux (recirculation rate).   
+    // Compute the recirculation rate.  
     scalar newRecirculationRate = min(1, negativeFlux / (totalFlux + SMALL));  
 
     Info << "Total flux " <<  totalFlux << endl;
