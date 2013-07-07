@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 awk '/Time = / {print $3}' $1 > time.dat
 awk '/Bubble area = / {print $4}' $1 > isoBubbleArea.dat
@@ -9,5 +9,6 @@ sed -i 's/)//g' isoBubbleCentre.dat
 
 paste time.dat isoBubbleArea.dat isoBubbleCentre.dat > isoBubble.dat
 
+rm -rf time.dat
 rm -rf isoBubbleArea.dat
 rm -rf isoBubbleCentre.dat 

@@ -1,3 +1,0 @@
-tabulatedRigidBodyDisplacementPointPatchVectorField.C
-
-LIB = $(FOAM_USER_LIBBIN)/libtabulatedRigidBodyDisplacement
