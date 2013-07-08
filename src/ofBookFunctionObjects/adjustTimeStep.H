@@ -43,7 +43,7 @@ namespace Foam
 {
 
 // Forward declaration of classes
-class Time; 
+class Time;
 class dictionary;
 class polyMesh;
 class mapPolyMesh;
@@ -63,8 +63,6 @@ class adjustTimeStep
         const Time& time_; 
 
     // Private Member Functions
-    
-        const fvMesh& mesh() const;
 
 public:
 
@@ -73,13 +71,14 @@ public:
 
     // Constructors
 
+        //- Construct for given objectRegistry and dictionary.
+        //  Allow the possibility to load fields from files
         adjustTimeStep
         (
             const word& name,
             const Time& time,
             const dictionary& dict
         );
-
 
     //- Destructor
      ~adjustTimeStep();
