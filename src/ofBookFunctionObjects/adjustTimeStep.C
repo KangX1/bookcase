@@ -74,10 +74,7 @@ bool adjustTimeStep::read(const dictionary& dict)
 {
     Info << typeName << "::read" << endl;
 
-    // TODO: check if execution is necessary here, since execute follows the read, 
-    //       done in the constructor. 
-    // return execute(false); 
-    return true;
+    return execute(false); 
 }
 
 
