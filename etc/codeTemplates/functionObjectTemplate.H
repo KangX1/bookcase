@@ -43,7 +43,7 @@ namespace Foam
 {
 
 // Forward declaration of classes
-class objectRegistry;
+class Time;
 class dictionary;
 class polyMesh;
 class mapPolyMesh;
@@ -58,18 +58,11 @@ class TYPENAME
         public functionObject
 {
     // Private data
-    
-        //- Registry
-        const objectRegistry& obr_;
 
         //- Time
         const Time& time_; 
 
     // Private Member Functions
-
-        const objectRegistry& obr() const;
-
-        const fvMesh& mesh() const;
 
 public:
 
@@ -83,11 +76,9 @@ public:
         TYPENAME
         (
             const word& name,
-            const objectRegistry& unused,
-            const dictionary&,
-            const bool loadFromFilesUnused = false
+            const Time& time,
+            const dictionary& dict
         );
-
 
     //- Destructor
      ~TYPENAME();

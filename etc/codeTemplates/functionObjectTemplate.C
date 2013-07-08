@@ -45,30 +45,18 @@ addToRunTimeSelectionTable(functionObject, TYPENAME, dictionary);
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
-const objectRegistry& TYPENAME::obr() const
-{
-    return obr_;
-}
-
-
-const fvMesh& TYPENAME::mesh() const
-{
-    return static_cast<fvMesh const &>(obr_);
-}
-
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 TYPENAME::TYPENAME
 (
     const word& name,
-    const objectRegistry& obr,
-    const dictionary& dict,
-    const bool
+    const Time& time,
+    const dictionary& dict
 )
 :
     functionObject(name),
-    obr_(obr)
+    time_(time)
 {
     read(dict);
 }
@@ -86,7 +74,10 @@ bool TYPENAME::read(const dictionary& dict)
 {
     Info << typeName << "::read" << endl;
 
-    return execute(false); 
+    // TODO: check if execution is necessary here, since execute follows the read, 
+    //       done in the constructor. 
+    // return execute(false); 
+    return true;
 }
 
 
