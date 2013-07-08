@@ -23,7 +23,7 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "TYPENAME.H"
+#include "adjustTimeStep.H"
 #include "Time.H"
 #include "fvCFD.H"
 #include "unitConversion.H"
@@ -36,8 +36,8 @@ namespace Foam
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
-defineTypeNameAndDebug(TYPENAME, 0);
-addToRunTimeSelectionTable(functionObject, TYPENAME, dictionary); 
+defineTypeNameAndDebug(adjustTimeStep, 0);
+addToRunTimeSelectionTable(functionObject, adjustTimeStep, dictionary); 
 
 
 // * * * * * * * * * * * * * * * Local Functions * * * * * * * * * * * * * * //
@@ -45,30 +45,18 @@ addToRunTimeSelectionTable(functionObject, TYPENAME, dictionary);
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
-const objectRegistry& TYPENAME::obr() const
-{
-    return obr_;
-}
-
-
-const fvMesh& TYPENAME::mesh() const
-{
-    return static_cast<fvMesh const &>(obr_);
-}
-
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-TYPENAME::TYPENAME
+adjustTimeStep::adjustTimeStep
 (
     const word& name,
-    const objectRegistry& obr,
-    const dictionary& dict,
-    const bool
+    const Time& time,
+    const dictionary& dict
 )
 :
     functionObject(name),
-    obr_(obr)
+    time_(time)
 {
     read(dict);
 }
@@ -76,13 +64,13 @@ TYPENAME::TYPENAME
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
 
-TYPENAME::~TYPENAME()
+adjustTimeStep::~adjustTimeStep()
 {}
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-bool TYPENAME::read(const dictionary& dict)
+bool adjustTimeStep::read(const dictionary& dict)
 {
     Info << typeName << "::read" << endl;
 
@@ -90,13 +78,13 @@ bool TYPENAME::read(const dictionary& dict)
 }
 
 
-bool TYPENAME::execute(const bool forceWrite)
+bool adjustTimeStep::execute(const bool forceWrite)
 {
     Info << typeName << "::execute" << endl;
     return true;
 }
 
-bool TYPENAME::start()
+bool adjustTimeStep::start()
 {
     Info << typeName << "::start" << endl;
 
@@ -104,7 +92,7 @@ bool TYPENAME::start()
 }
 
 
-bool TYPENAME::end()
+bool adjustTimeStep::end()
 {
     Info << typeName << "::end" << endl;
 
@@ -112,7 +100,7 @@ bool TYPENAME::end()
 }
 
 
-bool TYPENAME::timeSet()
+bool adjustTimeStep::timeSet()
 {
     Info << typeName << "::timeSet" << endl;
 
@@ -120,17 +108,17 @@ bool TYPENAME::timeSet()
 }
 
 
-void TYPENAME::write()
+void adjustTimeStep::write()
 {
     Info << typeName << "::write" << endl;
 }
 
-void TYPENAME::updateMesh(const mapPolyMesh& map)
+void adjustTimeStep::updateMesh(const mapPolyMesh& map)
 {
     Info << typeName << "::updateMesh" << endl;
 }
 
-void TYPENAME::movePoints(const polyMesh& mesh)
+void adjustTimeStep::movePoints(const polyMesh& mesh)
 {
     Info << typeName << "::movePoints" << endl;
 }

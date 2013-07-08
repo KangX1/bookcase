@@ -30,8 +30,8 @@ SourceFiles
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef TYPENAME_H
-#define TYPENAME_H
+#ifndef adjustTimeStep_H
+#define adjustTimeStep_H
 
 #include "stringList.H"
 #include "pointField.H"
@@ -43,7 +43,7 @@ namespace Foam
 {
 
 // Forward declaration of classes
-class objectRegistry;
+class Time; 
 class dictionary;
 class polyMesh;
 class mapPolyMesh;
@@ -53,44 +53,36 @@ class fvMesh;
                          A templated functionObject
 \*---------------------------------------------------------------------------*/
 
-class TYPENAME
+class adjustTimeStep
     :
         public functionObject
 {
     // Private data
-    
-        //- Registry
-        const objectRegistry& obr_;
 
         //- Time
         const Time& time_; 
 
     // Private Member Functions
-
-        const objectRegistry& obr() const;
-
+    
         const fvMesh& mesh() const;
 
 public:
 
     //- Runtime type information
-    TypeName("TYPENAME");
+    TypeName("adjustTimeStep");
 
     // Constructors
 
-        //- Construct for given objectRegistry and dictionary.
-        //  Allow the possibility to load fields from files
-        TYPENAME
+        adjustTimeStep
         (
             const word& name,
-            const objectRegistry& unused,
-            const dictionary&,
-            const bool loadFromFilesUnused = false
+            const Time& time,
+            const dictionary& dict
         );
 
 
     //- Destructor
-     ~TYPENAME();
+     ~adjustTimeStep();
 
 
     // Member Functions
