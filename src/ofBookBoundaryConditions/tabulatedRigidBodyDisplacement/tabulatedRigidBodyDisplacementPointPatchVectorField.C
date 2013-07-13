@@ -30,17 +30,13 @@ License
 #include "fvMesh.H"
 #include "volFields.H"
 #include "uniformDimensionedFields.H"
-#include "forces.H"
 #include "tabulated6DoFMotion.H"
 #include "Tuple2.H"
 #include "IFstream.H"
 #include "interpolateSplineXY.H"
-#include "mathematicalConstants.H"
 #include "transformField.H"
 
-using namespace Foam::constant::mathematical;
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+    // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
 {
