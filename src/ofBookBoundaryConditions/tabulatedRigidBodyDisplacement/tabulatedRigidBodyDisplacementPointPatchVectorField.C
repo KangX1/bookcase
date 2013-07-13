@@ -50,7 +50,8 @@ tabulatedRigidBodyDisplacementPointPatchVectorField
     const DimensionedField<vector, pointMesh>& iF
 )
 :
-    fixedValuePointPatchField<vector>(p, iF)
+    fixedValuePointPatchField<vector>(p, iF),
+    dict_()
 {}
 
 
@@ -62,9 +63,10 @@ tabulatedRigidBodyDisplacementPointPatchVectorField
     const dictionary& dict
 )
 :
-    fixedValuePointPatchField<vector>(p, iF, dict)
+    fixedValuePointPatchField<vector>(p, iF, dict),
+    dict_(dict)
 {
-        updateCoeffs();
+    updateCoeffs();
 }
 
 
@@ -77,7 +79,8 @@ tabulatedRigidBodyDisplacementPointPatchVectorField
     const pointPatchFieldMapper& mapper
 )
 :
-    fixedValuePointPatchField<vector>(ptf, p, iF, mapper)
+    fixedValuePointPatchField<vector>(ptf, p, iF, mapper),
+    dict_()
 {}
 
 
@@ -88,7 +91,8 @@ tabulatedRigidBodyDisplacementPointPatchVectorField
     const DimensionedField<vector, pointMesh>& iF
 )
 :
-    fixedValuePointPatchField<vector>(ptf, iF)
+    fixedValuePointPatchField<vector>(ptf, iF),
+    dict_()
 {}
 
 
@@ -129,35 +133,22 @@ void tabulatedRigidBodyDisplacementPointPatchVectorField::updateCoeffs()
     const Time& t = mesh.time();
     const pointPatch& ptPatch = this->patch();
 
-    const dictionary  dynamicMeshCoeffs
+    autoPtr<solidBodyMotionFunction> SBMFPtr
     (
-        IOdictionary
-        (
-            IOobject
-            (
-                "dynamicMeshDict",
-                t.constant(),
-                mesh,
-                IOobject::MUST_READ_IF_MODIFIED,
-                IOobject::NO_WRITE,
-                false
-            )
-        ).subDict("tabulated6DoFMotionCoeffs")
+        solidBodyMotionFunction::New(dict_, t)
     );
-
-    autoPtr<solidBodyMotionFunction> SBMFPtr(solidBodyMotionFunction::New(dynamicMeshCoeffs, t));
 
     pointField vectorIO(mesh.points().size(),vector::zero);
 
     vectorIO = transform
-        (
-            SBMFPtr().transformation(),
-            ptPatch.localPoints()
-        );
+    (
+        SBMFPtr().transformation(),
+        ptPatch.localPoints()
+    );
 
     Field<vector>::operator=
     (
-              vectorIO-ptPatch.localPoints()
+        vectorIO-ptPatch.localPoints()
     );
 
     fixedValuePointPatchField<vector>::updateCoeffs();

@@ -54,6 +54,7 @@ class tabulatedRigidBodyDisplacementPointPatchVectorField
     public fixedValuePointPatchField<vector>
 {
     // Private data
+    const dictionary dict_;
 
 
 public:
