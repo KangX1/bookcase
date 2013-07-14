@@ -28,12 +28,7 @@ License
 #include "addToRunTimeSelectionTable.H"
 #include "Time.H"
 #include "fvMesh.H"
-#include "volFields.H"
-#include "uniformDimensionedFields.H"
-#include "tabulated6DoFMotion.H"
-#include "Tuple2.H"
 #include "IFstream.H"
-#include "interpolateSplineXY.H"
 #include "transformField.H"
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

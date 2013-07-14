@@ -37,8 +37,6 @@ SourceFiles
 
 #include "fixedValuePointPatchField.H"
 #include "solidBodyMotionFunction.H"
-#include "primitiveFields.H"
-#include "Vector2D.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
