@@ -53,8 +53,6 @@ class TYPENAME
         //- Time
         const Time& time_; 
 
-    // Private Member Functions
-
 public:
 
     //- Runtime type information

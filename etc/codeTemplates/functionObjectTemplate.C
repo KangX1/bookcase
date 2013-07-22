@@ -56,7 +56,6 @@ TYPENAME::TYPENAME
     functionObject(name),
     time_(time)
 {
-    read(dict);
 }
 
 
