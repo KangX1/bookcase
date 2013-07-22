@@ -24,10 +24,8 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "TYPENAME.H"
-#include "Time.H"
-#include "fvCFD.H"
-#include "unitConversion.H"
 #include "addToRunTimeSelectionTable.H"
+#include "error.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -72,58 +70,51 @@ TYPENAME::~TYPENAME()
 
 bool TYPENAME::read(const dictionary& dict)
 {
-    Info << typeName << "::read" << endl;
-
-    // TODO: check if execution is necessary here, since execute follows the read, 
-    //       done in the constructor. 
-    // return execute(false); 
-    return true;
+    notImplemented("TYPENAME::read(const dictionary&)"); 
+    return execute(false); 
 }
 
 
 bool TYPENAME::execute(const bool forceWrite)
 {
-    Info << typeName << "::execute" << endl;
+    notImplemented("TYPENAME::execute(const bool)"); 
     return true;
 }
 
 bool TYPENAME::start()
 {
-    Info << typeName << "::start" << endl;
-
+    notImplemented("TYPENAME::start()"); 
     return true;
 }
 
 
 bool TYPENAME::end()
 {
-    Info << typeName << "::end" << endl;
-
+    notImplemented("TYPENAME::end()"); 
     return execute(false);
 }
 
 
 bool TYPENAME::timeSet()
 {
-    Info << typeName << "::timeSet" << endl;
-
+    notImplemented("TYPENAME::timeSet()"); 
     return true;
 }
 
 
 void TYPENAME::write()
 {
-    Info << typeName << "::write" << endl;
+    notImplemented("TYPENAME::write()"); 
 }
 
 void TYPENAME::updateMesh(const mapPolyMesh& map)
 {
-    Info << typeName << "::updateMesh" << endl;
+    notImplemented("TYPENAME::updateMesh(const mapPolyMesh&)"); 
 }
 
 void TYPENAME::movePoints(const polyMesh& mesh)
 {
-    Info << typeName << "::movePoints" << endl;
+    notImplemented("TYPENAME::movePoints(const polyMesh&)"); 
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

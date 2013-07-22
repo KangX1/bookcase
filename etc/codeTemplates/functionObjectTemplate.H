@@ -33,21 +33,12 @@ SourceFiles
 #ifndef TYPENAME_H
 #define TYPENAME_H
 
-#include "stringList.H"
-#include "pointField.H"
 #include "functionObject.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
 {
-
-// Forward declaration of classes
-class Time;
-class dictionary;
-class polyMesh;
-class mapPolyMesh;
-class fvMesh;
 
 /*---------------------------------------------------------------------------*\
                          A templated functionObject
@@ -87,7 +78,7 @@ public:
     // Member Functions
 
         //- Access time
-        const Time& time() const
+        const Time& getTime() const
         {
             return time_; 
         }
