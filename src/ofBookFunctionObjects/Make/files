@@ -1,2 +1,3 @@
-adjustTimeStep.C
+adjustTimeStep/adjustTimeStep.C
+
 LIB = $(FOAM_USER_LIBBIN)/libofBookFunctionObjects
