@@ -36,11 +36,7 @@ SourceFiles
 #define tabulatedRigidBodyDisplacementPointPatchVectorField_H
 
 #include "fixedValuePointPatchField.H"
-#include "sixDoFRigidBodyMotion.H"
-
 #include "solidBodyMotionFunction.H"
-#include "primitiveFields.H"
-#include "Vector2D.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -56,6 +52,7 @@ class tabulatedRigidBodyDisplacementPointPatchVectorField
     public fixedValuePointPatchField<vector>
 {
     // Private data
+    const dictionary dict_;
 
 
 public:
