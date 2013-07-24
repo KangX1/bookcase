@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
         IOobject
         (
             "fieldCellSet", 
-            "constant/polyMesh/sets",
+            runTime.timeName(),  
             runTime, 
             IOobject::NO_READ, 
             IOobject::AUTO_WRITE
@@ -91,8 +91,8 @@ int main(int argc, char *argv[])
         mesh
     ); 
 
-    // Create a set of cells that have the value of "field" equal to one using 
-    // C++ STL function objects (C++03 standard). 
+    // Create a set of cells that have the value of the "field" equal to 1, 
+    // using C++ STL function objects (C++03 standard). 
     fcs.collectCells(field, std::bind1st(std::equal_to<scalar>(), 1));  
 
     // Write the cell set. 
