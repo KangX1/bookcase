@@ -29,78 +29,30 @@ Description
 
 SourceFiles
     fieldCellSet.C
-    fieldCellSetTemplates.C
 
 Author:
     Tomislav Maric (tomislav.maric@gmx.com)
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef fieldCellSet_H
-#define fieldCellSet_H
+#include "fieldCellSet.H"
 
-#include "HashSet.H"
-#include "regIOobject.H"
-#include "polyMesh.H"
-#include "volFields.H"
+namespace Foam {
 
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
-namespace Foam
+template<typename Collector>
+void fieldCellSet::collectCells(const volScalarField& field, Collector col)
 {
-    class polyMesh;
-
-/*---------------------------------------------------------------------------*\
-                         Class fieldCellSet Declaration
-\*---------------------------------------------------------------------------*/
-
-class fieldCellSet
-:
-    public labelHashSet, 
-    public regIOobject
-{
-
-public:
-
-    // TODO: foamToVTK expects the "cellSet" object in the header.  
-    //       Move to the constructor: modify the IOobject name after 
-    //       construction. 
-    TypeName ("cellSet"); 
-   
-    const polyMesh& mesh_; 
-
-// Constructors
-        
-    //- Construct from polyMesh and name. Checks for valid cell ids.
-    fieldCellSet 
-    (
-        const IOobject& io, 
-        const polyMesh& mesh
-    );
-
-// Member Functions
-    
-    //- Write
-    bool writeData(Ostream& os) const;  
-
-    //- Edit
-    template<typename Collector>
-    void collectCells(const volScalarField& field, Collector col); 
-
-};
+    forAll(field, I)
+    {
+        if (col(field[I]))
+        {
+            insert(I); 
+        }
+    }
+}
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 } // End namespace Foam
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
-#ifdef NoRepository
-#   include "fieldCellSetTemplates.C"
-#endif
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
-#endif
-
-// ************************************************************************* //

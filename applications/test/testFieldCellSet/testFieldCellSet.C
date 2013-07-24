@@ -33,6 +33,7 @@ Authors
 \*---------------------------------------------------------------------------*/
 
 #include "fvCFD.H"
+#include <functional>
 #include "fieldCellSet.H"
 #include "OFstream.H"
 
@@ -41,17 +42,47 @@ Authors
 
 int main(int argc, char *argv[])
 {
+    argList::addOption
+    (
+        "field",
+        "Name of the field to be averaged."
+    );
+
     #include "setRootCase.H"
     #include "createTime.H"
     #include "createMesh.H"
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-    fieldCellSet f1
+    if (!args.optionFound("field"))
+    {
+        FatalErrorIn
+        (
+            "main()"
+        )   << "Please use option '-field' to provide the name of the field on which the cell set is based." << endl
+            << exit(FatalError);
+    }
+
+    const word fieldName = args.optionRead<word>("field");
+
+    volScalarField field
+    (
+        IOobject 
+        (
+            fieldName,
+            runTime.timeName(),
+            mesh,
+            IOobject::MUST_READ,
+            IOobject::NO_WRITE
+        ),
+        mesh
+    );
+
+    fieldCellSet fcs 
     (
         IOobject
         (
-            "thresholdCellSet", 
+            "fieldCellSet", 
             "constant/polyMesh/sets",
             runTime, 
             IOobject::NO_READ, 
@@ -60,9 +91,12 @@ int main(int argc, char *argv[])
         mesh
     ); 
 
+    // Create a set of cells that have the value of "field" equal to one using 
+    // C++ STL function objects (C++03 standard). 
+    fcs.collectCells(field, std::bind1st(std::equal_to<scalar>(), 1));  
 
-
-    f1.write(); 
+    // Write the cell set. 
+    fcs.write(); 
 
     Info<< "\nEnd\n" << endl;
     return 0;
