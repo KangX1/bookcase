@@ -30,6 +30,7 @@ Description
 
 #include "fvCFD.H"
 #include "fieldCellSet.H"
+#include "OFstream.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 // Main program:
@@ -42,9 +43,16 @@ int main(int argc, char *argv[])
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-    fieldCellSet f(mesh, "threshold"); 
+    fieldCellSet f1(mesh); 
 
+    f1.insert(0);
+    f1.insert(1);
+    f1.insert(2);
+    f1.insert(3);
 
+    OFstream outFile("fieldSet"); 
+
+    outFile << f1 << endl;
 
     Info<< "\nEnd\n" << endl;
     return 0;

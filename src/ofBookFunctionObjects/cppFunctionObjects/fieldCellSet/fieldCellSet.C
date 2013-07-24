@@ -32,13 +32,11 @@ License
 
 Foam::fieldCellSet::fieldCellSet 
 (
-    const polyMesh& mesh,
-    const word& name,
-    readOption r,
-    writeOption w
+    const polyMesh& mesh
 )
 :
-    cellSet(mesh, name, r, w) 
+    labelHashSet(),
+    mesh_(mesh)
 {}
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //

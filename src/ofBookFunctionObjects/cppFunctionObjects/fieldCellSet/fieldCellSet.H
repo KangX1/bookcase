@@ -38,12 +38,14 @@ Author:
 #ifndef fieldCellSet_H
 #define fieldCellSet_H
 
-#include "cellSet.H"
+#include "HashSet.H"
+#include "polyMesh.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
 {
+    class polyMesh;
 
 /*---------------------------------------------------------------------------*\
                          Class fieldCellSet Declaration
@@ -51,20 +53,19 @@ namespace Foam
 
 class fieldCellSet
 :
-    public cellSet 
+    public labelHashSet 
 {
 
 public:
+   
+    const polyMesh& mesh_; 
 
     // Constructors
         
         //- Construct from polyMesh and name. Checks for valid cell ids.
         fieldCellSet 
         (
-            const polyMesh& mesh,
-            const word& name,
-            readOption r=MUST_READ,
-            writeOption w=NO_WRITE
+            const polyMesh& mesh
         );
 };
 
