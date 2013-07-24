@@ -25,6 +25,10 @@ Application
     testFieldCellSet
 
 Description
+    Tester applictation for the field based cellSet example.
+
+Authors
+    Tomislav Maric (tomislav.maric@gmx.com)
 
 \*---------------------------------------------------------------------------*/
 
@@ -43,16 +47,22 @@ int main(int argc, char *argv[])
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-    fieldCellSet f1(mesh); 
+    fieldCellSet f1
+    (
+        IOobject
+        (
+            "thresholdCellSet", 
+            "constant/polyMesh/sets",
+            runTime, 
+            IOobject::NO_READ, 
+            IOobject::AUTO_WRITE
+        ),
+        mesh
+    ); 
 
-    f1.insert(0);
-    f1.insert(1);
-    f1.insert(2);
-    f1.insert(3);
 
-    OFstream outFile("fieldSet"); 
 
-    outFile << f1 << endl;
+    f1.write(); 
 
     Info<< "\nEnd\n" << endl;
     return 0;

@@ -39,6 +39,7 @@ Author:
 #define fieldCellSet_H
 
 #include "HashSet.H"
+#include "regIOobject.H"
 #include "polyMesh.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -53,10 +54,13 @@ namespace Foam
 
 class fieldCellSet
 :
-    public labelHashSet 
+    public labelHashSet, 
+    public regIOobject
 {
 
 public:
+
+    TypeName ("cellSet"); 
    
     const polyMesh& mesh_; 
 
@@ -65,8 +69,17 @@ public:
         //- Construct from polyMesh and name. Checks for valid cell ids.
         fieldCellSet 
         (
+            const IOobject& io, 
             const polyMesh& mesh
         );
+
+    // Member Functions
+    
+        //- Write
+        bool writeData(Ostream& os) const;  
+
+        //- Edit
+
 };
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

@@ -21,34 +21,52 @@ License
     You should have received a copy of the GNU General Public License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
+Class
+    Foam::fieldCellSet
+
+Description
+    Creates a set of cells using function objects. 
+
+SourceFiles
+    fieldCellSet.C
+
+Author:
+    Tomislav Maric (tomislav.maric@gmx.com)
+
 \*---------------------------------------------------------------------------*/
 
 #include "fieldCellSet.H"
+#include "typeInfo.H"
 
-// * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
+namespace Foam {
 
+// * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
+
+defineTypeNameAndDebug(fieldCellSet, 0); 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::fieldCellSet::fieldCellSet 
+fieldCellSet::fieldCellSet 
 (
+    const IOobject& io, 
     const polyMesh& mesh
 )
 :
     labelHashSet(),
+    regIOobject(io),
     mesh_(mesh)
 {}
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
+bool fieldCellSet::writeData(Ostream& os) const
+{
+    os << *this; 
+    return os.good(); 
+}
 
-// * * * * * * * * * * * * * * Member Operators  * * * * * * * * * * * * * * //
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+} // End namespace Foam
 
-// * * * * * * * * * * * * * * Friend Functions  * * * * * * * * * * * * * * //
-
-
-// * * * * * * * * * * * * * * Friend Operators * * * * * * * * * * * * * * //
-
-
-// ************************************************************************* //
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
