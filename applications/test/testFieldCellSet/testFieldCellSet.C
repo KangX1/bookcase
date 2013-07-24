@@ -38,8 +38,13 @@ int main(int argc, char *argv[])
 {
     #include "setRootCase.H"
     #include "createTime.H"
+    #include "createMesh.H"
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+    fieldCellSet f(mesh, "threshold"); 
+
+
 
     Info<< "\nEnd\n" << endl;
     return 0;
