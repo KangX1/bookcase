@@ -100,12 +100,6 @@ bool TYPENAME::timeSet()
     return true;
 }
 
-
-void TYPENAME::write()
-{
-    notImplemented("TYPENAME::write()"); 
-}
-
 void TYPENAME::updateMesh(const mapPolyMesh& map)
 {
     notImplemented("TYPENAME::updateMesh(const mapPolyMesh&)"); 

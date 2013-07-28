@@ -93,9 +93,6 @@ public:
         //- Execute the "endCalls" at the final time-loop
          bool end();
 
-        //- Write, execute the "writeCalls"
-         void write();
-
         //- Called when time was set at the end of the Time::operator++
          bool timeSet();
 
