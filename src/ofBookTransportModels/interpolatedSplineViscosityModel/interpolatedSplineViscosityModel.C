@@ -145,7 +145,7 @@ void Foam::viscosityModels::interpolatedSplineViscosityModel::loadDataTable()
        dataFileName_
     );
 
-    IFstream dataStream(timeDataFileName);
+    IFstream dataStream("constant/"+timeDataFileName);
 
     if (dataStream.good())
     {
