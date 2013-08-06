@@ -56,8 +56,10 @@ Foam::volScalarField
 Foam::viscosityModels::interpolatedSplineViscosityModel::calcNu()
 {
 
+    //open and parse the rheometry data file
     loadDataTable();
 
+    //initialize a viscosity field to return later
     volScalarField viscosityField
     (
         IOobject
@@ -73,8 +75,11 @@ Foam::viscosityModels::interpolatedSplineViscosityModel::calcNu()
         zeroGradientFvPatchScalarField::typeName
     );
 
+    //Access the local strain rate using the private function
     const volScalarField& localStrainRate = strainRate();
-
+        
+    //Loop through all cells and calulate the effective viscosity 
+    //  using the spline interpolation class
     forAll(localStrainRate.internalField(),cellI)
     {
         scalar& localMu = viscosityField.internalField()[cellI];
@@ -145,8 +150,10 @@ void Foam::viscosityModels::interpolatedSplineViscosityModel::loadDataTable()
        dataFileName_
     );
 
+    //Lookup the rheometry data in /constant/
     IFstream dataStream("constant/"+timeDataFileName);
 
+    //Verify and parse the table into respective members
     if (dataStream.good())
     {
         List<Tuple2<scalar, scalar> > timeValues
