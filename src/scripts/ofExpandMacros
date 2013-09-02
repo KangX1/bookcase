@@ -54,6 +54,9 @@ INCLUDE=${INCLUDE//\$/}
 
 # Replace LIB_SRC
 INCLUDE=${INCLUDE//(LIB_SRC)/$FOAM_SRC}
+INCLUDE="-I./lnInclude $INCLUDE"
+
+echo INCLUDE = $INCLUDE
 
 # Expand additional inclusion parameter
 ADDITIONAL=$(eval echo "\$$2")
