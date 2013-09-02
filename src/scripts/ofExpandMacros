@@ -38,6 +38,13 @@
 
 #!/bin/bash
 
+if [ -z $WM_PROJECT ]; 
+then
+    echo "ERROR: OpenFOAM not properly configured."
+    echo "       Please source the 'bashrc' configuration script."
+    exit 1
+fi
+
 # Get the target file name 
 FILE=${1##*/}
 
