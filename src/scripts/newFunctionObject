@@ -108,7 +108,7 @@ for EXT in .H .C; do
 
 done
    
-echo "$SCRIPT: addign files to Make/files"
+echo "$SCRIPT: adding files to Make/files"
 sed -i "1i $SUBDIR$TYPENAME.C" Make/files
 
 #------------------------------------------------------------------------------
