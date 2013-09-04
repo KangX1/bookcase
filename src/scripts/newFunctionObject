@@ -78,7 +78,7 @@ case "$1" in
         echo "   Error: sub-directory exists"
         exit 1
     else
-        mkdir $SUBDIR
+        mkdir -p $SUBDIR
     fi
 
     TYPENAME=$3
