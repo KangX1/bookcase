@@ -14,7 +14,7 @@
 #--- About ---
 #
 #The script expands macros defined in a .cpp or .C file and outputs the result
-#into a new file within a created ExpandedMacros directory.
+#into a new file within a created expandedMacroCode directory.
 #
 #To expand OpenFOAM macros, the script must be called from a directory
 #containing the Make directory, otherwise it cannot find the include
@@ -77,15 +77,15 @@ INCLUDE=$(echo $INCLUDE)
 FVM_INCLUDE=$FOAM_SRC/finiteVolume/lnInclude
 
 # Check and create the expanded files directory 
-if [ ! -d ExpandedMacros ];
+if [ ! -d expandedMacroCode ];
 then
-    mkdir ExpandedMacros
+    mkdir expandedMacroCode
 fi
 
-echo "g++ -E -I$WM_PROJECT_DIR/src/OSspecific/POSIX/lnInclude -I$WM_PROJECT_DIR/src/OpenFOAM/lnInclude $INCLUDE $1 2>&1 > ExpandedMacros/$FILE-expanded"
+echo "g++ -E -I$WM_PROJECT_DIR/src/OSspecific/POSIX/lnInclude -I$WM_PROJECT_DIR/src/OpenFOAM/lnInclude $INCLUDE $1 2>&1 > expandedMacroCode/$FILE-expanded"
 
-g++ -E -I$WM_PROJECT_DIR/src/OSspecific/POSIX/lnInclude -I$WM_PROJECT_DIR/src/OpenFOAM/lnInclude -I$FVM_INCLUDE $INCLUDE $1 2>&1 > ExpandedMacros/$FILE-expanded 
+g++ -E -I$WM_PROJECT_DIR/src/OSspecific/POSIX/lnInclude -I$WM_PROJECT_DIR/src/OpenFOAM/lnInclude -I$FVM_INCLUDE $INCLUDE $1 2>&1 > expandedMacroCode/$FILE-expanded 
 
-astyle ExpandedMacros/$FILE-expanded
+astyle expandedMacroCode/$FILE-expanded
 
-rm ExpandedMacros/$FILE-expanded.*
+rm expandedMacroCode/$FILE-expanded.*
