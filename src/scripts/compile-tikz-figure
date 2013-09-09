@@ -1,4 +1,5 @@
 #!/usr/bin/bash
 
 sed "s/FIGURE/$1.tikz/g" input-figure.tex > $1.tex
-pdflatex $1.tex
+latex $1.tex
+dvisvgm $1.dvi
