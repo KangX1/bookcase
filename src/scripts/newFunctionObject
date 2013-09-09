@@ -1,0 +1,114 @@
+#!/bin/sh
+#------------------------------------------------------------------------------
+# =========                 |
+# \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+#  \\    /   O peration     |
+#   \\  /    A nd           | Copyright (C) 2011 OpenFOAM Foundation
+#    \\/     M anipulation  |
+#-------------------------------------------------------------------------------
+# License
+#     This file is part of OpenFOAM.
+#
+#     OpenFOAM is free software: you can redistribute it and/or modify it
+#     under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     OpenFOAM is distributed in the hope that it will be useful, but WITHOUT
+#     ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+#     FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+#     for more details.
+#     You should have received a copy of the GNU General Public License
+#     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
+#
+# SCRIPT
+#     foamNewFunctionObject
+#
+# Description
+#     Create new standard OpenFOAM source file structure for a custom 
+#     function object.
+#
+#------------------------------------------------------------------------------
+
+SCRIPT=${0##*/}
+TEMPLATE="$OFBOOK_CODE_PROJECT_DIR/etc/codeTemplates/functionObjectTemplate"
+
+# NOTE : The script is expected to be run in the library directory.  
+if [ ! -d Make ]
+then
+    mkdir Make 
+    echo "$SCRIPT: Creating Make/options"
+    $WM_DIR/scripts/makeOptions
+
+    PWD=$(pwd)
+
+    LIB=${PWD##*/}
+
+    echo "LIB = \$(FOAM_USER_LIBBIN)/lib$LIB" > Make/files
+fi
+
+usage() {
+    while [ "$#" -ge 1 ]; do echo "$1"; shift; done
+    cat << USAGE
+Usage: $SCRIPT [OPTION] <functionObjectType>
+options:
+  -help             print the usage
+  -d                create the sub-directory to store the function object code
+
+* create new standard OpenFOAM source file structure for a function object 
+  functionObjectType
+
+USAGE
+    exit 1
+}
+
+TYPENAME="$1"
+SUBDIR=""
+
+case "$1" in
+(-h | -help)
+    usage
+    ;;
+(-d | -dir)
+
+    SUBDIR=$2/
+
+    if [ -e "$SUBDIR" ]
+    then
+        echo "   Error: sub-directory exists"
+        exit 1
+    else
+        mkdir -p $SUBDIR
+    fi
+
+    TYPENAME=$3
+
+    ;; 
+(*)
+    ;;
+esac
+
+# Create the function object files. 
+FUNCTIONOBJECT=FunctionObject
+
+for EXT in .H .C; do 
+
+    FILENAME=$SUBDIR$TYPENAME
+
+    echo "$SCRIPT: Creating new file $SUBDIR$FILENAME"
+
+    if [ -e "$SUBDIR$FILENAME" ]
+    then
+        echo "   Error: file exists"
+        exit 1
+    fi
+
+    # Process the template file.  
+    sed "s/TYPENAME/$TYPENAME/g" $TEMPLATE$EXT > $SUBDIR$TYPENAME$EXT
+
+done
+   
+echo "$SCRIPT: adding files to Make/files"
+sed -i "1i $SUBDIR$TYPENAME.C" Make/files
+
+#------------------------------------------------------------------------------

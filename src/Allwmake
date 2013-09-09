@@ -6,3 +6,4 @@ wmakeLnInclude -f .
 wmake libso bubbleCalc
 wmake libso ofBookBoundaryConditions 
 wmake libso ofBookTransportModels
+wmake libso ofBookFunctionObjects
