@@ -63,7 +63,7 @@ wettedCellsFunctionObject::wettedCellsFunctionObject
             dict.lookup("volFractionField") 
         )
     ),
-    wettedCells_
+    wettedCellsPtr_
     ( 
         new volScalarField 
         (
@@ -83,9 +83,10 @@ wettedCellsFunctionObject::wettedCellsFunctionObject
                 0.0
             )
         )
-    )
+    ),
+    wettedTolerance_(readScalar(dict.lookup("wettedTolerance"))),
+    wettedDomainPercent_(0)
 {}
-
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
 
@@ -104,38 +105,74 @@ bool wettedCellsFunctionObject::read(const dictionary& dict)
 
 bool wettedCellsFunctionObject::execute(const bool forceWrite)
 {
-    notImplemented("wettedCellsFunctionObject::execute(const bool)"); 
+    calcWettedCells(); 
+    calcWettedDomainPercent(); 
+    report(); 
+
+    if (forceWrite)
+    {
+        wettedCellsPtr_->write(); 
+    }
+
     return true;
+}
+
+void wettedCellsFunctionObject::calcWettedCells()
+{
+    volScalarField& wettedCells_ = wettedCellsPtr_(); 
+
+    forAll (alpha1_, I)
+    {
+        if (isWetted(alpha1_[I]))
+        {
+            wettedCells_[I] = 1; 
+        }
+    }
+}
+
+void wettedCellsFunctionObject::calcWettedDomainPercent()
+{
+    scalar wettedCellsSum = 0;  
+
+    const volScalarField& wettedCells = wettedCellsPtr_(); 
+
+    forAll (wettedCells, I)
+    {
+        if (wettedCells[I] == 1)
+        {
+            wettedCellsSum += 1; 
+        }
+    }
+
+    wettedDomainPercent_ = wettedCellsSum / alpha1_.size() * 100; 
+}
+
+void wettedCellsFunctionObject::report()
+{
+    Info << "Wetted " << wettedDomainPercent_ 
+        << " % of the domain." << endl; 
 }
 
 bool wettedCellsFunctionObject::start()
 {
-    notImplemented("wettedCellsFunctionObject::start()"); 
+    execute(true); 
     return true;
 }
 
 
 bool wettedCellsFunctionObject::end()
 {
-    notImplemented("wettedCellsFunctionObject::end()"); 
     return execute(false);
-}
-
-
-bool wettedCellsFunctionObject::timeSet()
-{
-    notImplemented("wettedCellsFunctionObject::timeSet()"); 
-    return true;
 }
 
 void wettedCellsFunctionObject::updateMesh(const mapPolyMesh& map)
 {
-    notImplemented("wettedCellsFunctionObject::updateMesh(const mapPolyMesh&)"); 
+    execute(false); 
 }
 
 void wettedCellsFunctionObject::movePoints(const polyMesh& mesh)
 {
-    notImplemented("wettedCellsFunctionObject::movePoints(const polyMesh&)"); 
+    execute(false);  
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

@@ -22,11 +22,14 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Description
-    Template for use with code generation of a OutputFilter 
-    functionObject.
+    A function object that marks cells in the domain that get wetted
+    during the course of the simulation.
 
 SourceFiles
-    functionObject.C
+    wettedCellsFunctionObject.C
+
+Authors: 
+    Tomislav Maric tomislav.maric@gmx.com
 
 \*---------------------------------------------------------------------------*/
 
@@ -61,7 +64,13 @@ class wettedCellsFunctionObject
         const volScalarField& alpha1_; 
 
         //- Wetted cells field.
-        autoPtr<volScalarField> wettedCells_; 
+        autoPtr<volScalarField> wettedCellsPtr_; 
+
+        //- Wetted cell tolerance. 
+        scalar wettedTolerance_; 
+
+        //- Wetted domain percent.
+        scalar wettedDomainPercent_; 
 
 public:
 
@@ -97,6 +106,28 @@ public:
         //- Execute the "executeCalls" at each time-step
          bool execute(const bool forceWrite=false);
 
+        //- Calculate wetted cells
+         virtual void calcWettedCells(); 
+
+        //- Test if volume fraction value marks the cell wetted. 
+         bool isWetted(scalar s)
+         {
+             return (s > wettedTolerance_); 
+         } 
+
+
+        //- Compute wetted domain percent.
+         virtual void calcWettedDomainPercent(); 
+
+        //- Get wetted domain perceintage.
+         scalar getWettedDomainPercent()
+         {
+             return wettedDomainPercent_; 
+         } 
+
+        //- Report 
+        virtual void report(); 
+        
         //- Called at the start of the time-loop
          bool start();
 
@@ -104,7 +135,7 @@ public:
          bool end();
 
         //- Called when time was set at the end of the Time::operator++
-         bool timeSet();
+         //bool timeSet();
 
         //- Update for changes of mesh
          void updateMesh(const mapPolyMesh&);
