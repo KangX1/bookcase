@@ -1,5 +1,5 @@
 #!/usr/bin/bash
 
-sed "s/FIGURE/$1.tikz/g" input-figure.tex > $1.tex
+sed "s/FIGURE/$1.tikz/g" $OFBOOK_CODE_SRC/scripts/input-figure.tex > $1.tex
 latex $1.tex
-dvisvgm $1.dvi
+dvisvgm -n -a -e $1.dvi
