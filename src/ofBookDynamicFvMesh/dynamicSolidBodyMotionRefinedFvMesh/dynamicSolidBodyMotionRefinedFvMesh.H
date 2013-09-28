@@ -37,6 +37,7 @@ SourceFiles
 #define dynamicSolidBodyMotionRefinedFvMesh_H
 
 #include "dynamicRefineFvMesh.H"
+#include "solidBodyMotionFvMesh.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -49,48 +50,20 @@ namespace Foam
 
 class dynamicSolidBodyMotionRefinedFvMesh
 :
-    public dynamicRefineFvMesh 
+    public dynamicRefineFvMesh
 {
+
+    autoPtr<dynamicFvMesh> motionMeshPtr_; 
 
 public:
 
     //- Runtime type information
     TypeName("dynamicSolidBodyMotionRefinedFvMesh");
 
-
     // Constructors
 
         //- Construct from objectRegistry, and read/write options
         explicit dynamicSolidBodyMotionRefinedFvMesh(const IOobject& io);
-
-        //- Construct from components without boundary.
-        //  Boundary is added using addFvPatches() member function
-        //dynamicSolidBodyMotionRefinedFvMesh
-        //(
-            //const IOobject& io,
-            //const Xfer<pointField>& points,
-            //const Xfer<faceList>& faces,
-            //const Xfer<labelList>& allOwner,
-            //const Xfer<labelList>& allNeighbour,
-            //const bool syncPar = true
-        //);
-
-        //- Construct without boundary from cells rather than owner/neighbour.
-        //  Boundary is added using addPatches() member function
-        //dynamicSolidBodyMotionRefinedFvMesh
-        //(
-            //const IOobject& io,
-            //const Xfer<pointField>& points,
-            //const Xfer<faceList>& faces,
-            //const Xfer<cellList>& cells,
-            //const bool syncPar = true
-        //);
-
-
-    // Selectors
-
-        //- Select null constructed
-        //static autoPtr<dynamicSolidBodyMotionRefinedFvMesh> New(const IOobject& io);
 
 
     //- Destructor

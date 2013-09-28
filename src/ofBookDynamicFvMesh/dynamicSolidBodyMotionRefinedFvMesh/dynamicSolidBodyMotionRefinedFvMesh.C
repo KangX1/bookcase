@@ -31,7 +31,6 @@ License
 namespace Foam
 {
     defineTypeNameAndDebug(dynamicSolidBodyMotionRefinedFvMesh, 0);
-
     addToRunTimeSelectionTable(dynamicFvMesh, dynamicSolidBodyMotionRefinedFvMesh, IOobject);
 }
 
@@ -41,7 +40,8 @@ namespace Foam
 Foam::dynamicSolidBodyMotionRefinedFvMesh::dynamicSolidBodyMotionRefinedFvMesh(const IOobject& io)
 :
     dynamicRefineFvMesh(io)
-{}
+{
+}
 
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
@@ -53,7 +53,9 @@ Foam::dynamicSolidBodyMotionRefinedFvMesh::~dynamicSolidBodyMotionRefinedFvMesh(
 
 bool Foam::dynamicSolidBodyMotionRefinedFvMesh::update()
 {
-    return dynamicRefineFvMesh::update(); 
+    dynamicRefineFvMesh::update(); 
+
+    return true; 
 }
 
 // ************************************************************************* //
