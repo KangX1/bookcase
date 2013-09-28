@@ -74,21 +74,6 @@ Foam::tmp<Foam::pointField>
 Foam::solidBodyPointMotionSolver::movePoints(const pointField& points) const
 {
     return transform(SBMFPtr_().transformation(), points);
-
-    // FIXME: used with the mesh 
-    //if (foundObject<volVectorField>("U"))
-    //{
-        //const_cast<volVectorField&>(lookupObject<volVectorField>("U"))
-            //.correctBoundaryConditions();
-    //}
-    //else if (!hasWarned)
-    //{
-        //hasWarned = true;
-
-        //WarningIn("solidBodyPointMotionSolver::update()")
-            //<< "Did not find volVectorField U."
-            //<< " Not updating U boundary conditions." << endl;
-    //}
 }
 
 
