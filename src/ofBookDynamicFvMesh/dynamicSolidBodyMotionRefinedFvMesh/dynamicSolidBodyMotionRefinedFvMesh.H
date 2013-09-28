@@ -37,7 +37,7 @@ SourceFiles
 #define dynamicSolidBodyMotionRefinedFvMesh_H
 
 #include "dynamicRefineFvMesh.H"
-#include "solidBodyMotionFvMesh.H"
+#include "solidBodyPointMotionSolver.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -53,7 +53,7 @@ class dynamicSolidBodyMotionRefinedFvMesh
     public dynamicRefineFvMesh
 {
 
-    autoPtr<dynamicFvMesh> motionMeshPtr_; 
+    solidBodyPointMotionSolver pointMotionSolver_; 
 
 public:
 

@@ -25,6 +25,7 @@ License
 
 #include "dynamicSolidBodyMotionRefinedFvMesh.H"
 #include "addToRunTimeSelectionTable.H"
+#include "volFields.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
@@ -39,7 +40,8 @@ namespace Foam
 
 Foam::dynamicSolidBodyMotionRefinedFvMesh::dynamicSolidBodyMotionRefinedFvMesh(const IOobject& io)
 :
-    dynamicRefineFvMesh(io)
+    dynamicRefineFvMesh(io), 
+    pointMotionSolver_(io)
 {
 }
 
@@ -53,7 +55,25 @@ Foam::dynamicSolidBodyMotionRefinedFvMesh::~dynamicSolidBodyMotionRefinedFvMesh(
 
 bool Foam::dynamicSolidBodyMotionRefinedFvMesh::update()
 {
+    static bool hasWarned = false; 
+
     dynamicRefineFvMesh::update(); 
+
+    const pointField& meshPoints = points(); 
+
+    movePoints(pointMotionSolver_.movePoints(meshPoints)); 
+
+    if (foundObject<volVectorField>("U"))
+    {
+        const_cast<volVectorField&>(lookupObject<volVectorField>("U"))
+            .correctBoundaryConditions();
+    }
+    else if (!hasWarned)
+    {
+        WarningIn("solidBodyPointMotionSolver::update()")
+            << "Did not find volVectorField U."
+            << " Not updating U boundary conditions." << endl;
+    }
 
     return true; 
 }
