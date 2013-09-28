@@ -1,3 +1,4 @@
 dynamicSolidBodyMotionRefinedFvMesh/dynamicSolidBodyMotionRefinedFvMesh.C 
+solidBodyPointMotionSolver/solidBodyPointMotionSolver.C
 
 LIB = $(FOAM_USER_LIBBIN)/libofBookDynamicFvMesh

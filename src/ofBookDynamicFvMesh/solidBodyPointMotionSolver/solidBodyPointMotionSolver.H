@@ -22,24 +22,28 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::solidBodyMotionFvMesh
+    Foam::solidBodyPointMotionSolver
 
 Description
     Solid-body motion of the mesh specified by a run-time selectable
     motion function.
 
 SourceFiles
-    solidBodyMotionFvMesh.C
+    solidBodyPointMotionSolver.C
+
+Authors
+    Tomislav Maric tomislav<<dot>>maric<<a>>gmx<<dot>>com
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef solidBodyMotionFvMesh_H
-#define solidBodyMotionFvMesh_H
+#ifndef solidBodyPointMotionSolver_H
+#define solidBodyPointMotionSolver_H
 
-#include "dynamicFvMesh.H"
 #include "dictionary.H"
 #include "pointIOField.H"
 #include "solidBodyMotionFunction.H"
+#include "tmp.H"
+#include "pointField.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -47,12 +51,10 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                   Class solidBodyMotionFvMesh Declaration
+                   Class solidBodyPointMotionSolver Declaration
 \*---------------------------------------------------------------------------*/
 
-class solidBodyMotionFvMesh
-:
-    public dynamicFvMesh
+class solidBodyPointMotionSolver
 {
     // Private data
 
@@ -62,45 +64,35 @@ class solidBodyMotionFvMesh
         //- The motion control function
         autoPtr<solidBodyMotionFunction> SBMFPtr_;
 
-        //- The reference points which are transformed
-        pointIOField undisplacedPoints_;
-
-        //- Specified cellZone or -1 for whole-body
-        label zoneID_;
-
-        //- Points to move when cell zone is supplied
-        labelList pointIDs_;
-
-
     // Private Member Functions
 
         //- Disallow default bitwise copy construct
-        solidBodyMotionFvMesh(const solidBodyMotionFvMesh&);
+        solidBodyPointMotionSolver(const solidBodyPointMotionSolver&);
 
         //- Disallow default bitwise assignment
-        void operator=(const solidBodyMotionFvMesh&);
+        void operator=(const solidBodyPointMotionSolver&);
 
 
 public:
 
     //- Runtime type information
-    TypeName("solidBodyMotionFvMesh");
+    TypeName("solidBodyPointMotionSolver");
 
 
     // Constructors
 
         //- Construct from IOobject
-        solidBodyMotionFvMesh(const IOobject& io);
+        solidBodyPointMotionSolver(const IOobject& io);
 
 
     //- Destructor
-    ~solidBodyMotionFvMesh();
+    virtual ~solidBodyPointMotionSolver();
 
 
     // Member Functions
 
         //- Update the mesh for both mesh motion and topology change
-        virtual bool update();
+        virtual tmp<pointField> movePoints(const pointField& points) const;
 };
 
 
