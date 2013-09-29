@@ -26,6 +26,9 @@ License
 #include "dynamicSolidBodyMotionRefinedFvMesh.H"
 #include "addToRunTimeSelectionTable.H"
 #include "volFields.H"
+#include "fvcSurfaceIntegrate.H"
+#include "surfaceMesh.H"
+#include "fvsPatchField.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
@@ -59,6 +62,14 @@ bool Foam::dynamicSolidBodyMotionRefinedFvMesh::update()
 
     dynamicRefineFvMesh::update(); 
 
+
+    const fvMesh& mesh = *this; 
+    Time& runTime = const_cast<Time&>(mesh.time()); 
+    const surfaceScalarField& phi = lookupObject<surfaceScalarField>("phi"); 
+    #include "readTimeControls.H"
+    #include "CourantNo.H"
+    #include "setDeltaT.H"
+
     const pointField& meshPoints = points(); 
 
     movePoints(pointMotionSolver_.movePoints(meshPoints)); 
@@ -74,6 +85,7 @@ bool Foam::dynamicSolidBodyMotionRefinedFvMesh::update()
             << "Did not find volVectorField U."
             << " Not updating U boundary conditions." << endl;
     }
+
 
     return true; 
 }
