@@ -71,9 +71,20 @@ public:
 
 
     // Member Functions
+    
+        //- Compute the maximal Courant number, including mesh motion.
+        scalar getMaxMeshCourantNumber(const fvMesh& mesh, const surfaceScalarField& phi);
+
+        //- Adjust the time step based on the mesh courant number. 
+        virtual void adjustMeshCourantTimeStep(); 
 
         //- Update the mesh for both mesh motion and topology change
         virtual bool update();
+
+        //- Remove overshoots: transport from higher to lower layers of refinement
+        //  cause overshoots in the volume fraction transport with MULES. This is
+        //  happening because of mesh non-orthogonality. 
+        void removeOvershoots(volScalarField& alpha1);  
 };
 
 

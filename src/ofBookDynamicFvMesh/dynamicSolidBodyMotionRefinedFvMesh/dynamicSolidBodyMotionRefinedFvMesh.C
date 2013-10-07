@@ -62,16 +62,7 @@ bool Foam::dynamicSolidBodyMotionRefinedFvMesh::update()
 
     dynamicRefineFvMesh::update(); 
 
-
-    const fvMesh& mesh = *this; 
-    Time& runTime = const_cast<Time&>(mesh.time()); 
-    const surfaceScalarField& phi = lookupObject<surfaceScalarField>("phi"); 
-    #include "readTimeControls.H"
-    #include "CourantNo.H"
-    #include "setDeltaT.H"
-
     const pointField& meshPoints = points(); 
-
     movePoints(pointMotionSolver_.movePoints(meshPoints)); 
 
     if (foundObject<volVectorField>("U"))
@@ -86,8 +77,57 @@ bool Foam::dynamicSolidBodyMotionRefinedFvMesh::update()
             << " Not updating U boundary conditions." << endl;
     }
 
+    // FIXME: this checks the mesh courant number against the Courant number, and 
+    // adjusts the time step accordingly. 
+    //adjustMeshCourantTimeStep(); 
 
     return true; 
+}
+
+Foam::scalar Foam::dynamicSolidBodyMotionRefinedFvMesh::getMaxMeshCourantNumber(
+    const fvMesh& mesh, 
+    const surfaceScalarField& phi
+)
+{
+    Time& runTime = const_cast<Time&>(mesh.time()); 
+
+    #include "CourantNo.H"
+    #include "meshCourantNo.H"
+
+    return max(CoNum, meshCoNum); 
+}
+
+
+void Foam::dynamicSolidBodyMotionRefinedFvMesh::adjustMeshCourantTimeStep()
+{
+    const fvMesh& mesh = *this; 
+    Time& runTime = const_cast<Time&>(mesh.time()); 
+    const surfaceScalarField& phi = lookupObject<surfaceScalarField>("phi"); 
+
+    #include "readTimeControls.H"
+
+    scalar CoNum = getMaxMeshCourantNumber(mesh, phi);  
+
+    while (CoNum >= maxCo)
+    {
+        #include "setDeltaT.H"
+        CoNum = getMaxMeshCourantNumber(mesh,phi); 
+
+        Info << "maxCo = " << maxCo << endl; 
+        Info << "Corrected CoNum = " << CoNum << endl;
+        Info << "Corrected deltaT = " << runTime.deltaT() << endl;
+    }
+}
+
+void Foam::dynamicSolidBodyMotionRefinedFvMesh::removeOvershoots(volScalarField& alpha1)
+{
+    forAll(alpha1, I)
+    {
+        if (alpha1[I] > 1)
+        {
+            alpha1[I] = 1; 
+        }
+    }
 }
 
 // ************************************************************************* //
