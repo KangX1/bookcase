@@ -31,6 +31,11 @@ SourceFiles
     dynamicSolidBodyMotionRefinedFvMesh.C
     dynamicSolidBodyMotionRefinedFvMeshNew.C
 
+Authors
+    Tomislav Maric
+    maric<<at>>csi<<dot>>tu<<minus>>darmstadt<<dot>>de
+    tomislav<<dot>>maric<<at>>gmx<<dot>>com
+
 \*---------------------------------------------------------------------------*/
 
 #ifndef dynamicSolidBodyMotionRefinedFvMesh_H
@@ -80,6 +85,9 @@ public:
 
         //- Update the mesh for both mesh motion and topology change
         virtual bool update();
+
+        // FIXME: remove this
+        //virtual void correctPhi(); 
 
         //- Remove overshoots: transport from higher to lower layers of refinement
         //  cause overshoots in the volume fraction transport with MULES. This is
