@@ -92,21 +92,19 @@ int main(int argc, char *argv[])
             mesh.update();
         }
 
-        if (mesh.changing())
-        {
-            Info<< "Execution time for mesh.update() = "
-                << runTime.elapsedCpuTime() - timeBeforeMeshUpdate
-                << " s" << endl;
+        //if (mesh.changing())
+        //{
+            //Info<< "Execution time for mesh.update() = "
+                //<< runTime.elapsedCpuTime() - timeBeforeMeshUpdate
+                //<< " s" << endl;
 
-            gh = g & mesh.C();
-            ghf = g & mesh.Cf();
-        }
+            //gh = g & mesh.C();
+            //ghf = g & mesh.Cf();
+        //}
 
         if (mesh.changing() && correctPhi)
         {
-            Info << "Correcting the fluxes.." << endl;
             #include "correctPhi.H"
-            Info << "INFO average phi after correction : " << average(phi) << endl;
         }
 
         if (mesh.changing() && checkMeshCourantNo)
@@ -114,10 +112,13 @@ int main(int argc, char *argv[])
             #include "meshCourantNo.H"
         }
 
-        twoPhaseProperties.correct();
+        //twoPhaseProperties.correct();
 
-        #include "alphaEqnSubCycle.H"
-        interface.correct();
+        //#include "alphaEqnSubCycle.H"
+        #include "alphaEqn.H"
+        
+
+        //interface.correct();
 
         // --- Pressure-velocity PIMPLE corrector loop
         //while (pimple.loop())
