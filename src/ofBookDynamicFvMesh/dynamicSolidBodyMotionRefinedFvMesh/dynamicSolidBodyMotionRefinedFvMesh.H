@@ -42,7 +42,12 @@ Authors
 #define dynamicSolidBodyMotionRefinedFvMesh_H
 
 #include "dynamicRefineFvMesh.H"
-#include "solidBodyPointMotionSolver.H"
+#include "solidBodyMotionFvMesh.H"
+//#include "solidBodyPointMotionSolver.H"
+
+#include "dictionary.H"
+#include "pointIOField.H"
+#include "solidBodyMotionFunction.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -56,9 +61,20 @@ namespace Foam
 class dynamicSolidBodyMotionRefinedFvMesh
 :
     public dynamicRefineFvMesh
+    //public solidBodyMotionFvMesh 
+    //public dynamicFvMesh
 {
 
-    solidBodyPointMotionSolver pointMotionSolver_; 
+    //solidBodyPointMotionSolver pointMotionSolver_; 
+
+    //- Dictionary of motion control parameters
+    const dictionary dynamicMeshCoeffs_;
+
+    //- The motion control function
+    autoPtr<solidBodyMotionFunction> SBMFPtr_;
+
+    //- The reference points which are transformed
+    pointIOField undisplacedPoints_;
 
 public:
 
@@ -85,14 +101,6 @@ public:
 
         //- Update the mesh for both mesh motion and topology change
         virtual bool update();
-
-        // FIXME: remove this
-        //virtual void correctPhi(); 
-
-        //- Remove overshoots: transport from higher to lower layers of refinement
-        //  cause overshoots in the volume fraction transport with MULES. This is
-        //  happening because of mesh non-orthogonality. 
-        void removeOvershoots(volScalarField& alpha1);  
 };
 
 

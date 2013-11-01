@@ -41,6 +41,12 @@ Authors
 //#include "fvcMeshPhi.H"
 //#include "fvScalarMatrix.H"
 
+#include "volFields.H"
+#include "transformField.H"
+#include "cellZoneMesh.H"
+#include "boolList.H"
+#include "syncTools.H"
+
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
 namespace Foam
@@ -54,8 +60,39 @@ namespace Foam
 
 Foam::dynamicSolidBodyMotionRefinedFvMesh::dynamicSolidBodyMotionRefinedFvMesh(const IOobject& io)
 :
+    //dynamicRefineFvMesh(io), 
     dynamicRefineFvMesh(io), 
-    pointMotionSolver_(io)
+    //solidBodyMotionFvMesh(io)
+    //pointMotionSolver_(io),
+    dynamicMeshCoeffs_
+    (
+        IOdictionary
+        (
+            IOobject
+            (
+                "dynamicMeshDict",
+                io.time().constant(),
+                *this,
+                IOobject::MUST_READ_IF_MODIFIED,
+                IOobject::NO_WRITE,
+                false
+            )
+        ).subDict(typeName + "Coeffs")
+    ),
+    SBMFPtr_(solidBodyMotionFunction::New(dynamicMeshCoeffs_, io.time())),
+    undisplacedPoints_
+    (
+        IOobject
+        (
+            "points",
+            io.time().constant(),
+            meshSubDir,
+            *this,
+            IOobject::MUST_READ,
+            IOobject::NO_WRITE,
+            false
+        )
+    )
 {
 }
 
@@ -68,129 +105,36 @@ Foam::dynamicSolidBodyMotionRefinedFvMesh::~dynamicSolidBodyMotionRefinedFvMesh(
 
 bool Foam::dynamicSolidBodyMotionRefinedFvMesh::update()
 {
+    //dynamicRefineFvMesh::update(); 
 
-    Info << "INFO phi size before refinement : " 
-        << lookupObject<surfaceScalarField>("phi").size() << endl;
-    Info << "INFO alpha1 size before refinement : " 
-        << lookupObject<volScalarField>("alpha1").size() << endl;
-    
-    dynamicRefineFvMesh::update(); 
+    //undisplacedPoints_ = this->points(); 
 
-    Info << "INFO phi size after refinement : " 
-        << lookupObject<surfaceScalarField>("phi").size() << endl;
-    Info << "INFO phi average after refinement : " 
-        << average(lookupObject<surfaceScalarField>("phi")) << endl;
-    Info << "INFO alpha1 size after refinement : " 
-        << lookupObject<volScalarField>("alpha1").size() << endl;
+    static bool hasWarned = false; 
 
-    Info << "INFO max alpha1 after refinement: " << max(lookupObject<volScalarField>("alpha1")) << endl;
+    fvMesh::movePoints
+    (
+        transform
+        (
+            SBMFPtr_().transformation(),
+            undisplacedPoints_
+        )
+    );
 
-    //static bool hasWarned = false; 
-
-    //const pointField& meshPoints = points(); 
-    //fvMesh::movePoints(pointMotionSolver_.movePoints(meshPoints)); 
-
-    //if (foundObject<volVectorField>("U"))
-    //{
-        //const_cast<volVectorField&>(lookupObject<volVectorField>("U"))
-            //.correctBoundaryConditions();
-    //}
-    //else if (!hasWarned)
-    //{
-        //WarningIn("solidBodyPointMotionSolver::update()")
-            //<< "Did not find volVectorField U."
-            //<< " Not updating U boundary conditions." << endl;
-    //}
-
-
-    //Info << "INFO max alpha1 after motion : " << max(lookupObject<volScalarField>("alpha1")) << endl;
-    //Info << "INFO phi average after motion: " 
-        //<< average(lookupObject<surfaceScalarField>("phi")) << endl;
-
-
-    //adjustMeshCourantTimeStep(); 
-
-    // TODO: remove, debugging
-    //const_cast<Time&>(lookupObject<volVectorField>("U").time()).writeNow(); 
-
-    // FIXME: this checks the mesh courant number against the Courant number, and 
-    // adjusts the time step accordingly. 
+    if (foundObject<volVectorField>("U"))
+    {
+        const_cast<volVectorField&>(lookupObject<volVectorField>("U"))
+            .correctBoundaryConditions();
+    }
+    else if (!hasWarned)
+    {
+        hasWarned = true;
+        WarningIn("solidBodyPointMotionSolver::update()")
+            << "Did not find volVectorField U."
+            << " Not updating U boundary conditions." << endl;
+    }
 
     return true; 
 }
-
-// FIXME: remove this member function
-//void Foam::dynamicSolidBodyMotionRefinedFvMesh::correctPhi() 
-//{
-    //const volScalarField& p_rgh = lookupObject<volScalarField>("p_rgh");
-    //const volScalarField& rho = lookupObject<volScalarField>("rho");
-    //const volVectorField& U = lookupObject<volVectorField>("U");
-
-    //surfaceScalarField& phi = const_cast<surfaceScalarField&>(
-        //lookupObject<surfaceScalarField>("phi")
-    //);
-
-    //wordList pcorrTypes
-    //(
-        //p_rgh.boundaryField().size(),
-        //zeroGradientFvPatchScalarField::typeName
-    //);
-
-    //forAll (p_rgh.boundaryField(), i)
-    //{
-        //if (p_rgh.boundaryField()[i].fixesValue())
-        //{
-            //pcorrTypes[i] = fixedValueFvPatchScalarField::typeName;
-        //}
-    //}
-
-    //const Time& runTime = rho.time(); 
-    //fvMesh& mesh = *this; 
-
-    //volScalarField pcorr
-    //(
-        //IOobject
-        //(
-            //"pcorr",
-            //runTime.timeName(),
-            //mesh,
-            //IOobject::NO_READ,
-            //IOobject::NO_WRITE
-        //),
-        //mesh,
-        //dimensionedScalar("pcorr", p_rgh.dimensions(), 0.0),
-        //pcorrTypes
-    //);
-
-    //dimensionedScalar rAUf("(1|A(U))", dimTime/rho.dimensions(), 1.0);
-
-    //adjustPhi(phi, U, pcorr);
-
-    //fvc::makeAbsolute(phi, U);
-
-    //pimpleControl pimple(mesh); 
-
-    //while (pimple.correctNonOrthogonal())
-    //{
-        //fvScalarMatrix pcorrEqn
-        //(
-            //fvm::laplacian(rAUf, pcorr) == fvc::div(phi)
-        //);
-
-        //pcorrEqn.setReference(pRefCell, pRefValue);
-        //pcorrEqn.solve();
-
-        //if (pimple.finalNonOrthogonalIter())
-        //{
-            //phi -= pcorrEqn.flux();
-            //phiAbs = phi;
-            //fvc::makeRelative(phi, U);
-        //}
-    //}
-
-    //phi.oldTime() = phi;
-//}
-
 
 Foam::scalar Foam::dynamicSolidBodyMotionRefinedFvMesh::getMaxMeshCourantNumber(
     const fvMesh& mesh, 
@@ -224,18 +168,6 @@ void Foam::dynamicSolidBodyMotionRefinedFvMesh::adjustMeshCourantTimeStep()
         Info << "maxCo = " << maxCo << endl; 
         Info << "Corrected CoNum = " << CoNum << endl;
         Info << "Corrected deltaT = " << runTime.deltaT() << endl;
-    }
-}
-
-// FIXME: remove this member function
-void Foam::dynamicSolidBodyMotionRefinedFvMesh::removeOvershoots(volScalarField& alpha1)
-{
-    forAll(alpha1, I)
-    {
-        if (alpha1[I] > 1)
-        {
-            alpha1[I] = 1; 
-        }
     }
 }
 
