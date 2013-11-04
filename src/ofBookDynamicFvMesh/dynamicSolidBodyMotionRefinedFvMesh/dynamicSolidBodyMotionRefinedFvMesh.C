@@ -111,27 +111,40 @@ bool Foam::dynamicSolidBodyMotionRefinedFvMesh::update()
 
     static bool hasWarned = false; 
 
-    fvMesh::movePoints
-    (
-        transform
-        (
-            SBMFPtr_().transformation(),
-            undisplacedPoints_
-        )
+    // TODO: remove, debugging
+    pointField& meshPoints = const_cast<pointField&> (points()); 
+    meshPoints = transform(
+        SBMFPtr_().transformation(),
+        undisplacedPoints_
     );
 
-    if (foundObject<volVectorField>("U"))
-    {
-        const_cast<volVectorField&>(lookupObject<volVectorField>("U"))
-            .correctBoundaryConditions();
-    }
-    else if (!hasWarned)
-    {
-        hasWarned = true;
-        WarningIn("solidBodyPointMotionSolver::update()")
-            << "Did not find volVectorField U."
-            << " Not updating U boundary conditions." << endl;
-    }
+    surfaceScalarField& phi = const_cast<surfaceScalarField&>(lookupObject<surfaceScalarField>("phi")); 
+
+    Info << "INFO average(phi) = " << average(phi) << endl;
+
+    phi -= Sf() & dimensionedVector("U", dimLength/dimTime, vector(0, 0, -0.5));  
+
+    //fvMesh::movePoints
+    //(
+        //transform
+        //(
+            //SBMFPtr_().transformation(),
+            //undisplacedPoints_
+        //)
+    //);
+
+    //if (foundObject<volVectorField>("U"))
+    //{
+        //const_cast<volVectorField&>(lookupObject<volVectorField>("U"))
+            //.correctBoundaryConditions();
+    //}
+    //else if (!hasWarned)
+    //{
+        //hasWarned = true;
+        //WarningIn("solidBodyPointMotionSolver::update()")
+            //<< "Did not find volVectorField U."
+            //<< " Not updating U boundary conditions." << endl;
+    //}
 
     return true; 
 }
