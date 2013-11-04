@@ -47,6 +47,8 @@ Authors
 #include "boolList.H"
 #include "syncTools.H"
 
+#include "surfaceInterpolate.H"
+
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
 namespace Foam
@@ -112,26 +114,23 @@ bool Foam::dynamicSolidBodyMotionRefinedFvMesh::update()
     static bool hasWarned = false; 
 
     // TODO: remove, debugging
-    pointField& meshPoints = const_cast<pointField&> (points()); 
-    meshPoints = transform(
-        SBMFPtr_().transformation(),
-        undisplacedPoints_
+    //pointField& meshPoints = const_cast<pointField&> (points()); 
+    //meshPoints = transform(
+        //SBMFPtr_().transformation(),
+        //undisplacedPoints_
+    //);
+
+    fvMesh::movePoints
+    (
+        transform
+        (
+            SBMFPtr_().transformation(),
+            undisplacedPoints_
+        )
     );
 
-    surfaceScalarField& phi = const_cast<surfaceScalarField&>(lookupObject<surfaceScalarField>("phi")); 
-
-    Info << "INFO average(phi) = " << average(phi) << endl;
-
-    phi -= Sf() & dimensionedVector("U", dimLength/dimTime, vector(0, 0, -0.5));  
-
-    //fvMesh::movePoints
-    //(
-        //transform
-        //(
-            //SBMFPtr_().transformation(),
-            //undisplacedPoints_
-        //)
-    //);
+    moving(false); 
+    changing(false); 
 
     //if (foundObject<volVectorField>("U"))
     //{
@@ -145,6 +144,23 @@ bool Foam::dynamicSolidBodyMotionRefinedFvMesh::update()
             //<< "Did not find volVectorField U."
             //<< " Not updating U boundary conditions." << endl;
     //}
+
+    // Zero the mesh flux. 
+    //dimensionedScalar zeroFlux ("zero", pow(dimLength, 3) / dimTime, 0); 
+
+    //const_cast<surfaceScalarField&>(phi()) == zeroFlux;  
+   
+
+    // Set the mesh flux. 
+    //constphi() == -1*(Sf() & dimensionedVector("U", dimLength/dimTime, vector(0, 0, -0.5)));
+
+    surfaceScalarField& fieldPhi = const_cast<surfaceScalarField&>(lookupObject<surfaceScalarField>("phi")); 
+
+    fieldPhi = fieldPhi - phi(); 
+
+    //volVectorField& U = const_cast<volVectorField&>(lookupObject<volVectorField>("U")); 
+
+    //fieldPhi == zeroFlux; //(fvc::interpolate(U) & Sf()) - (Sf() & dimensionedVector("U", dimLength/dimTime, vector(0, 0, -0.5)));  
 
     return true; 
 }
