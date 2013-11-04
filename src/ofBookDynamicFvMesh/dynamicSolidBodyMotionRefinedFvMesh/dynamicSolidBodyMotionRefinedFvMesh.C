@@ -105,9 +105,9 @@ Foam::dynamicSolidBodyMotionRefinedFvMesh::~dynamicSolidBodyMotionRefinedFvMesh(
 
 bool Foam::dynamicSolidBodyMotionRefinedFvMesh::update()
 {
-    //dynamicRefineFvMesh::update(); 
+    dynamicRefineFvMesh::update(); 
 
-    //undisplacedPoints_ = this->points(); 
+    undisplacedPoints_ = this->points(); 
 
     static bool hasWarned = false; 
 
