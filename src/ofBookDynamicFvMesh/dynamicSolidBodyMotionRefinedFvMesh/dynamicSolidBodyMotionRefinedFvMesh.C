@@ -129,38 +129,40 @@ bool Foam::dynamicSolidBodyMotionRefinedFvMesh::update()
         )
     );
 
-    moving(false); 
-    changing(false); 
 
-    //if (foundObject<volVectorField>("U"))
-    //{
-        //const_cast<volVectorField&>(lookupObject<volVectorField>("U"))
-            //.correctBoundaryConditions();
-    //}
-    //else if (!hasWarned)
-    //{
-        //hasWarned = true;
-        //WarningIn("solidBodyPointMotionSolver::update()")
-            //<< "Did not find volVectorField U."
-            //<< " Not updating U boundary conditions." << endl;
-    //}
+    if (foundObject<volVectorField>("U"))
+    {
+        const_cast<volVectorField&>(lookupObject<volVectorField>("U"))
+            .correctBoundaryConditions();
+    }
+    else if (!hasWarned)
+    {
+        hasWarned = true;
+        WarningIn("solidBodyPointMotionSolver::update()")
+            << "Did not find volVectorField U."
+            << " Not updating U boundary conditions." << endl;
+    }
 
     // Zero the mesh flux. 
     //dimensionedScalar zeroFlux ("zero", pow(dimLength, 3) / dimTime, 0); 
 
     //const_cast<surfaceScalarField&>(phi()) == zeroFlux;  
-   
+    
+
 
     // Set the mesh flux. 
     //constphi() == -1*(Sf() & dimensionedVector("U", dimLength/dimTime, vector(0, 0, -0.5)));
 
     surfaceScalarField& fieldPhi = const_cast<surfaceScalarField&>(lookupObject<surfaceScalarField>("phi")); 
 
-    fieldPhi = fieldPhi - phi(); 
+    //fieldPhi = fieldPhi - phi(); 
 
-    //volVectorField& U = const_cast<volVectorField&>(lookupObject<volVectorField>("U")); 
+    volVectorField& U = const_cast<volVectorField&>(lookupObject<volVectorField>("U")); 
 
-    //fieldPhi == zeroFlux; //(fvc::interpolate(U) & Sf()) - (Sf() & dimensionedVector("U", dimLength/dimTime, vector(0, 0, -0.5)));  
+    fieldPhi == (fvc::interpolate(U) & Sf()) - phi();  
+
+    moving(true); 
+    changing(false); 
 
     return true; 
 }
