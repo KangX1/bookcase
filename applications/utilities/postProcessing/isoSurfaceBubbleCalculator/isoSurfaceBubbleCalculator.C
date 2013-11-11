@@ -45,6 +45,12 @@ using namespace bookExamples;
 
 int main(int argc, char *argv[])
 {
+    argList::addOption
+    (
+        "field",
+        "name of the field to be averaged"
+    );
+
     #include "setRootCase.H"
     #include "createTime.H"
     #include "createMesh.H"
