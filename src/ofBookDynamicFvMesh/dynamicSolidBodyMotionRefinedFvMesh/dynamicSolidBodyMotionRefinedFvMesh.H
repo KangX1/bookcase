@@ -25,7 +25,8 @@ Class
     Foam::dynamicSolidBodyMotionRefinedFvMesh
 
 Description
-    Abstract base class for geometry and/or topology changing fvMesh.
+    Dynamic mesh class for combined mesh motion and hexahedral refinement.
+    
 
 SourceFiles
     dynamicSolidBodyMotionRefinedFvMesh.C
@@ -43,7 +44,6 @@ Authors
 
 #include "dynamicRefineFvMesh.H"
 #include "solidBodyMotionFvMesh.H"
-//#include "solidBodyPointMotionSolver.H"
 
 #include "dictionary.H"
 #include "pointIOField.H"
@@ -61,14 +61,9 @@ namespace Foam
 class dynamicSolidBodyMotionRefinedFvMesh
 :
     public dynamicRefineFvMesh
-    //public solidBodyMotionFvMesh 
-    //public dynamicFvMesh
 {
-
-    //solidBodyPointMotionSolver pointMotionSolver_; 
-
-    //- Dictionary of motion control parameters
-    const dictionary dynamicMeshCoeffs_;
+    //- Dictionary of solid body motion control parameters
+    const dictionary motionCoeffs_;
 
     //- The motion control function
     autoPtr<solidBodyMotionFunction> SBMFPtr_;

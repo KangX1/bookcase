@@ -30,24 +30,19 @@ Authors
 
 #include "dynamicSolidBodyMotionRefinedFvMesh.H"
 #include "addToRunTimeSelectionTable.H"
-#include "volFields.H"
-#include "fvcSurfaceIntegrate.H"
+
 #include "surfaceMesh.H"
 #include "fvsPatchField.H"
 
-//#include "pimpleControl.H"
-//#include "fixedValueFvPatchFields.H"
-//#include "adjustPhi.H"
-//#include "fvcMeshPhi.H"
-//#include "fvScalarMatrix.H"
-
 #include "volFields.H"
 #include "transformField.H"
-#include "cellZoneMesh.H"
-#include "boolList.H"
-#include "syncTools.H"
+
+//#include "cellZoneMesh.H"
+//#include "boolList.H"
+//#include "syncTools.H"
 
 #include "surfaceInterpolate.H"
+#include "fvcSurfaceIntegrate.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
@@ -62,11 +57,8 @@ namespace Foam
 
 Foam::dynamicSolidBodyMotionRefinedFvMesh::dynamicSolidBodyMotionRefinedFvMesh(const IOobject& io)
 :
-    //dynamicRefineFvMesh(io), 
     dynamicRefineFvMesh(io), 
-    //solidBodyMotionFvMesh(io)
-    //pointMotionSolver_(io),
-    dynamicMeshCoeffs_
+    motionCoeffs_
     (
         IOdictionary
         (
@@ -81,7 +73,7 @@ Foam::dynamicSolidBodyMotionRefinedFvMesh::dynamicSolidBodyMotionRefinedFvMesh(c
             )
         ).subDict(typeName + "Coeffs")
     ),
-    SBMFPtr_(solidBodyMotionFunction::New(dynamicMeshCoeffs_, io.time())),
+    SBMFPtr_(solidBodyMotionFunction::New(motionCoeffs_, io.time())),
     undisplacedPoints_
     (
         IOobject
@@ -113,13 +105,6 @@ bool Foam::dynamicSolidBodyMotionRefinedFvMesh::update()
 
     static bool hasWarned = false; 
 
-    // TODO: remove, debugging
-    //pointField& meshPoints = const_cast<pointField&> (points()); 
-    //meshPoints = transform(
-        //SBMFPtr_().transformation(),
-        //undisplacedPoints_
-    //);
-
     fvMesh::movePoints
     (
         transform
@@ -143,26 +128,21 @@ bool Foam::dynamicSolidBodyMotionRefinedFvMesh::update()
             << " Not updating U boundary conditions." << endl;
     }
 
-    // Zero the mesh flux. 
-    //dimensionedScalar zeroFlux ("zero", pow(dimLength, 3) / dimTime, 0); 
-
-    //const_cast<surfaceScalarField&>(phi()) == zeroFlux;  
-    
-
-
-    // Set the mesh flux. 
-    //constphi() == -1*(Sf() & dimensionedVector("U", dimLength/dimTime, vector(0, 0, -0.5)));
-
     surfaceScalarField& fieldPhi = const_cast<surfaceScalarField&>(lookupObject<surfaceScalarField>("phi")); 
 
-    //fieldPhi = fieldPhi - phi(); 
+    const volVectorField& U = lookupObject<volVectorField>("U"); 
+    const volScalarField& rho = lookupObject<volScalarField>("rho"); 
 
-    volVectorField& U = const_cast<volVectorField&>(lookupObject<volVectorField>("U")); 
+    surfaceScalarField& rhoPhi = const_cast<surfaceScalarField&>(
+        lookupObject<surfaceScalarField>("rho*phi")
+    );
 
     fieldPhi == (fvc::interpolate(U) & Sf()) - phi();  
 
+    rhoPhi = fvc::interpolate(rho) * fieldPhi; 
+    
     moving(true); 
-    changing(false); 
+    changing(true); 
 
     return true; 
 }
