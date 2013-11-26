@@ -43,10 +43,6 @@ Authors
 #define dynamicSolidBodyMotionRefinedFvMesh_H
 
 #include "dynamicRefineFvMesh.H"
-#include "solidBodyMotionFvMesh.H"
-
-#include "dictionary.H"
-#include "pointIOField.H"
 #include "solidBodyMotionFunction.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

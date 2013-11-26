@@ -37,10 +37,6 @@ Authors
 #include "volFields.H"
 #include "transformField.H"
 
-//#include "cellZoneMesh.H"
-//#include "boolList.H"
-//#include "syncTools.H"
-
 #include "surfaceInterpolate.H"
 #include "fvcSurfaceIntegrate.H"
 
