@@ -56,6 +56,10 @@ int main(int argc, char *argv[])
     {
         Info<< "Time = " << runTime.timeName() << nl << endl;
 
+        mesh.update();
+
+        phi = fvc::interpolate(U) & mesh.Sf(); 
+
         while (simple.correctNonOrthogonal())
         {
             solve
@@ -68,7 +72,6 @@ int main(int argc, char *argv[])
             );
         }
 
-        mesh.update();
         runTime.write();
     }
 
