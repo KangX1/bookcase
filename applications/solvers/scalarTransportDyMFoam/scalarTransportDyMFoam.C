@@ -56,9 +56,7 @@ int main(int argc, char *argv[])
     {
         Info<< "Time = " << runTime.timeName() << nl << endl;
 
-        mesh.update();
-
-        phi = fvc::interpolate(U) & mesh.Sf(); 
+        #include "CourantNo.H"
 
         while (simple.correctNonOrthogonal())
         {
@@ -71,6 +69,9 @@ int main(int argc, char *argv[])
                 fvOptions(T)
             );
         }
+
+        mesh.update();
+        phi = fvc::interpolate(U) & mesh.Sf(); 
 
         runTime.write();
     }
