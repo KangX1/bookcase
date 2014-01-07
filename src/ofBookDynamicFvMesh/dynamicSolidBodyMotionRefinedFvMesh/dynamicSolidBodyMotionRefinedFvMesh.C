@@ -22,21 +22,21 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Authors
-    Tomislav Maric
-    maric<<at>>csi<<dot>>tu<<minus>>darmstadt<<dot>>de
-    tomislav<<dot>>maric<<at>>gmx<<dot>>com
+    Tomislav Maric tomislav@sourcelfux.de
+    Jens Hoepken jens@sourceflux.de
+    Kyle Mooney kyle.g.mooney@gmail.com 
 
 \*---------------------------------------------------------------------------*/
 
 #include "dynamicSolidBodyMotionRefinedFvMesh.H"
 #include "addToRunTimeSelectionTable.H"
 
-#include "surfaceMesh.H"
-#include "fvsPatchField.H"
 
 #include "volFields.H"
 #include "transformField.H"
 
+#include "surfaceMesh.H"
+#include "fvsPatchField.H"
 #include "surfaceInterpolate.H"
 #include "fvcSurfaceIntegrate.H"
 
@@ -126,18 +126,9 @@ bool Foam::dynamicSolidBodyMotionRefinedFvMesh::update()
 
     surfaceScalarField& fieldPhi = const_cast<surfaceScalarField&>(lookupObject<surfaceScalarField>("phi")); 
 
-    const volVectorField& U = lookupObject<volVectorField>("U"); 
-    const volScalarField& rho = lookupObject<volScalarField>("rho"); 
-
-    surfaceScalarField& rhoPhi = const_cast<surfaceScalarField&>(
-        lookupObject<surfaceScalarField>("rho*phi")
-    );
-
-    fieldPhi == (fvc::interpolate(U) & Sf()) - phi();  
-
-    rhoPhi = fvc::interpolate(rho) * fieldPhi; 
+    fieldPhi -= phi(); 
     
-    moving(true); 
+    moving(false); 
     changing(true); 
 
     return true; 

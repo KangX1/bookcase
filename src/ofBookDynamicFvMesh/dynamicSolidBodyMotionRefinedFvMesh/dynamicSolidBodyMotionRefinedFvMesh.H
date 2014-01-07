@@ -33,9 +33,9 @@ SourceFiles
     dynamicSolidBodyMotionRefinedFvMeshNew.C
 
 Authors
-    Tomislav Maric
-    maric<<at>>csi<<dot>>tu<<minus>>darmstadt<<dot>>de
-    tomislav<<dot>>maric<<at>>gmx<<dot>>com
+    Tomislav Maric tomislav@sourcelfux.de
+    Jens Hoepken jens@sourceflux.de
+    Kyle Mooney kyle.g.mooney@gmail.com 
 
 \*---------------------------------------------------------------------------*/
 
