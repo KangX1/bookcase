@@ -1,3 +1,0 @@
-interDyMFoamAdvection.C
-
-EXE = $(FOAM_USER_APPBIN)/interDyMFoamAdvection
