@@ -27,6 +27,11 @@ Application
 Description
     Solves a transport equation for a passive scalar
 
+Authors
+    Jens Hoepken jens@sourceflux.de
+    Tomislav Maric tomislav@sourcelfux.de
+    Kyle Mooney kyle.g.mooney@gmail.com 
+
 \*---------------------------------------------------------------------------*/
 
 #include "fvCFD.H"
