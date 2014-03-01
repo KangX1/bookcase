@@ -1,0 +1,4 @@
+
+testSmartPointers.C
+
+EXE = $(FOAM_APPBIN)/testSmartPointers
