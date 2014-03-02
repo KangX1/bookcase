@@ -92,16 +92,35 @@ typedef infoField<scalar> infoScalarField;
 
 int main(int argc, char *argv[])
 {
-    Info << "Value construction : "; 
-    infoScalarField valueConstructed(1e07, 5);  
+    // First example
 
-    Info << "Empty construction : "; 
-    infoScalarField assignedTo; 
+    //Info << "Value construction : "; 
+    //infoScalarField valueConstructed(1e07, 5);  
 
-    Info << "Function call" << endl; 
-    assignedTo = valueReturn(valueConstructed); 
-    Info << "Function exit" << endl; 
+    //Info << "Empty construction : "; 
+    //infoScalarField assignedTo; 
 
+    //Info << "Function call" << endl; 
+    //assignedTo = valueReturn(valueConstructed); 
+    //Info << "Function exit" << endl; 
+
+    // Second example 
+    
+    // Construct the infoField pointer 
+    autoPtr<infoScalarField> ifPtr (new infoScalarField(1e06, 0));  
+
+    // Output the pointer data by accessing the reference -  
+    // using the operator T const & autoPtr<T>::operator()
+    Info << ifPtr() << endl;
+
+    // Create a copy of the ifPtr and transfer the object ownership
+    // to ifPtrCopy. 
+    autoPtr<infoScalarField> ifPtrCopy (ifPtr);  
+
+    Info << ifPtrCopy() << endl;
+
+    // Segmentation fault - accessing a deleted pointer. 
+    //Info << ifPtr() << endl; 
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
     return 0;
