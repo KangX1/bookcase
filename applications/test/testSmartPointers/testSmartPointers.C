@@ -87,12 +87,20 @@ Type valueReturn(Type const & t)
 // Shorten the type name.  
 typedef infoField<scalar> infoScalarField;
 
+
+// Empty class for testing tmp. 
+class testClass {}; 
+
+// Empty class inherits refCount for working tmp.
+class testClassCounted : public refCount {}; 
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 // Main program:
 
 int main(int argc, char *argv[])
 {
-    // First example
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
     //Info << "Value construction : "; 
     //infoScalarField valueConstructed(1e07, 5);  
@@ -103,28 +111,50 @@ int main(int argc, char *argv[])
     //Info << "Function call" << endl; 
     //assignedTo = valueReturn(valueConstructed); 
     //Info << "Function exit" << endl; 
-
-    // Second example 
     
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
     // Construct the infoField pointer 
-    autoPtr<infoScalarField> ifPtr (new infoScalarField(1e06, 0));  
+    //autoPtr<infoScalarField> ifPtr (new infoScalarField(1e06, 0));  
 
     // Output the pointer data by accessing the reference -  
     // using the operator T const & autoPtr<T>::operator()
-    Info << ifPtr() << endl;
+    //Info << ifPtr() << endl;
 
     // Create a copy of the ifPtr and transfer the object ownership
     // to ifPtrCopy. 
-    autoPtr<infoScalarField> ifPtrCopy (ifPtr);  
+    //autoPtr<infoScalarField> ifPtrCopy (ifPtr);  
 
-    Info << ifPtrCopy() << endl;
+    //Info << ifPtrCopy() << endl;
 
     // Segmentation fault - accessing a deleted pointer. 
     //Info << ifPtr() << endl; 
 
-    // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+
+    // Fails, testClass does not adhere to the refCount interface.
+    //tmp<testClass> t1(new testClass()); 
+    
+    // Use infoScalarField to see that only a single object is constructed
+    // and destroyed, and how the references are incremented and decremented.
+    
+    // Showing reference counts.
+    //tmp<infoScalarField> t1(new infoScalarField(1e06, 0)); 
+    //Info << "reference count = " << t1->count() << endl; 
+    //{
+        //tmp<infoScalarField> t2 (t1); 
+        //Info << "reference count = " << t1->count() << endl; 
+        //{
+            //tmp<infoScalarField> t3(t2); 
+            //Info << "reference count = " << t1->count() << endl; 
+        //} // t3 destructor called
+        
+        //Info << "reference count = " << t1->count() << endl; 
+    //} // t2 destructor called
+    //Info << "reference count = " << t1->count() << endl; 
+
     return 0;
-}
+} 
 
 
 // ************************************************************************* //
