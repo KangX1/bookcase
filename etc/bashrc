@@ -2,8 +2,8 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-export OFBOOK_CODE_PROJECT_DIR=${DIR%%/etc*}
+export PRIMER_EXAMPLES=${DIR%%/etc*}
 
-export OFBOOK_CODE_SRC=$OFBOOK_CODE_PROJECT_DIR/src
+export PRIMER_EXAMPLES_SRC=$PRIMER_EXAMPLES/src
 
-export PATH=$OFBOOK_CODE_PROJECT_DIR/src/scripts:$PATH
+export PATH=$PRIMER_EXAMPLES_SRC/scripts:$PATH
