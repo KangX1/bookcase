@@ -4,7 +4,7 @@ EXE_INC = \
     -I$(LIB_SRC)/triSurface/lnInclude \
     -I$(LIB_SRC)/surfMesh/lnInclude \
     -I$(LIB_SRC)/sampling/lnInclude \
-    -I$(OFBOOK_CODE_SRC)/lnInclude
+    -I$(PRIMER_EXAMPLES_SRC)/lnInclude
 
 EXE_LIBS = \
     -L$(FOAM_USER_LIBBIN) \
