@@ -25,14 +25,15 @@ Application
     testDebugging
 
 Description
-    Tester app for learning how to work with GDB debugger. 
+    Tester application for learning how to work with GDB debugger. 
 
     Implements a harmonic average operator in the fvc::namespace, which uses
     (1 / x) and introduces SIGFPE which is then debugged with gdb.
 
 Authors
-    Tomislav Maric 
-    tomislav.maric@gmx.com
+    Tomislav Maric tomislav@sourceflux.de
+    Jens Hoepken jens@sourceflux.de
+    Kyle Mooney kyle.g.mooney@gmail.com
 
 \*---------------------------------------------------------------------------*/
 
@@ -78,6 +79,8 @@ namespace Foam
             {
                 // SIGFPE.
                 resultField[I] = (1. / resultField[I]);
+
+                Info << "resultField[I] " << resultField[I] << endl;
 
                 // No SIGFPE.
                 //resultField[I] = (1. / (resultField[I] + SMALL));
