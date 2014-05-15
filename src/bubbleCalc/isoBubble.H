@@ -31,7 +31,9 @@ SourceFiles
     isoBubble.C
 
 Authors
-    Tomislav Maric, tomislav.maric@gmx.com
+    Tomislav Maric tomislav@sourceflux.de 
+    Jens Hoepken jens@sourceflux.de
+    Kyle Mooney kyle.g.mooney@gmail.com
 
 \*---------------------------------------------------------------------------*/
 
