@@ -63,18 +63,11 @@ class isoBubble
     :
         public regIOobject
 {
-
-    // Tracked iso-field.
-    volScalarField const * isoFieldPtr_;  
-    
     // Computed point iso-field.
     scalarField isoPointField_; 
 
     // Bubble geometry described with an iso-surface mesh.
     autoPtr<isoSurface> bubblePtr_; 
-
-    // iso value
-    scalar isoValue_; 
 
     // Number of zeros that are prepended to the timeIndex() for output .vtk files. 
     label timeIndexPad_; 
@@ -82,17 +75,9 @@ class isoBubble
     // Output format.
     word outputFormat_; 
 
-    // Turn on regularization of the isoSurface.
-    bool regularize_;  
-
     virtual void computeIsoPointField(const volScalarField& isoField); 
 
     fileName paddWithZeros(const fileName& input) const;
-
-    void resetPtrData()
-    {
-        isoFieldPtr_ = 0; 
-    }
 
 public:
 
@@ -123,7 +108,12 @@ public:
         
         void setBubbleField(const volScalarField& isoField); 
 
-        void reconstruct(const volScalarField& isoField); 
+        void reconstruct
+        (
+            const volScalarField& isoField, 
+            scalar isoValue = 0.5, 
+            bool regularize = false
+        ); 
 
         // Write
         bool write (fileName file) const;
@@ -134,10 +124,10 @@ public:
 
         // Access
         
-        const volScalarField& isoField() const 
-        {
-            return *isoFieldPtr_;
-        }
+        //const volScalarField& isoField() const 
+        //{
+            //return *isoFieldPtr_;
+        //}
 
         scalar area() const;
 

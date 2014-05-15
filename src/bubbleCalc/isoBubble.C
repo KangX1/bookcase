@@ -91,28 +91,23 @@ isoBubble::isoBubble
 )
     : 
         regIOobject(io, isTime), 
-        isoFieldPtr_(&isoField),
+        //isoFieldPtr_(&isoField),
         isoPointField_(isoField.mesh().nPoints(),0), 
         bubblePtr_(),
-        isoValue_(isoValue),
         timeIndexPad_(timeIndexPad), 
-        outputFormat_(outputFormat), 
-        regularize_(regularize)
+        outputFormat_(outputFormat)
 {
     // Reconstruct immediately using the tracked field.
-    reconstruct(isoField);
+    reconstruct(isoField, isoValue, regularize);
 }
 
 isoBubble::isoBubble(const isoBubble& copy)
     :
         regIOobject(copy), 
-        isoFieldPtr_(copy.isoFieldPtr_),
         isoPointField_(copy.isoPointField_),
         bubblePtr_(),
-        isoValue_(copy.isoValue_),
         timeIndexPad_(copy.timeIndexPad_), 
-        outputFormat_(copy.outputFormat_), 
-        regularize_(copy.regularize_)
+        outputFormat_(copy.outputFormat_)
 {
     // Make a deep copy: avoid ownership transfer.  
     bubblePtr_ = autoPtr<isoSurface>(new isoSurface (copy.bubblePtr_()));
@@ -120,32 +115,32 @@ isoBubble::isoBubble(const isoBubble& copy)
 
 // * * * * * * * * * * * * * * * * Destructor * * * * * * * * * * * * * * * * //
 
-isoBubble::~isoBubble()
-{
-    resetPtrData(); 
-}
+isoBubble::~isoBubble() {}
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
 void isoBubble::setBubbleField(const volScalarField& isoField)
 {
-    isoFieldPtr_ = &isoField; 
     isoPointField_.resize(isoField.mesh().nPoints()); 
 }
 
-void isoBubble::reconstruct(const volScalarField& isoField)
+void isoBubble::reconstruct
+(
+    const volScalarField& isoField,
+    scalar isoValue, 
+    bool regularize 
+)
 {
     computeIsoPointField(isoField); 
     
-    // Create the isoSurface geometry 
     bubblePtr_ = autoPtr<isoSurface>
     (
         new isoSurface 
         (
-            *isoFieldPtr_, 
+            isoField, 
             isoPointField_, 
-            isoValue_, 
-            regularize_ 
+            isoValue, 
+            regularize
         )
     );
 }
@@ -227,16 +222,11 @@ void isoBubble::operator=(const isoBubble& rhs)
             << abort(FatalError);
     }
 
-    // Deallocate the memory used for the isoSurface.
-    resetPtrData();
-
-    isoFieldPtr_ = rhs.isoFieldPtr_; 
     isoPointField_ = rhs.isoPointField_; 
+    // Make a deep copy of the bubble surface mesh.
     bubblePtr_ = autoPtr<isoSurface>(new isoSurface(rhs.bubblePtr_()));
-    isoValue_ = rhs.isoValue_;
     timeIndexPad_ = rhs.timeIndexPad_;
     outputFormat_ = rhs.outputFormat_;
-    regularize_ = rhs.regularize_;
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
