@@ -85,7 +85,7 @@ class isoBubble
     // Turn on regularization of the isoSurface.
     bool regularize_;  
 
-    virtual void computeIsoPointField(); 
+    virtual void computeIsoPointField(const volScalarField& isoField); 
 
     fileName paddWithZeros(const fileName& input) const;
 
@@ -102,7 +102,7 @@ public:
         isoBubble 
         (
             const IOobject& io, 
-            const volScalarField& bubbleField, 
+            const volScalarField& isoField, 
             bool isTime = false,
             scalar isoValue = 0.5,
             label timeIndexPad = 10, 
@@ -121,9 +121,9 @@ public:
     
         // Edit
         
-        void setBubbleField(const volScalarField& bubbleField); 
+        void setBubbleField(const volScalarField& isoField); 
 
-        void reconstruct(); 
+        void reconstruct(const volScalarField& isoField); 
 
         // Write
         bool write (fileName file) const;
