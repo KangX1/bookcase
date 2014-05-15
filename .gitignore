@@ -21,4 +21,4 @@ linux*/
 *.zip
 *.tgz
 ExpandedMacros
-doxygenDocumentation
+doc
