@@ -69,7 +69,8 @@ class isoBubble
     // Bubble geometry described with an iso-surface mesh.
     autoPtr<isoSurface> bubblePtr_; 
 
-    // Number of zeros that are prepended to the timeIndex() for output .vtk files. 
+    // Number of zeros that are prepended to the timeIndex() 
+    // for written VTK files. 
     label timeIndexPad_; 
 
     // Output format.
@@ -123,11 +124,6 @@ public:
         bool writeData(Ostream& os) const; 
 
         // Access
-        
-        //const volScalarField& isoField() const 
-        //{
-            //return *isoFieldPtr_;
-        //}
 
         scalar area() const;
 

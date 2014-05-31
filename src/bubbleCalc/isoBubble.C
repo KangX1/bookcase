@@ -91,7 +91,6 @@ isoBubble::isoBubble
 )
     : 
         regIOobject(io, isTime), 
-        //isoFieldPtr_(&isoField),
         isoPointField_(isoField.mesh().nPoints(),0), 
         bubblePtr_(),
         timeIndexPad_(timeIndexPad), 
