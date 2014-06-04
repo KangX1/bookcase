@@ -1,0 +1,3 @@
+heatTransferTwoPhaseSolver.C
+
+EXE = $(FOAM_USER_APPBIN)/heatTransferTwoPhaseSolver
