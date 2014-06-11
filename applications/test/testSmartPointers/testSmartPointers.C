@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013 OpenFOAM Foundation
+    \\  /    A nd           | Copyright held by authors 
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -25,6 +25,14 @@ Application
     testSmartPointers
 
 Description
+    Test application for smart pointers.
+
+Authors:
+    Tomislav Maric tomislav@sourceflux.de
+    Jens Hoepken jens@sourceflux.de
+    Kyle Mooney kyle.g.mooney@gmail.com
+
+Contributors:
 
 \*---------------------------------------------------------------------------*/
 
