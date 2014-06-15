@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013 OpenFOAM Foundation
+    \\  /    A nd           | Copyright held by original author
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -31,7 +31,9 @@ SourceFiles
     isoBubble.C
 
 Authors
-    Tomislav Maric, tomislav.maric@gmx.com
+    Tomislav Maric tomislav@sourceflux.de 
+    Jens Hoepken jens@sourceflux.de
+    Kyle Mooney kyle.g.mooney@gmail.com
 
 \*---------------------------------------------------------------------------*/
 
@@ -61,36 +63,22 @@ class isoBubble
     :
         public regIOobject
 {
-
-    // Tracked iso-field.
-    volScalarField const * isoFieldPtr_;  
-    
     // Computed point iso-field.
     scalarField isoPointField_; 
 
     // Bubble geometry described with an iso-surface mesh.
     autoPtr<isoSurface> bubblePtr_; 
 
-    // iso value
-    scalar isoValue_; 
-
-    // Number of zeros that are prepended to the timeIndex() for output .vtk files. 
+    // Number of zeros that are prepended to the timeIndex() 
+    // for written VTK files. 
     label timeIndexPad_; 
 
     // Output format.
     word outputFormat_; 
 
-    // Turn on regularization of the isoSurface.
-    bool regularize_;  
-
-    virtual void computeIsoPointField(); 
+    virtual void computeIsoPointField(const volScalarField& isoField); 
 
     fileName paddWithZeros(const fileName& input) const;
-
-    void resetPtrData()
-    {
-        isoFieldPtr_ = 0; 
-    }
 
 public:
 
@@ -100,7 +88,7 @@ public:
         isoBubble 
         (
             const IOobject& io, 
-            const volScalarField& bubbleField, 
+            const volScalarField& isoField, 
             bool isTime = false,
             scalar isoValue = 0.5,
             label timeIndexPad = 10, 
@@ -119,9 +107,14 @@ public:
     
         // Edit
         
-        void setBubbleField(const volScalarField& bubbleField); 
+        void setBubbleField(const volScalarField& isoField); 
 
-        void reconstruct(); 
+        void reconstruct
+        (
+            const volScalarField& isoField, 
+            scalar isoValue = 0.5, 
+            bool regularize = false
+        ); 
 
         // Write
         bool write (fileName file) const;
@@ -131,11 +124,6 @@ public:
         bool writeData(Ostream& os) const; 
 
         // Access
-        
-        const volScalarField& isoField() const 
-        {
-            return *isoFieldPtr_;
-        }
 
         scalar area() const;
 

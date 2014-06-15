@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013 OpenFOAM Foundation
+    \\  /    A nd           | Copyright held by original author 
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -29,8 +29,9 @@ Description
     rising bubble using an iso-surface.
 
 Authors
-    Tomislav Maric 
-    tomislav.maric@gmx.com
+    Tomislav Maric tomislav@sourceflux.de 
+    Jens Hoepken jens@sourceflux.de
+    Kyle Mooney kyle.g.mooney@gmail.com
 
 \*---------------------------------------------------------------------------*/
 
@@ -66,7 +67,7 @@ int main(int argc, char *argv[])
         fieldName = args.optionRead<word>("field");
     }
 
-    volScalarField inputField 
+    volScalarField isoField 
     (
         IOobject 
         (
@@ -89,7 +90,7 @@ int main(int argc, char *argv[])
             IOobject::NO_READ, 
             IOobject::AUTO_WRITE
         ), 
-        inputField
+        isoField 
     ); 
 
     Foam::instantList timeDirs = Foam::timeSelector::select0(runTime, args);
@@ -102,7 +103,7 @@ int main(int argc, char *argv[])
 
         mesh.readUpdate();
 
-        inputField = volScalarField
+        isoField = volScalarField
         (
             IOobject 
             (
@@ -115,7 +116,7 @@ int main(int argc, char *argv[])
             mesh
         );
 
-        bubble.reconstruct(); 
+        bubble.reconstruct(isoField); 
 
         Info << "Bubble area = " << bubble.area() << endl;
         Info << "Bubble centre = " << bubble.centre() << endl;
