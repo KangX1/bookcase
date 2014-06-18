@@ -110,17 +110,18 @@ int main(int argc, char *argv[])
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-    //Info << "Value construction : "; 
-    //infoScalarField valueConstructed(1e07, 5);  
+    Info << "Value construction : "; 
+    infoScalarField valueConstructed(1e07, 5);  
 
-    //Info << "Empty construction : "; 
-    //infoScalarField assignedTo; 
+    Info << "Empty construction : "; 
+    infoScalarField assignedTo; 
 
-    //Info << "Function call" << endl; 
-    //assignedTo = valueReturn(valueConstructed); 
-    //Info << "Function exit" << endl; 
+    Info << "Function call" << endl; 
+    assignedTo = valueReturn(valueConstructed); 
+    Info << "Function exit" << endl; 
     
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
     // Construct the infoField pointer 
     //autoPtr<infoScalarField> ifPtr (new infoScalarField(1e06, 0));  
 
