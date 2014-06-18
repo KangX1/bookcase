@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013 OpenFOAM Foundation
+    \\  /    A nd           | Copyright held by original author. 
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -25,6 +25,13 @@ Application
     testSmartPointers
 
 Description
+    Test application for autoPtr and tmp smart pointers. 
+
+Author
+    Tomislav Maric tomislav@sourceflux.de
+    Jens Hoepken jens@sourceflux.de
+    Kyle Mooney kyle.g.mooney@gmail.com
+
 
 \*---------------------------------------------------------------------------*/
 
@@ -102,17 +109,18 @@ int main(int argc, char *argv[])
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-    //Info << "Value construction : "; 
-    //infoScalarField valueConstructed(1e07, 5);  
+    Info << "Value construction : "; 
+    infoScalarField valueConstructed(1e07, 5);  
 
-    //Info << "Empty construction : "; 
-    //infoScalarField assignedTo; 
+    Info << "Empty construction : "; 
+    infoScalarField assignedTo; 
 
-    //Info << "Function call" << endl; 
-    //assignedTo = valueReturn(valueConstructed); 
-    //Info << "Function exit" << endl; 
+    Info << "Function call" << endl; 
+    assignedTo = valueReturn(valueConstructed); 
+    Info << "Function exit" << endl; 
     
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
     // Construct the infoField pointer 
     //autoPtr<infoScalarField> ifPtr (new infoScalarField(1e06, 0));  
 
