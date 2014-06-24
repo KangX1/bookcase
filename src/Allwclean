@@ -3,6 +3,6 @@ cd ${0%/*} || exit 1    # run from this directory
 
 
 wclean bubbleCalc
-wclean ofBookBoundaryConditions 
+wclean primerBoundaryConditions 
 wclean ofBookFunctionObjects
 wclean ofBookDynamicFvMesh 
