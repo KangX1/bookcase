@@ -1,0 +1,39 @@
+#!/usr/bin/python
+
+# Import system module for reading 
+# script arguments 
+import sys
+# Import numerical python module for 
+# reading in data
+import numpy as np
+# Import matplotlib plotting module
+import matplotlib.pyplot as plt
+
+# Set the name of the file to the 
+# first script argument.
+dataFile = sys.argv[1]
+# Read in text data.
+data = np.loadtxt(dataFile)
+
+# Initialize the figure.
+fig = plt.figure()
+
+# Create and plot the first axis.
+ax1 = fig.add_subplot(2,1,1)
+ax1.set_xlabel('time (s)')
+ax1.set_ylabel('area', color='b')
+ax1.plot(data[:,0], data[:,1], color='b')
+
+# Clone the axis.
+ax2 = ax1.twinx()
+# Plot y centre position only: 
+# the bubble rise is in 2D.  
+ax2.set_ylabel('center', color='r')
+ax2.plot(data[:,0], data[:,3], color='r')
+
+# Set plot title.
+fig.suptitle('Bubble area and center')
+# Save the .png image and make sure it is trimmed. 
+plt.savefig("isoBubble.png", bbox_inches='tight')
+
+
