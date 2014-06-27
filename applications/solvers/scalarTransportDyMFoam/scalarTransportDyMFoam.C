@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright held by authors 
+    \\  /    A nd           | Copyright (C) 2011-2013 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,88 +22,67 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Application
-    testFieldCellSet
+    scalarTransportFoam
 
 Description
-    Tester applictation for the field based cellSet example.
+    Solves a transport equation for a passive scalar
 
-Authors:
-    Tomislav Maric tomislav@sourceflux.de
+Authors
     Jens Hoepken jens@sourceflux.de
-    Kyle Mooney kyle.g.mooney@gmail.com
-
-Contributors:
-
+    Tomislav Maric tomislav@sourcelfux.de
+    Kyle Mooney kyle.g.mooney@gmail.com 
 
 \*---------------------------------------------------------------------------*/
 
 #include "fvCFD.H"
-#include <functional>
-#include "fieldCellSet.H"
-#include "OFstream.H"
+#include "fvIOoptionList.H"
+#include "simpleControl.H"
+#include "dynamicFvMesh.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-// Main program:
 
 int main(int argc, char *argv[])
 {
-    argList::addOption
-    (
-        "field",
-        "Name of the field to be averaged."
-    );
-
     #include "setRootCase.H"
     #include "createTime.H"
-    #include "createMesh.H"
+    #include "createDynamicFvMesh.H"
+    #include "createFields.H"
+    #include "createFvOptions.H"
+
+    simpleControl simple(mesh);
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-    if (!args.optionFound("field"))
+    Info<< "\nCalculating scalar transport\n" << endl;
+
+    #include "CourantNo.H"
+
+    while (simple.loop())
     {
-        FatalErrorIn
-        (
-            "main()"
-        )   << "Please use option '-field' to provide the name of the field on which the cell set is based." << endl
-            << exit(FatalError);
+        Info<< "Time = " << runTime.timeName() << nl << endl;
+
+        #include "CourantNo.H"
+
+        while (simple.correctNonOrthogonal())
+        {
+            solve
+            (
+                fvm::ddt(T)
+              + fvm::div(phi, T)
+              - fvm::laplacian(DT, T)
+             ==
+                fvOptions(T)
+            );
+        }
+
+        mesh.update();
+        phi = fvc::interpolate(U) & mesh.Sf(); 
+
+        runTime.write();
     }
 
-    const word fieldName = args.optionRead<word>("field");
+    Info<< "End\n" << endl;
 
-    volScalarField field
-    (
-        IOobject 
-        (
-            fieldName,
-            runTime.timeName(),
-            mesh,
-            IOobject::MUST_READ,
-            IOobject::NO_WRITE
-        ),
-        mesh
-    );
-
-    fieldCellSet fcs 
-    (
-        IOobject
-        (
-            "fieldCellSet", 
-            runTime.timeName(),  
-            runTime, 
-            IOobject::NO_READ, 
-            IOobject::AUTO_WRITE
-        ),
-        mesh
-    ); 
-
-    // Create a set of cells that have the value of the "field" equal to 1, 
-    // using C++ STL function objects (C++03 standard). 
-    fcs.collectCells(field, std::bind1st(std::equal_to<scalar>(), 1));  
-
-    // Write the cell set. 
-    fcs.write(); 
-
-    Info<< "\nEnd\n" << endl;
     return 0;
 }
 

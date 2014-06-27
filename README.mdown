@@ -1,0 +1,36 @@
+### About ###
+
+This is the example code repository of the "The OpenFOAM Technology Primer" book.
+
+Authors: Tomislav Maric, Jens Hoepken, Kyle Mooney
+
+### Installation ###
+
+#### Obtaining the source code ####
+
+*TODO*
+
+#### One-time configuration ####
+
+Source "etc/bashrc", then execute Allwmake to compile the libraries (src) and
+the applications:
+
+    . etc/bashrc
+    ./Allwcmake
+
+#### Permanent configuration ####
+
+To set the configuration variable every time a new tab/terminal is opened,
+source the "etc/bashrc" script of this project from within the "~/.bashrc"
+startup script:
+
+    source /path/to/ofbook-code/etc/bashrc
+
+
+#### Compilation ####
+
+*TODO*
+
+### Disclaimer ###
+
+#### This offering is not approved or endorsed by OpenCFD Limited, the producer of the OpenFOAM  software and owner of the OPENFOAM  and OpenCFD  trade marks. ####

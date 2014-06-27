@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013 OpenFOAM Foundation
+    \\  /    A nd           | Copyright held by authors 
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -26,6 +26,13 @@ Application
 
 Description
     Tester for Chapter 6 : Debugging and Profiling
+
+Authors:
+    Tomislav Maric tomislav@sourceflux.de
+    Jens Hoepken jens@sourceflux.de
+    Kyle Mooney kyle.g.mooney@gmail.com
+
+Contributors:
 
 \*---------------------------------------------------------------------------*/
 

@@ -31,7 +31,7 @@
 #------------------------------------------------------------------------------
 
 SCRIPT=${0##*/}
-TEMPLATE="$OFBOOK_CODE_PROJECT_DIR/etc/codeTemplates/functionObjectTemplate"
+TEMPLATE="$PRIMER_EXAMPLES/etc/codeTemplates/functionObjectTemplate"
 
 # NOTE : The script is expected to be run in the library directory.  
 if [ ! -d Make ]

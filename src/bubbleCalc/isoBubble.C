@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013 OpenFOAM Foundation
+    \\  /    A nd           | Copyright held by original author 
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -20,6 +20,14 @@ License
 
     You should have received a copy of the GNU General Public License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
+
+Class
+    Foam::isoBubble
+
+Authors
+    Tomislav Maric tomislav@sourceflux.de 
+    Jens Hoepken jens@sourceflux.de
+    Kyle Mooney kyle.g.mooney@gmail.com
 
 \*---------------------------------------------------------------------------*/
 
@@ -45,7 +53,7 @@ fileName isoBubble::paddWithZeros(const fileName& input) const
     }
 
     // Get the time index. 
-    const Time& runTime = isoFieldPtr_->time(); 
+    const Time& runTime = time(); 
     // Get the time index. 
     label timeIndex = runTime.timeIndex(); 
 
@@ -60,13 +68,13 @@ fileName isoBubble::paddWithZeros(const fileName& input) const
     return ss.str(); 
 }
 
-void isoBubble::computeIsoPointField()
+void isoBubble::computeIsoPointField(const volScalarField& isoField)
 {
     // Interpolate the track field to the points using volPointInterpolation. 
-    volPointInterpolation pointInterpolation (isoFieldPtr_->mesh());
+    volPointInterpolation pointInterpolation (isoField.mesh());
     
     // Reconstruct the bubble using both fields.
-    isoPointField_ = pointInterpolation.interpolate(*isoFieldPtr_)();
+    isoPointField_ = pointInterpolation.interpolate(isoField)();
 }
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
@@ -74,7 +82,7 @@ void isoBubble::computeIsoPointField()
 isoBubble::isoBubble
 (
     const IOobject& io, 
-    const volScalarField& bubbleField, 
+    const volScalarField& isoField, 
     bool isTime , 
     scalar isoValue,
     label timeIndexPad,
@@ -83,28 +91,22 @@ isoBubble::isoBubble
 )
     : 
         regIOobject(io, isTime), 
-        isoFieldPtr_(&bubbleField),
-        isoPointField_(bubbleField.mesh().nPoints(),0), 
+        isoPointField_(isoField.mesh().nPoints(),0), 
         bubblePtr_(),
-        isoValue_(isoValue),
         timeIndexPad_(timeIndexPad), 
-        outputFormat_(outputFormat), 
-        regularize_(regularize)
+        outputFormat_(outputFormat)
 {
     // Reconstruct immediately using the tracked field.
-    reconstruct();
+    reconstruct(isoField, isoValue, regularize);
 }
 
 isoBubble::isoBubble(const isoBubble& copy)
     :
         regIOobject(copy), 
-        isoFieldPtr_(copy.isoFieldPtr_),
         isoPointField_(copy.isoPointField_),
         bubblePtr_(),
-        isoValue_(copy.isoValue_),
         timeIndexPad_(copy.timeIndexPad_), 
-        outputFormat_(copy.outputFormat_), 
-        regularize_(copy.regularize_)
+        outputFormat_(copy.outputFormat_)
 {
     // Make a deep copy: avoid ownership transfer.  
     bubblePtr_ = autoPtr<isoSurface>(new isoSurface (copy.bubblePtr_()));
@@ -112,32 +114,32 @@ isoBubble::isoBubble(const isoBubble& copy)
 
 // * * * * * * * * * * * * * * * * Destructor * * * * * * * * * * * * * * * * //
 
-isoBubble::~isoBubble()
-{
-    resetPtrData(); 
-}
+isoBubble::~isoBubble() {}
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
-void isoBubble::setBubbleField(const volScalarField& bubbleField)
+void isoBubble::setBubbleField(const volScalarField& isoField)
 {
-    isoFieldPtr_ = &bubbleField; 
-    isoPointField_.resize(bubbleField.mesh().nPoints()); 
+    isoPointField_.resize(isoField.mesh().nPoints()); 
 }
 
-void isoBubble::reconstruct()
+void isoBubble::reconstruct
+(
+    const volScalarField& isoField,
+    scalar isoValue, 
+    bool regularize 
+)
 {
-    computeIsoPointField(); 
+    computeIsoPointField(isoField); 
     
-    // Create the isoSurface geometry 
     bubblePtr_ = autoPtr<isoSurface>
     (
         new isoSurface 
         (
-            *isoFieldPtr_, 
+            isoField, 
             isoPointField_, 
-            isoValue_, 
-            regularize_ 
+            isoValue, 
+            regularize
         )
     );
 }
@@ -219,16 +221,11 @@ void isoBubble::operator=(const isoBubble& rhs)
             << abort(FatalError);
     }
 
-    // Deallocate the memory used for the isoSurface.
-    resetPtrData();
-
-    isoFieldPtr_ = rhs.isoFieldPtr_; 
     isoPointField_ = rhs.isoPointField_; 
+    // Make a deep copy of the bubble surface mesh.
     bubblePtr_ = autoPtr<isoSurface>(new isoSurface(rhs.bubblePtr_()));
-    isoValue_ = rhs.isoValue_;
     timeIndexPad_ = rhs.timeIndexPad_;
     outputFormat_ = rhs.outputFormat_;
-    regularize_ = rhs.regularize_;
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
