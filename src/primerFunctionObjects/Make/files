@@ -1,0 +1,4 @@
+primerFunctionObjects/wettedCellsFunctionObject/wettedCellsFunctionObject.C
+cppFunctionObjects/fieldCellSet/fieldCellSet.C
+
+LIB = $(FOAM_USER_LIBBIN)/libprimerFunctionObjects
