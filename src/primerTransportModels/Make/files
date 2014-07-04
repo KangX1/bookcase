@@ -1,4 +1,4 @@
 interpolatedSplineViscosityModel/interpolatedSplineViscosityModel.C
 
 
-LIB = $(FOAM_USER_LIBBIN)/libofBookTransportModels
+LIB = $(FOAM_USER_LIBBIN)/libprimerTransportModels
