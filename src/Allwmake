@@ -5,6 +5,6 @@ cd ${0%/*} || exit 1    # run from this directory
 wmakeLnInclude -f .
 wmake libso bubbleCalc
 wmake libso ofBookBoundaryConditions 
-wmake libso ofBookTransportModels
+wmake libso primerTransportModels 
 wmake libso ofBookFunctionObjects
 wmake libso ofBookDynamicFvMesh 

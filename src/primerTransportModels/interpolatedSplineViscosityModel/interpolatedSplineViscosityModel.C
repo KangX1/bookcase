@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011 OpenFOAM Foundation
+    \\  /    A nd           | Copyright held by original authors 
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -20,6 +20,22 @@ License
 
     You should have received a copy of the GNU General Public License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
+
+Class
+    Foam::viscosityModels::interpolatedSplineViscosityModel
+
+Description
+     A viscosity model which takes in raw rheometry data and 
+     uses splines to compute a local effective viscosity based
+     on the data table.  
+
+SourceFiles
+    interpolatedSplineViscosityModel.C
+
+Authors:
+    Tomislav Maric tomislav@sourceflux.de
+    Jens Hoepken jens@sourceflux.de
+    Kyle Mooney kyle.g.mooney@gmail.com
 
 \*---------------------------------------------------------------------------*/
 
