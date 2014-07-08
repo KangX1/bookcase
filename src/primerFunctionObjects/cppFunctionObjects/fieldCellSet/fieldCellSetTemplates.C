@@ -30,8 +30,10 @@ Description
 SourceFiles
     fieldCellSet.C
 
-Author:
-    Tomislav Maric (tomislav.maric@gmx.com)
+Authors:
+    Tomislav Maric tomislav@sourceflux.de
+    Jens Hoepken jens@sourceflux.de
+    Kyle Mooney kyle.g.mooney@gmail.com
 
 \*---------------------------------------------------------------------------*/
 
