@@ -22,10 +22,11 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Application
-    scalarTransportFoam
+    scalarTransportDyMSolver 
 
 Description
-    Solves a transport equation for a passive scalar
+    Solves a transport equation for a passive scalar. Extended with dynamic mesh
+    handling.
 
 Authors
     Jens Hoepken jens@sourceflux.de
