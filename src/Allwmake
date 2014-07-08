@@ -6,5 +6,5 @@ wmakeLnInclude -f .
 wmake libso bubbleCalc
 wmake libso primerBoundaryConditions 
 wmake libso primerTransportModels 
-wmake libso ofBookFunctionObjects
-wmake libso ofBookDynamicFvMesh 
+wmake libso primerFunctionObjects
+wmake libso primerDynamicFvMesh 

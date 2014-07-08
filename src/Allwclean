@@ -5,5 +5,5 @@ cd ${0%/*} || exit 1    # run from this directory
 wclean bubbleCalc
 wclean primerBoundaryConditions 
 wclean primerTransportModels
-wclean ofBookFunctionObjects
-wclean ofBookDynamicFvMesh 
+wclean primerFunctionObjects
+wclean primerDynamicFvMesh 
