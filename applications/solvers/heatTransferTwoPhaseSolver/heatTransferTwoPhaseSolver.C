@@ -35,6 +35,11 @@ Description
 
     For a two-fluid approach see twoPhaseEulerFoam.
 
+Authors:
+    Tomislav Maric tomislav@sourceflux.de
+    Jens Hoepken jens@sourceflux.de
+    Kyle Mooney kyle.g.mooney@gmail.com
+
 \*---------------------------------------------------------------------------*/
 
 #include "fvCFD.H"
