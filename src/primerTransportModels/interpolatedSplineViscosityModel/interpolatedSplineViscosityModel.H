@@ -33,9 +33,9 @@ SourceFiles
     interpolatedSplineViscosityModel.C
 
 Authors:
-    Tomislav Maric tomislav@sourceflux.de
-    Jens Hoepken jens@sourceflux.de
     Kyle Mooney kyle.g.mooney@gmail.com
+    Jens Hoepken jens@sourceflux.de
+    Tomislav Maric tomislav@sourceflux.de
 
 \*---------------------------------------------------------------------------*/
 

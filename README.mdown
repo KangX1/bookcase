@@ -1,14 +1,17 @@
 ### About ###
 
-This is the example code repository of the "The OpenFOAM Technology Primer" book.
+This is the example code repository of the "The OpenFOAM(r) Technology Primer" book.
 
-Authors: Tomislav Maric, Jens Hoepken, Kyle Mooney
+Authors: 
+
+Tomislav Maric tomislav@sourceflux.de
+Jens Hoepken jens@sourceflux.de
+Kyle Mooney kyle.g.mooney@gmail.com
 
 ### Installation ###
 
 #### Obtaining the source code ####
 
-*TODO*
 
 #### One-time configuration ####
 
@@ -29,8 +32,7 @@ startup script:
 
 #### Compilation ####
 
-*TODO*
 
 ### Disclaimer ###
 
-This offering is not approved or endorsed by OpenCFD Limited, the producer of the OpenFOAM  software and owner of the OPENFOAM  and OpenCFD  trade marks. 
+This offering is not approved or endorsed by OpenCFD Limited, the producer of the OpenFOAM  software and owner of the OPENFOAM and OpenCFD trade marks. 
