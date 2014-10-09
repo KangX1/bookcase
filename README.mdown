@@ -4,34 +4,36 @@ This is the example code repository of the "The OpenFOAM(r) Technology Primer" b
 
 Authors: 
 
-Tomislav Maric tomislav@sourceflux.de
-Jens Hoepken jens@sourceflux.de
-Kyle Mooney kyle.g.mooney@gmail.com
+* Tomislav Maric tomislav@sourceflux.de
+* Jens Hoepken jens@sourceflux.de
+* Kyle Mooney kyle.g.mooney@gmail.com
 
 ### Installation ###
 
+The example code has been tested with the following OpenFOAM versions:
+
+* OpenFOAM-2.2.x 
+* OpenFOAM-2.3.x
+
+**The port to 2.3.x is currently underway - all all libraries except primerDynamicFvMesh should run on both versions.**
+
+The example code repository is a self-sustained set of applications and libraries that are compiled against a properly configured and installed OpenFOAM platform (versions listed above). 
 #### Obtaining the source code ####
 
+    git clone git@bitbucket.org:sourceflux/primer-examples
 
 #### One-time configuration ####
 
-Source "etc/bashrc", then execute Allwmake to compile the libraries (src) and
-the applications:
+Source the `etc/bashrc` configuration script, then execute `Allwmake` to compile the project libraries and applications:
 
     . etc/bashrc
     ./Allwcmake
 
 #### Permanent configuration ####
 
-To set the configuration variable every time a new tab/terminal is opened,
-source the "etc/bashrc" script of this project from within the "~/.bashrc"
-startup script:
+To set the configuration variable every time a new tab/terminal is opened, source the "etc/bashrc" script of this project from within the "~/.bashrc" startup script:
 
-    source /path/to/ofbook-code/etc/bashrc
-
-
-#### Compilation ####
-
+    source /path/to/primer-examples/etc/bashrc
 
 ### Disclaimer ###
 

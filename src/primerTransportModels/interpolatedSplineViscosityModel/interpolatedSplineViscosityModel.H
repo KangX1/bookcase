@@ -116,6 +116,12 @@ public:
             return nu_;
         }
 
+        tmp<scalarField> nu(const label patchi) const 
+        {
+            notImplemented("interpolatedSplineViscosityModel::nu(const label) - port to 2.3.x"); 
+            return tmp<scalarField>();
+        };
+
         //- Correct the laminar viscosity
         void correct()
         {
