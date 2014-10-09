@@ -17,7 +17,7 @@ The example code has been tested with the following OpenFOAM versions:
 * OpenFOAM-2.2.x 
 * OpenFOAM-2.3.x
 
-**The port to 2.3.x is currently underway - all all libraries except primerDynamicFvMesh should run on both versions.**
+**The port to 2.3.x is currently underway - all libraries except primerDynamicFvMesh should run on both versions.**
 
 The OpenFOAM Technology Primer example code repository is a self-sustained set of applications and libraries that are compiled against a properly configured and installed OpenFOAM platform (versions listed above). 
 
@@ -41,11 +41,11 @@ To set the configuration variable every time a new tab/terminal is opened, sourc
 
 ### Issues ###
 
-We have tested the example applications and libraries multiple times. Also, we have gone through the tutorials in The OpenFOAM Tehnology Primer book ourselves, for more times that we would even like to remember. Still, this repo holds program source code, so it's likely that there are still bugs somewhere, in hiding. :) We hope that the users of the code will use the [Issue Tracking](https://confluence.atlassian.com/display/BITBUCKET/Use+the+issue+tracker) available on the Bitbucket site and report any open problems. Using the Issue Tracker makes it easier for us to work together to fix the problems you have encountered. 
+We have tested the example applications and libraries multiple times. Also, we have gone through the tutorials in The OpenFOAM Technology Primer book ourselves, for more times that we would even like to remember. Still, this repository holds program source code, so it's likely that there are still bugs somewhere, in hiding. :) We hope that the users of the code will use the [Issue Tracking](https://confluence.atlassian.com/display/BITBUCKET/Use+the+issue+tracker) available on the Bitbucket site and report any open problems. Using the Issue Tracker makes it easier for us to work together to fix the problems you have encountered. 
 
 Having said this, we welcome you to the issue tracker, [have fun reporting bugs](https://bitbucket.org/sourceflux/primer-examples/issues?status=new&status=open). 
 
-In case that you fix the bug on your own, please just make a [pull request](https://confluence.atlassian.com/display/BITBUCKET/Work+with+pull+requests), and we'll merge it to our repo so that all the readers benefit + add you on the contributors list.
+In case that you fix the bug on your own, please just make a [pull request](https://confluence.atlassian.com/display/BITBUCKET/Work+with+pull+requests), and we'll merge it to our repository so that all the readers benefit and add you to the contributors list.
 
 ### Disclaimer ###
 
