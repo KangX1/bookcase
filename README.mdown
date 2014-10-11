@@ -31,7 +31,7 @@ Source the `etc/bashrc` configuration script, then execute `Allwmake` to compile
 
     cd primer-examples
     . etc/bashrc
-    ./Allwcmake
+    ./Allwmake
 
 #### Permanent configuration ####
 
