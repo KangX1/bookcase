@@ -23,7 +23,7 @@ The OpenFOAM Technology Primer example code repository is a self-sustained set o
 
 #### Obtaining the source code ####
 
-    git clone git@bitbucket.org:sourceflux/primer-examples
+    git clone https://sourceflux@bitbucket.org/sourceflux/primer-examples.git  
 
 #### One-time configuration ####
 
